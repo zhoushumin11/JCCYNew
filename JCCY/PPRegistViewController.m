@@ -10,7 +10,14 @@
 #import "EYInputPopupView.h"
 #import "EYTextPopupView.h"
 
-@interface PPRegistViewController ()<UITextFieldDelegate>
+#import "AppDelegate.h"
+
+@interface PPRegistViewController ()<UITextFieldDelegate,UIAlertViewDelegate>
+
+{
+    NSTimer *timer;
+    NSInteger seconds;
+}
 @property (nonatomic, strong) UIScrollView *mainView;
 @property (nonatomic, strong) UIView *tapbackView;
 @property (nonatomic, strong) UITextField *phoneNumberField;
@@ -47,7 +54,6 @@
     [phoneNumberField setAutocorrectionType:UITextAutocorrectionTypeNo];
     
     [phoneNumberField setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-    phoneNumberField.clearButtonMode = UITextFieldViewModeWhileEditing;
     phoneNumberField.font = [UIFont fontWithName:@"PingFangSC-Light" size:15];
     [mainView addSubview:phoneNumberField];
     
@@ -100,30 +106,213 @@
     getYanZhengBtn.layer.borderWidth = 1;
     [getYanZhengBtn.layer setCornerRadius:3];
     getYanZhengBtn.layer.borderColor=[UIColor colorFromHexRGB:@"e56357"].CGColor;
+    [getYanZhengBtn addTarget:self action:@selector(sendSMS) forControlEvents:UIControlEventTouchUpInside];
     [mainView addSubview:getYanZhengBtn];
     
-    //登录 button
-    UIButton *login = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    login.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:17];
-    login.frame = CGRectMake(35, 220, PPMainViewWidth-70, 45);
-    login.center = CGPointMake(PPMainViewWidth/2, 170);
+    //绑定 button
+    UIButton *bangdingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    bangdingBtn.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:17];
+    bangdingBtn.frame = CGRectMake(35, 220, PPMainViewWidth-70, 45);
+    bangdingBtn.center = CGPointMake(PPMainViewWidth/2, 170);
     
-    [login.layer setMasksToBounds:YES];
-    [login.layer setCornerRadius:5.0]; //设置矩形四个圆角半径
-    login.backgroundColor = [UIColor colorFromHexRGB:@"e60013"];
-    [login setTitle:@"绑定" forState:UIControlStateNormal];
-    [login setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [login addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];
+    [bangdingBtn.layer setMasksToBounds:YES];
+    [bangdingBtn.layer setCornerRadius:5.0]; //设置矩形四个圆角半径
+    bangdingBtn.backgroundColor = [UIColor colorFromHexRGB:@"e60013"];
+    [bangdingBtn setTitle:@"绑定" forState:UIControlStateNormal];
+    [bangdingBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [bangdingBtn addTarget:self action:@selector(bangdingPhone) forControlEvents:UIControlEventTouchUpInside];
     //    @selector(login)
-    [mainView addSubview:login];
+    [mainView addSubview:bangdingBtn];
     
 
 
 
 }
 
--(void)backAction{
+-(void)sendSMS{
+    
+    if (phoneNumberField.text.length == 0 ||phoneNumberField.text.length != 11) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入正确的手机号！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        return;
+    }
+    
+    [WSProgressHUD showWithStatus:nil maskType:WSProgressHUDMaskTypeDefault];
+    
+    NSString *dJson = nil;
+    @autoreleasepool {
+        //得到自己当前的下属
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"phone\":\"%@\"}",87,token,phoneNumberField.text];
+        //获取类型接口
+        PPRDData *pprddata1 = [[PPRDData alloc] init];
+        [pprddata1 startAFRequest:@"/index.php/Api/User/send_code_phone/"
+                      requestdata:dJson
+                   timeOutSeconds:10
+                  completionBlock:^(NSDictionary *json) {
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      if (code == 1) {
+                          [WSProgressHUD showSuccessWithStatus:@"发送成功"];
+                          [WSProgressHUD autoDismiss:2];
+                          
+                      }else{
+                          [WSProgressHUD dismiss];
+                          NSString *msg = [json objectForKey:@"info"];
+                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:msg delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                          alert.tag = 20161122;
+                          alert.delegate = self;
+                          [alert show];
+                      }
+                  }
+                      failedBlock:^(NSError *error) {
+                          
+                      }];
+    }
+    
+    seconds = 60;
+    timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerFireMethod:) userInfo:nil repeats:YES];
 }
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.tag == 20161122) {
+        if (buttonIndex == 0) {
+            [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:@"isLogin"];
+            AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
+            [appdel setupViewControllers];
+        }
+    }
+}
+
+
+-(void)bangdingPhone{
+    if (phoneNumberField.text.length == 0 ||phoneNumberField.text.length != 11) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入正确的手机号！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        return;
+    }else if (passwordField.text.length == 0){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入正确的验证码！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        return;
+    }
+    
+    
+    //绑定手机号
+    
+    NSString *dJson = nil;
+    @autoreleasepool {
+        //得到自己当前的下属
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+        //获取类型接口
+        PPRDData *pprddata1 = [[PPRDData alloc] init];
+        [pprddata1 startAFRequest:@"/index.php/Api/User/get_info/"
+                      requestdata:dJson
+                   timeOutSeconds:10
+                  completionBlock:^(NSDictionary *json) {
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      if (code == 1) {
+                          
+                          NSDictionary *dataDic = [json objectForKey:@"data"];
+                          NSUInteger golds = [[dataDic objectForKey:@"golds"] integerValue];
+                          NSUInteger present_time = [[dataDic objectForKey:@"present_time"] integerValue];
+                          NSUInteger time_service_1 = [[dataDic objectForKey:@"time_service_1"] integerValue];
+                          NSUInteger time_service_2 = [[dataDic objectForKey:@"time_service_2"] integerValue];
+                          NSUInteger time_service_3 = [[dataDic objectForKey:@"time_service_3"] integerValue];
+                          NSString *user_chinese_name = [dataDic objectForKey:@"user_chinese_name"];
+                          NSString *user_city = [dataDic objectForKey:@"user_city"];
+                          NSString *user_level = [dataDic objectForKey:@"user_level"];
+                          NSString *user_phone = [dataDic objectForKey:@"user_phone"];
+                          NSString *user_pic = [dataDic objectForKey:@"user_pic"];
+                          NSString *user_province = [dataDic objectForKey:@"user_province"];
+                          
+                          [UserInfoData sharedappData].golds = golds;
+                          [UserInfoData sharedappData].present_time = present_time;
+                          [UserInfoData sharedappData].time_service_1 = time_service_1;
+                          [UserInfoData sharedappData].time_service_2 = time_service_2;
+                          [UserInfoData sharedappData].time_service_3 = time_service_3;
+                          [UserInfoData sharedappData].user_chinese_name = user_chinese_name;
+                          [UserInfoData sharedappData].user_city = user_city;
+                          [UserInfoData sharedappData].user_level = user_level;
+                          [UserInfoData sharedappData].user_phone = user_phone;
+                          [UserInfoData sharedappData].user_pic = user_pic;
+                          [UserInfoData sharedappData].user_province = user_province;
+                          
+                          //判断手机号是否绑定  如果没有 就绑定
+                          if (user_phone == nil || user_phone.length == 0) {
+                              [self bangdingPhone];
+                          }
+                          
+                      }
+                  }
+                      failedBlock:^(NSError *error) {
+                          
+                      }];
+    }
+
+    
+}
+
+
+//倒计时方法验证码实现倒计时60秒，60秒后按钮变换开始的样子
+-(void)timerFireMethod:(NSTimer *)theTimer {
+    if (seconds == 1) {
+        [theTimer invalidate];
+        seconds = 60;
+        [getYanZhengBtn setTitle:@"获取验证码" forState: UIControlStateNormal];
+        [getYanZhengBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [getYanZhengBtn setEnabled:YES];
+    }else{
+        seconds--;
+        NSString *title = [NSString stringWithFormat:@"%ld s",seconds];
+        [getYanZhengBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [getYanZhengBtn setEnabled:NO];
+        [getYanZhengBtn setTitle:title forState:UIControlStateNormal];
+    }
+}
+//如果登陆成功，停止验证码的倒数，
+- (void)releaseTImer {
+    if (timer) {
+        if ([timer respondsToSelector:@selector(isValid)]) {
+            if ([timer isValid]) {
+                [timer invalidate];
+                seconds = 60;
+            }
+        }
+    }
+}
+
+-(void)dealloc{
+    [timer invalidate];
+}
+
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+}
+
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+}
+
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if (textField.tag == 102) {
+        [textField resignFirstResponder];
+        [passwordField becomeFirstResponder];
+    }else if(textField.tag == 123456){
+        [self bangdingPhone];
+    }
+    return YES;
+}
+
+- (void) animateTextField: (UITextField*) textField up: (BOOL) up
+{
+
+    
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

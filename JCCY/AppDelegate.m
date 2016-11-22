@@ -136,6 +136,7 @@
     [PPAPPDataClass sharedappData].isAutoLogin = YES;
     
     BOOL isLoginsucc = [[NSUserDefaults standardUserDefaults] objectForKey:@"isLogin"];
+    
     if (isLoginsucc) {
         //更新会员信息
 //        [self get_info];

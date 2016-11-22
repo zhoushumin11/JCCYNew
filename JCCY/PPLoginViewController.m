@@ -156,8 +156,7 @@
                           NSDictionary *dataDic = [json objectForKey:@"data"];
                           NSString *token = [dataDic objectForKey:@"token"];
                           [[NSUserDefaults standardUserDefaults] setObject:token forKey:@"token"];
-                          [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:@"isLogin"];
-                          
+                          [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isLogin"];
                           //再获取用户信息
                           [self getUserInfo];
                           
@@ -165,10 +164,8 @@
                           
                       }
                       
-
-  
                   }
-                      failedBlock:^(NSError *error) {
+                failedBlock:^(NSError *error) {
 
         }];
     }
@@ -219,7 +216,11 @@
                           //判断手机号是否绑定  如果没有 就绑定
                           if (user_phone == nil || user_phone.length == 0) {
                               [self bangdingPhone];
+                          }else{
+                              AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
+                              [appdel setupViewControllers];
                           }
+                          
                       
                       }
                   }

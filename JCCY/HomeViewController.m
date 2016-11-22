@@ -177,40 +177,6 @@
     @autoreleasepool {
         NSString *dJson = nil;
         
-//        code = 1;
-//        data =     (
-//                    {
-//                        "ad_category" = 1;
-//                        "ad_id" = 1;
-//                        "ad_parameter" = 3;
-//                        "ad_pic" = "http://wutong.jingchengidea.com/upload/other/image/20161116147928401911.jpg";
-//                        "ad_title" = "\U6d4b\U8bd5\U6807\U98981";
-//                        "ad_type" = 1;
-//                        time = 0;
-//                    },
-//                    {
-//                        "ad_category" = 1;
-//                        "ad_id" = 2;
-//                        "ad_parameter" = 1;
-//                        "ad_pic" = "http://wutong.jingchengidea.com/upload/other/image/20161116147928399091.jpg";
-//                        "ad_title" = "\U6d4b\U8bd5\U6807\U98982";
-//                        "ad_type" = 1;
-//                        time = 0;
-//                    },
-//                    {
-//                        "ad_category" = 1;
-//                        "ad_id" = 3;
-//                        "ad_parameter" = 0;
-//                        "ad_pic" = "http://wutong.jingchengidea.com/upload/other/image/20161116147928415111.jpg";
-//                        "ad_title" = "\U76f4\U64ad";
-//                        "ad_type" = 2;
-//                        time = 1479284176;
-//                    }
-//                    );
-//        info = "";
-//        status = 1;
-        
-        
         @autoreleasepool {
             
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
