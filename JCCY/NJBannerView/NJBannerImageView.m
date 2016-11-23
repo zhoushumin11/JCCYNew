@@ -68,11 +68,11 @@
 
 - (void) bannerAction
 {
-    if (!_dicProperty || !_dicProperty[@"data"]) {
+    if (!_dicProperty || !_dicProperty[@"img"]) {
         return;
     }
     if (_linkAction) {
-        NSDictionary *link = _dicProperty[@"data"];
+        NSDictionary *link = _dicProperty;
         self.linkAction(link);
     }
 }

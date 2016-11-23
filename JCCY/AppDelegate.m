@@ -62,8 +62,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
     
-
-    
     NSString *severurlstr = [[NSUserDefaults standardUserDefaults] objectForKey:SEVERURL];
     if (severurlstr == nil) {
         //设置服务器地址

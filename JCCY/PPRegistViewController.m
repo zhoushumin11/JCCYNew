@@ -177,6 +177,7 @@
     if (alertView.tag == 20161122) {
         if (buttonIndex == 0) {
             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:@"isLogin"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
             [appdel setupViewControllers];
         }
@@ -202,51 +203,30 @@
     @autoreleasepool {
         //得到自己当前的下属
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"phone\":\"%@\",\"code\":\"%@\"}",87,token,phoneNumberField.text,passwordField.text];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
-        [pprddata1 startAFRequest:@"/index.php/Api/User/get_info/"
+        [pprddata1 startAFRequest:@"/index.php/Api/User/bind_code_phone/"
                       requestdata:dJson
                    timeOutSeconds:10
                   completionBlock:^(NSDictionary *json) {
                       NSInteger code = [[json objectForKey:@"code"] integerValue];
                       if (code == 1) {
+                          [WSProgressHUD showSuccessWithStatus:@"绑定成功"];
+                          [WSProgressHUD autoDismiss:2];
+                          //保存绑定信息
+                          [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isBangding"];
                           
-                          NSDictionary *dataDic = [json objectForKey:@"data"];
-                          NSUInteger golds = [[dataDic objectForKey:@"golds"] integerValue];
-                          NSUInteger present_time = [[dataDic objectForKey:@"present_time"] integerValue];
-                          NSUInteger time_service_1 = [[dataDic objectForKey:@"time_service_1"] integerValue];
-                          NSUInteger time_service_2 = [[dataDic objectForKey:@"time_service_2"] integerValue];
-                          NSUInteger time_service_3 = [[dataDic objectForKey:@"time_service_3"] integerValue];
-                          NSString *user_chinese_name = [dataDic objectForKey:@"user_chinese_name"];
-                          NSString *user_city = [dataDic objectForKey:@"user_city"];
-                          NSString *user_level = [dataDic objectForKey:@"user_level"];
-                          NSString *user_phone = [dataDic objectForKey:@"user_phone"];
-                          NSString *user_pic = [dataDic objectForKey:@"user_pic"];
-                          NSString *user_province = [dataDic objectForKey:@"user_province"];
-                          
-                          [UserInfoData sharedappData].golds = golds;
-                          [UserInfoData sharedappData].present_time = present_time;
-                          [UserInfoData sharedappData].time_service_1 = time_service_1;
-                          [UserInfoData sharedappData].time_service_2 = time_service_2;
-                          [UserInfoData sharedappData].time_service_3 = time_service_3;
-                          [UserInfoData sharedappData].user_chinese_name = user_chinese_name;
-                          [UserInfoData sharedappData].user_city = user_city;
-                          [UserInfoData sharedappData].user_level = user_level;
-                          [UserInfoData sharedappData].user_phone = user_phone;
-                          [UserInfoData sharedappData].user_pic = user_pic;
-                          [UserInfoData sharedappData].user_province = user_province;
-                          
-                          //判断手机号是否绑定  如果没有 就绑定
-                          if (user_phone == nil || user_phone.length == 0) {
-                              [self bangdingPhone];
-                          }
-                          
+                          [self.navigationController popViewControllerAnimated:YES];
+                      }else{
+                          NSString *msg = [json objectForKey:@"info"];
+                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:msg delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                          [alert show];
                       }
                   }
                       failedBlock:^(NSError *error) {
                           
-                      }];
+                    }];
     }
 
     

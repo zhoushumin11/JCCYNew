@@ -52,6 +52,7 @@
     //设置本地存储值
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     [userDefault setObject:@"1" forKey:@"isLooked4"];//已经看过滑页
+    [userDefault synchronize];
     NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
     NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];//当前APP中的版本
     [userDefault setObject:appVersion forKey:@"oldVersion"];//已经看过滑页

@@ -8,13 +8,15 @@
 
 #import "HomeViewController.h"
 #import "NJBannerView.h"
-
+#import "TAPageControl.h"
 //绑定手机号
 #import "PPRegistViewController.h"
 
 
-@interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
+
 @property (nonatomic, strong) UIButton *user_info_btn; //用户信息button
+@property (nonatomic, strong) UIButton *user_info_Level; //用户等级
 
 @property(nonatomic,strong) NSMutableArray *dataArray;//表数据
 @property(nonatomic,strong) NSMutableArray *scrollNewsArray;//滚动数据
@@ -23,12 +25,14 @@
 
 @property (nonatomic, strong) NJBannerView *adBannerView;//广告滚动页
 
+@property (nonatomic,strong) UIView *mainTableViewHeaderView; //表头视图
+
 
 @end
 
 @implementation HomeViewController
 
-@synthesize user_info_btn,mainTableView,dataArray,scrollNewsArray,adBannerView;
+@synthesize user_info_btn,mainTableView,dataArray,scrollNewsArray,adBannerView,user_info_Level;
 
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -62,16 +66,27 @@
     
     //初始化用户button
     user_info_btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    user_info_btn.frame = CGRectMake(0, 0, 150, 44);
+    user_info_btn.frame = CGRectMake(-10, 0, 80, 44);
     user_info_btn.titleLabel.textAlignment = NSTextAlignmentLeft;
     [user_info_btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [user_info_btn setTitle:@"" forState:UIControlStateNormal];
-    [user_info_btn setTitleEdgeInsets:UIEdgeInsetsMake(0, -30, 0, 0)];
-    user_info_btn.imageEdgeInsets = UIEdgeInsetsMake(5,50,5,13);//设置image在button上的位置（上top，左left，下bottom，右right）这里可以写负值，对上写－5，那么image就象上移动5个像素
-
     [user_info_btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [user_info_btn addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *leftbarbtn = [[UIBarButtonItem alloc] initWithCustomView:user_info_btn];
+    
+    //初始化用户等级button
+    user_info_Level = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    user_info_Level.frame = CGRectMake(60, 12, 40, 20);
+    user_info_Level.titleLabel.textAlignment = NSTextAlignmentLeft;
+    [user_info_Level setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    [user_info_Level addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
+
+    
+    UIView *userInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 150, 44)];
+    userInfoView.backgroundColor = [UIColor clearColor];
+    [userInfoView addSubview:user_info_btn];
+    [userInfoView addSubview:user_info_Level];
+    
+    UIBarButtonItem *leftbarbtn = [[UIBarButtonItem alloc] initWithCustomView:userInfoView];
     self.navigationItem.leftBarButtonItem = leftbarbtn;
     
     //创建主视图
@@ -118,13 +133,17 @@
     bannerV.titles = titleList;
     bannerV.datas = currentDatas;
     
+    
+    mainTableView.tableHeaderView = bannerV;
+    adBannerView = bannerV;
+    
     __weak HomeViewController *weakSelf = self;
     bannerV.linkAction = ^(NSDictionary *linkDict)
     {
         [weakSelf endterNewsPage:linkDict];
     };
-    mainTableView.tableHeaderView = bannerV;
-    adBannerView = bannerV;
+    
+
     
     if ([mainTableView.mj_header isRefreshing]) {
         [mainTableView.mj_header endRefreshing];
@@ -138,8 +157,29 @@
 }
 
 -(void)initMyView{
-    [user_info_btn setTitle:@"王小小" forState:UIControlStateNormal];
-    [user_info_btn setImage:[UIImage imageNamed:@"redPack_bar@2x"] forState:UIControlStateNormal];//给button添加image
+    
+    NSString *nameStr = [UserInfoData sharedappData].user_chinese_name;
+    if (nameStr.length > 4) {
+      nameStr = [nameStr substringToIndex:4];
+    }
+    
+    [user_info_btn setTitle:nameStr forState:UIControlStateNormal];
+    
+    if ([[UserInfoData sharedappData].user_level isEqualToString:@"0"] || [UserInfoData sharedappData].user_level == nil) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level0"] forState:UIControlStateNormal];//给button添加image
+    }else if ([[UserInfoData sharedappData].user_level isEqualToString:@"1"]) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level1"] forState:UIControlStateNormal];//给button添加image
+    }else if ([[UserInfoData sharedappData].user_level isEqualToString:@"2"]) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level2"] forState:UIControlStateNormal];//给button添加image
+    }else if ([[UserInfoData sharedappData].user_level isEqualToString:@"3"]) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level3"] forState:UIControlStateNormal];//给button添加image
+    }else if ([[UserInfoData sharedappData].user_level isEqualToString:@"4"]) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level4"] forState:UIControlStateNormal];//给button添加image
+    }else if ([[UserInfoData sharedappData].user_level isEqualToString:@"5"]) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level5"] forState:UIControlStateNormal];//给button添加image
+    }else if ([[UserInfoData sharedappData].user_level isEqualToString:@"6"]) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level6"] forState:UIControlStateNormal];//给button添加image
+    }
 }
 //创建主视图
 -(void)creatMainView{
@@ -206,6 +246,11 @@
         }
     }
 }
+
+
+
+
+
 //跳入用户详情页
 -(void)userInfoBtnAction{
     

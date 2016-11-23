@@ -121,7 +121,8 @@
                     [[NSUserDefaults standardUserDefaults] setObject:accessToken forKey:@"accessToken"];
                     [[NSUserDefaults standardUserDefaults] setObject:name forKey:@"userName"];
                     [[NSUserDefaults standardUserDefaults] setObject:unionid forKey:@"unionid"];
-                    
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+
                     
                     [self checkPhoneBangdingSucc:unionid :accessToken];
                     
@@ -140,8 +141,7 @@
 -(void)checkPhoneBangdingSucc:(NSString *)userId :(NSString *)accessToken {
     
     NSString *dJson = nil;
-    @autoreleasepool {
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"openid\":\"%@\",\"access_token\":\"%@\"}",87,@"",userId,accessToken];
+    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"openid\":\"%@\",\"access_token\":\"%@\"}",87,@"",userId,accessToken];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Login/do_login/"
@@ -157,25 +157,26 @@
                           NSString *token = [dataDic objectForKey:@"token"];
                           [[NSUserDefaults standardUserDefaults] setObject:token forKey:@"token"];
                           [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isLogin"];
+                          [[NSUserDefaults standardUserDefaults] synchronize];
+
                           //再获取用户信息
                           [self getUserInfo];
                           
                       }else{
-                          
+                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"微信授权失败,请稍后再试！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                          [alert show];
                       }
                       
                   }
                 failedBlock:^(NSError *error) {
 
         }];
-    }
 
 }
 
 -(void)getUserInfo{
     
     NSString *dJson = nil;
-    @autoreleasepool {
         //得到自己当前的下属
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
@@ -227,7 +228,6 @@
                       failedBlock:^(NSError *error) {
 
                       }];
-    }
     
 }
 
