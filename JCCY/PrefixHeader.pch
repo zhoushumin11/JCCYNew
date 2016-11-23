@@ -24,4 +24,6 @@
 #import "PPFileDownloadManage.h"
 #import "UserInfoData.h"
 //#import "TipContentView.h"
+#import "PPViewController.h"
+
 #endif

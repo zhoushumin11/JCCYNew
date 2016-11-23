@@ -171,17 +171,22 @@
 
 - (void)setShowTitleLabel
 {
-    UIView *showBackView = [[UIView alloc] initWithFrame:CGRectMake(0, self.bounds.size.height-35, self.bounds.size.width, 35)];
-    showBackView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    [self addSubview:showBackView];
-    
-    UILabel *titlelabel = [[UILabel alloc] initWithFrame:CGRectMake(5, self.bounds.size.height-35, self.bounds.size.width-10, 30)];
-    titlelabel.textAlignment = NSTextAlignmentCenter;
-    titlelabel.textColor = [UIColor whiteColor];
-    titlelabel.font = SystemFont(15);
-    titlelabel.text = [self.titles objectAtIndex:selectCurrentPage];
-    [self addSubview:titlelabel];
-    self.showTitleLabel = titlelabel;
+    if (self.titles.count == 0 || self.titles == nil) {
+        
+    }else{
+        UIView *showBackView = [[UIView alloc] initWithFrame:CGRectMake(0, self.bounds.size.height-35, self.bounds.size.width, 35)];
+        showBackView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+        [self addSubview:showBackView];
+        
+        UILabel *titlelabel = [[UILabel alloc] initWithFrame:CGRectMake(5, self.bounds.size.height-35, self.bounds.size.width-10, 30)];
+        titlelabel.textAlignment = NSTextAlignmentCenter;
+        titlelabel.textColor = [UIColor whiteColor];
+        titlelabel.font = SystemFont(15);
+        titlelabel.text = [self.titles objectAtIndex:selectCurrentPage];
+        [self addSubview:titlelabel];
+        self.showTitleLabel = titlelabel;
+    }
+
 }
 
 

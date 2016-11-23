@@ -12,6 +12,15 @@
 //绑定手机号
 #import "PPRegistViewController.h"
 
+//UITableViewCell
+#import "HomeFirstCell.h"
+#import "HomeNormalCell.h"
+
+#import "UIImageView+WebCache.h"
+
+//咨询中心
+#import "PPBulletinViewController.h"
+
 
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
 
@@ -32,7 +41,7 @@
 
 @implementation HomeViewController
 
-@synthesize user_info_btn,mainTableView,dataArray,scrollNewsArray,adBannerView,user_info_Level;
+@synthesize user_info_btn,mainTableView,dataArray,scrollNewsArray,adBannerView,user_info_Level,mainTableViewHeaderView;
 
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -49,6 +58,7 @@
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.barTintColor = [UIColor colorFromHexRGB:@"e60013"];
     self.title = @"首页";
+    
     
     
     //检查是否绑定手机号了
@@ -75,13 +85,13 @@
     
     //初始化用户等级button
     user_info_Level = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    user_info_Level.frame = CGRectMake(60, 12, 40, 20);
+    user_info_Level.frame = CGRectMake(38, 12, 40, 20);
     user_info_Level.titleLabel.textAlignment = NSTextAlignmentLeft;
     [user_info_Level setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [user_info_Level addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
 
     
-    UIView *userInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 150, 44)];
+    UIView *userInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 120, 44)];
     userInfoView.backgroundColor = [UIColor clearColor];
     [userInfoView addSubview:user_info_btn];
     [userInfoView addSubview:user_info_Level];
@@ -92,7 +102,69 @@
     //创建主视图
     [self creatMainView];
 }
+#pragma mark - 创建没有广告的首页头视图
+-(void)creatOnlyBtnHeaderView{
+    mainTableViewHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 134)];
+    
+    UIView *btnsView = [[UIView alloc] initWithFrame:CGRectMake(0, PPMainViewWidth*0.52, PPMainViewWidth, 80)];
+    NSArray *buttonTitleArr = [NSArray arrayWithObjects:@"实盘",@"赞赏",@"钻石",@"黄金", nil];
+    NSArray *buttonImgArr = [NSArray arrayWithObjects:@"shipan_home_btn",@"zanshang_home_btn",@"zuanshi_home_btn",@"huangjin_home_btn", nil];
+    
+    float ww = PPMainViewWidth/4 ;
+    
+    for (int i = 0; i<buttonTitleArr.count; i++) {
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(i*ww, 0, ww, ww);
+        //        [btn setBackgroundImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateNormal];
+        btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+        
+        [btn setBackgroundColor:[UIColor whiteColor]];
+        btn.tag = 2016+i;
+        [btn addTarget:self action:@selector(homeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, ww-30, ww, 20)];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.font = [UIFont systemFontOfSize:14];
+        label.textColor = [UIColor grayColor];
+        label.backgroundColor = [UIColor clearColor];
+        label.text = buttonTitleArr[i];
+        [btn addSubview:label];
+        [btnsView addSubview:btn];
+    }
+    
+    //添加资讯消息按钮
+    UIView *zixunMsgView = [[UIView alloc] initWithFrame:CGRectMake(0,ww +10, PPMainViewWidth, 44)];
+    zixunMsgView.backgroundColor = [UIColor whiteColor];
 
+    UIImageView *imgVc = [[UIImageView alloc] initWithFrame:CGRectMake(0, 12, 40, 40)];
+    imgVc.image = [UIImage imageNamed:@"zixun_home.png"];
+    [zixunMsgView addSubview:imgVc];
+    
+    UILabel *goLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth - 40,0,40,44)];
+    goLabel.text = @">";
+    goLabel.textColor = [UIColor grayColor];
+    goLabel.textAlignment = NSTextAlignmentCenter;
+    [zixunMsgView addSubview:goLabel];
+    
+    //资讯信息label
+    UILabel *zixunTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(44,0,80,44)];
+    zixunTitleLabel.text = @"资讯消息";
+    zixunTitleLabel.textColor = [UIColor grayColor];
+    [zixunMsgView addSubview:zixunTitleLabel];
+    
+    UIButton *zixunBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    zixunBtn.frame = CGRectMake(0, 0, PPMainViewWidth, 44);
+    [zixunBtn addTarget:self action:@selector(zixunBtnAction) forControlEvents:UIControlEventTouchUpInside];
+    [zixunBtn setBackgroundColor:[UIColor clearColor]];
+    [zixunMsgView addSubview:zixunBtn];
+    [mainTableViewHeaderView addSubview:btnsView];
+    [mainTableViewHeaderView addSubview:zixunMsgView];
+    mainTableView.tableHeaderView = mainTableViewHeaderView;
+    
+    
+    
+}
 #pragma mark - 首页新闻滚动图
 - (void)creatScrollNews:(NSMutableArray *)list
 {
@@ -130,12 +202,73 @@
     }
     NJBannerView *bannerV = [[NJBannerView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewWidth*0.52)];
     
-    bannerV.titles = titleList;
+    bannerV.titles = nil;
     bannerV.datas = currentDatas;
     
-    
-    mainTableView.tableHeaderView = bannerV;
     adBannerView = bannerV;
+    
+    UIView *btnsView = [[UIView alloc] initWithFrame:CGRectMake(0, PPMainViewWidth*0.52, PPMainViewWidth, 80)];
+    NSArray *buttonTitleArr = [NSArray arrayWithObjects:@"实盘",@"赞赏",@"钻石",@"黄金", nil];
+    NSArray *buttonImgArr = [NSArray arrayWithObjects:@"shipan_home_btn",@"zanshang_home_btn",@"zuanshi_home_btn",@"huangjin_home_btn", nil];
+    
+    float ww = PPMainViewWidth/4 ;
+    
+    for (int i = 0; i<buttonTitleArr.count; i++) {
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(i*ww, 0, ww, ww);
+//        [btn setBackgroundImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateNormal];
+        btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+        [btn setBackgroundColor:[UIColor whiteColor]];
+        btn.tag = 2016+i;
+        [btn addTarget:self action:@selector(homeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, ww-30, ww, 20)];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.font = [UIFont systemFontOfSize:14];
+        label.textColor = [UIColor grayColor];
+        label.backgroundColor = [UIColor clearColor];
+        label.text = buttonTitleArr[i];
+        [btn addSubview:label];
+        [btnsView addSubview:btn];
+    }
+    
+    //添加资讯消息按钮
+    UIView *zixunMsgView = [[UIView alloc] initWithFrame:CGRectMake(0,PPMainViewWidth*0.52+ww+10 , PPMainViewWidth, 44)];
+    zixunMsgView.backgroundColor = [UIColor whiteColor];
+    UIImageView *imgVc = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+    imgVc.image = [UIImage imageNamed:@"zixun_home.png"];
+    [zixunMsgView addSubview:imgVc];
+    
+    //>label
+    UILabel *goLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth - 40,0,40,44)];
+    goLabel.text = @">";
+    goLabel.textColor = [UIColor grayColor];
+    goLabel.textAlignment = NSTextAlignmentCenter;
+    [zixunMsgView addSubview:goLabel];
+    
+    //资讯信息label
+    UILabel *zixunTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(44,0,80,44)];
+    zixunTitleLabel.text = @"资讯消息";
+    zixunTitleLabel.textColor = [UIColor grayColor];
+    [zixunMsgView addSubview:zixunTitleLabel];
+    
+    UIButton *zixunBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    zixunBtn.frame = CGRectMake(0, 0, PPMainViewWidth, 44);
+    [zixunBtn addTarget:self action:@selector(zixunBtnAction) forControlEvents:UIControlEventTouchUpInside];
+    [zixunBtn setBackgroundColor:[UIColor clearColor]];
+    [zixunMsgView addSubview:zixunBtn];
+    
+    
+    mainTableViewHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewWidth*0.52 + ww+10+44)];
+    mainTableViewHeaderView.backgroundColor = [UIColor colorFromHexRGB:@"f4f4f4"];
+    
+    [mainTableViewHeaderView addSubview:btnsView];
+    [mainTableViewHeaderView addSubview:adBannerView];
+    [mainTableViewHeaderView addSubview:zixunMsgView];
+
+    mainTableView.tableHeaderView = mainTableViewHeaderView;
+    
     
     __weak HomeViewController *weakSelf = self;
     bannerV.linkAction = ^(NSDictionary *linkDict)
@@ -143,12 +276,30 @@
         [weakSelf endterNewsPage:linkDict];
     };
     
-
-    
     if ([mainTableView.mj_header isRefreshing]) {
         [mainTableView.mj_header endRefreshing];
     }
     
+}
+
+//资讯消息栏点击事件
+-(void)zixunBtnAction{
+    PPBulletinViewController *jCCYNewsMainViewController = [[PPBulletinViewController alloc] init];
+    jCCYNewsMainViewController.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:jCCYNewsMainViewController animated:YES];
+}
+
+//首页button响应事假
+-(void)homeBtnAction:(UIButton *)btn{
+    if (btn.tag == 2016) {//实盘
+        
+    }else if (btn.tag == 2017){//赞赏
+        
+    }else if (btn.tag == 2018){//钻石
+        
+    }else if (btn.tag == 2019){//黄金
+        
+    }
 }
 
 //滚动新闻点击事件
@@ -158,33 +309,33 @@
 
 -(void)initMyView{
     
-    NSString *nameStr = [UserInfoData sharedappData].user_chinese_name;
+    NSString *nameStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_chinese_name"];
     if (nameStr.length > 4) {
       nameStr = [nameStr substringToIndex:4];
     }
     
     [user_info_btn setTitle:nameStr forState:UIControlStateNormal];
     
-    if ([[UserInfoData sharedappData].user_level isEqualToString:@"0"] || [UserInfoData sharedappData].user_level == nil) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"0"] || [[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] == nil) {
         [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level0"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[UserInfoData sharedappData].user_level isEqualToString:@"1"]) {
+    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"1"]) {
         [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level1"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[UserInfoData sharedappData].user_level isEqualToString:@"2"]) {
+    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"2"]) {
         [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level2"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[UserInfoData sharedappData].user_level isEqualToString:@"3"]) {
+    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"3"]) {
         [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level3"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[UserInfoData sharedappData].user_level isEqualToString:@"4"]) {
+    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"4"]) {
         [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level4"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[UserInfoData sharedappData].user_level isEqualToString:@"5"]) {
+    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"5"]) {
         [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level5"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[UserInfoData sharedappData].user_level isEqualToString:@"6"]) {
+    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"6"]) {
         [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level6"] forState:UIControlStateNormal];//给button添加image
     }
 }
 //创建主视图
 -(void)creatMainView{
     self.view.backgroundColor = [UIColor colorFromHexRGB:@"f8f8f8"];
-    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth,self.view.bounds.size.height-64-44) style:UITableViewStylePlain];
+    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth,self.view.bounds.size.height) style:UITableViewStylePlain];
     mainTableView.backgroundColor = [UIColor clearColor];
     mainTableView.separatorInset = UIEdgeInsetsZero;
     //        _bulletinlistTableView.tableHeaderView = [[UIView alloc] init];
@@ -207,16 +358,58 @@
     
     [self.view addSubview:mainTableView];
     
+    
+    
     //获取首页广告数据
     [self getAdData];
+    //获取列表数据
+    [self getTableListData];
 
 }
 
+//获取首页新闻数据
+-(void)getTableListData{
+        NSString *dJson = nil;
+        @autoreleasepool {
+            
+            NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+            
+            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%d\"}",87,token,0,1];
+            //获取类型接
+            PPRDData *pprddata1 = [[PPRDData alloc] init];
+            [pprddata1 startAFRequest:@"/index.php/Api/Archives/index/"
+                          requestdata:dJson
+                       timeOutSeconds:10
+                      completionBlock:^(NSDictionary *json) {
+                          
+                          NSInteger code = [[json objectForKey:@"code"] integerValue];
+                          if (code == 1) {
+                              NSDictionary *dataDic = [json objectForKey:@"data"];
+                              NSArray *listArr = [dataDic objectForKey:@"list"];
+                              dataArray = [NSMutableArray arrayWithArray:listArr];
+                              if (dataArray.count>0) {
+                                  //刷新列表
+                                  [mainTableView reloadData];
+                                  
+                              }else{
+
+                              }
+                              
+                              
+                          }else{
+                              //异常处理
+                          }
+                          
+                      } failedBlock:^(NSError *error) {
+                          
+                      }];
+        }
+}
+
+
 //获取首页广告数据
 -(void)getAdData{
-    @autoreleasepool {
         NSString *dJson = nil;
-        
         @autoreleasepool {
             
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
@@ -233,8 +426,14 @@
                           if (code == 1) {
                               NSArray *dataArr = [json objectForKey:@"data"];
                               scrollNewsArray = [NSMutableArray arrayWithArray:dataArr];
-                              //创建广告图
-                              [self creatScrollNews:scrollNewsArray];
+                              if (scrollNewsArray.count>0) {
+                                  //创建广告图
+                                  [self creatScrollNews:scrollNewsArray];
+                              }else{
+                                  //如果没有广告 直接创建4个按钮
+                                  [self creatOnlyBtnHeaderView];
+                              }
+
                               
                           }else{
                               //异常处理
@@ -244,7 +443,6 @@
                           
                       }];
         }
-    }
 }
 
 
@@ -285,40 +483,47 @@
 
 -(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    static NSString *identify = @"PPBulletinCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
-        cell.selectedBackgroundView.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
+    
+    if (indexPath.row == 0) {
         
+        HomeFirstCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        
+        if (cell == nil) {
+            cell = [[HomeFirstCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"firstCell"];
+        }
+        
+        NSString *imageUrl = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"pic"];
+        
+        [cell.h_imgView sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@""] options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    
+        }];
+        
+        cell.h_titleLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+        
+        return cell;
+        
+    }else{
+        static NSString *identify = @"PPBulletinCell";
+        HomeNormalCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+        if (cell == nil) {
+            cell = [[HomeNormalCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
+            cell.selectedBackgroundView.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
+            
+        }
+        cell.h_titleLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+        return cell;
     }
     
-//    cell.bulletinTitleLabel.text = titleStr;
-//    //        cell.bulletinTimeLabel.text = createTime;
-//    NSString *sender = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"noticeAuthor"];
-//    cell.bulletinSenderLabel.text = [NSString stringWithFormat:@"%@     %@",sender,createTime];
-//    
-//    cell.bulletinDetailLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"noticeTitle"];
-//    cell.bulletinTypeLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"columnName"];;
-//    
-//    NSString *imageUrl = nil;
-//    
-//    NSString *noticeId = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"noticeId"];
-//    
-//    imageUrl = [[NSString stringWithFormat:@"%@storage/getObject?sourceQc={\"search\":{\"EQ_BIZ_FORM_ID\":\"%@\", \"ORDER_CREATE_TIME\":\"DESC\",\"EQ_BIZ_FORM_KEY\":\"noticeImg\"}}",[PPAPPDataClass sharedappData].severUrl,noticeId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//    
-//    [cell.bulletinimgView sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@"pp_gg_img"] options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-//        
-//    }];
-    
-    return cell;
-    //    }
+
     
     
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 80;
+    if (indexPath.row == 0) {
+        return 90;
+    }
+    return 44;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

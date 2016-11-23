@@ -140,8 +140,11 @@
 //登录
 -(void)checkPhoneBangdingSucc:(NSString *)userId :(NSString *)accessToken {
     
+    [WSProgressHUD showWithStatus:nil maskType:WSProgressHUDMaskTypeDefault];
+
+    
     NSString *dJson = nil;
-    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"openid\":\"%@\",\"access_token\":\"%@\"}",87,@"",userId,accessToken];
+    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"access_token\":\"%@\",\"openid\":\"%@\"}",87,@"",accessToken,userId];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Login/do_login/"
@@ -152,17 +155,21 @@
                       NSInteger code = [[json objectForKey:@"code"] integerValue];
                       
                       if (code == 1) {
+                          
+                          [WSProgressHUD showSuccessWithStatus:@"登录成功"];
+                          [WSProgressHUD autoDismiss:2];
                           //保存token信息
                           NSDictionary *dataDic = [json objectForKey:@"data"];
                           NSString *token = [dataDic objectForKey:@"token"];
                           [[NSUserDefaults standardUserDefaults] setObject:token forKey:@"token"];
-                          [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isLogin"];
                           [[NSUserDefaults standardUserDefaults] synchronize];
 
                           //再获取用户信息
                           [self getUserInfo];
                           
                       }else{
+                          [WSProgressHUD showSuccessWithStatus:@"登录失败"];
+                          [WSProgressHUD dismiss];
                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"微信授权失败,请稍后再试！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
                           [alert show];
                       }
@@ -176,7 +183,8 @@
 
 -(void)getUserInfo{
     
-    NSString *dJson = nil;
+    [WSProgressHUD showWithStatus:@"正在初始化用户数据" maskType:WSProgressHUDMaskTypeDefault];
+        NSString *dJson = nil;
         //得到自己当前的下属
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
@@ -188,6 +196,9 @@
                   completionBlock:^(NSDictionary *json) {
                       NSInteger code = [[json objectForKey:@"code"] integerValue];
                       if (code == 1) {
+                          
+                          [WSProgressHUD showSuccessWithStatus:@"获取成功"];
+                          [WSProgressHUD autoDismiss:2];
                           
                           NSDictionary *dataDic = [json objectForKey:@"data"];
                           NSUInteger golds = [[dataDic objectForKey:@"golds"] integerValue];
@@ -202,27 +213,37 @@
                           NSString *user_pic = [dataDic objectForKey:@"user_pic"];
                           NSString *user_province = [dataDic objectForKey:@"user_province"];
 
-                          [UserInfoData sharedappData].golds = golds;
-                          [UserInfoData sharedappData].present_time = present_time;
-                          [UserInfoData sharedappData].time_service_1 = time_service_1;
-                          [UserInfoData sharedappData].time_service_2 = time_service_2;
-                          [UserInfoData sharedappData].time_service_3 = time_service_3;
-                          [UserInfoData sharedappData].user_chinese_name = user_chinese_name;
-                          [UserInfoData sharedappData].user_city = user_city;
-                          [UserInfoData sharedappData].user_level = user_level;
-                          [UserInfoData sharedappData].user_phone = user_phone;
-                          [UserInfoData sharedappData].user_pic = user_pic;
-                          [UserInfoData sharedappData].user_province = user_province;
-
+                          NSUserDefaults *userDefauls = [NSUserDefaults standardUserDefaults];
+                          [userDefauls setObject:[NSNumber numberWithInteger:golds] forKey:@"golds"];
+                          [userDefauls setObject:[NSNumber numberWithInteger:present_time] forKey:@"present_time"];
+                          [userDefauls setObject:[NSNumber numberWithInteger:time_service_1] forKey:@"time_service_1"];
+                          [userDefauls setObject:[NSNumber numberWithInteger:time_service_2] forKey:@"time_service_2"];
+                          [userDefauls setObject:[NSNumber numberWithInteger:time_service_3] forKey:@"time_service_3"];
+                          [userDefauls setObject:user_chinese_name forKey:@"user_chinese_name"];
+                          [userDefauls setObject:user_city forKey:@"user_city"];
+                          [userDefauls setObject:user_level forKey:@"user_level"];
+                          [userDefauls setObject:user_phone forKey:@"user_phone"];
+                          [userDefauls setObject:user_pic forKey:@"user_pic"];
+                          [userDefauls setObject:user_province forKey:@"user_province"];
+                          [userDefauls synchronize];
                           //判断手机号是否绑定  如果没有 就绑定
                           if (user_phone == nil || user_phone.length == 0) {
                               [self bangdingPhone];
                           }else{
+                              [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isBangding"];
+                              [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isLogin"];
+                              [[NSUserDefaults standardUserDefaults] synchronize];
                               AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
                               [appdel setupViewControllers];
                           }
                           
                       
+                      }else{
+                          NSString *msg = [json objectForKey:@"info"];
+                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:msg delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                          [alert show];
+                          
+
                       }
                   }
                       failedBlock:^(NSError *error) {
@@ -234,6 +255,7 @@
 
 -(void)bangdingPhone{
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:@"isBangding"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [appdel setupViewControllers];
 

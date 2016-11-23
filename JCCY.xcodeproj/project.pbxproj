@@ -20,13 +20,13 @@
 		282DF7871DE42D8800F9FAE9 /* TADotView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF77C1DE42D8800F9FAE9 /* TADotView.m */; };
 		282DF7881DE42D8800F9FAE9 /* TAPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF77E1DE42D8800F9FAE9 /* TAPageControl.m */; };
 		282DF78B1DE43FBC00F9FAE9 /* UserInfoData.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF78A1DE43FBC00F9FAE9 /* UserInfoData.m */; };
-		2835DAB41DE52442008D2BCB /* level0.png in Resources */ = {isa = PBXBuildFile; fileRef = 2835DAAD1DE52442008D2BCB /* level0.png */; };
-		2835DAB51DE52442008D2BCB /* level1.png in Resources */ = {isa = PBXBuildFile; fileRef = 2835DAAE1DE52442008D2BCB /* level1.png */; };
-		2835DAB61DE52442008D2BCB /* level2.png in Resources */ = {isa = PBXBuildFile; fileRef = 2835DAAF1DE52442008D2BCB /* level2.png */; };
-		2835DAB71DE52442008D2BCB /* level3.png in Resources */ = {isa = PBXBuildFile; fileRef = 2835DAB01DE52442008D2BCB /* level3.png */; };
-		2835DAB81DE52442008D2BCB /* level4.png in Resources */ = {isa = PBXBuildFile; fileRef = 2835DAB11DE52442008D2BCB /* level4.png */; };
-		2835DAB91DE52442008D2BCB /* level5.png in Resources */ = {isa = PBXBuildFile; fileRef = 2835DAB21DE52442008D2BCB /* level5.png */; };
-		2835DABA1DE52442008D2BCB /* level6.png in Resources */ = {isa = PBXBuildFile; fileRef = 2835DAB31DE52442008D2BCB /* level6.png */; };
+		2835DABE1DE567B8008D2BCB /* HomeFirstCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835DABD1DE567B8008D2BCB /* HomeFirstCell.m */; };
+		2835DAC11DE567E6008D2BCB /* HomeNormalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835DAC01DE567E6008D2BCB /* HomeNormalCell.m */; };
+		2835DAD01DE57BBF008D2BCB /* PPSXTitleLable.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835DACF1DE57BBF008D2BCB /* PPSXTitleLable.m */; };
+		2835DADB1DE5A25A008D2BCB /* PPBulletinChirldViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835DAD41DE5A25A008D2BCB /* PPBulletinChirldViewController.m */; };
+		2835DADC1DE5A25A008D2BCB /* PPBulletinDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835DAD61DE5A25A008D2BCB /* PPBulletinDetailViewController.m */; };
+		2835DADD1DE5A25A008D2BCB /* PPBulletinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835DAD81DE5A25A008D2BCB /* PPBulletinViewController.m */; };
+		2835DADE1DE5A25A008D2BCB /* PPYXMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835DADA1DE5A25A008D2BCB /* PPYXMainViewController.m */; };
 		284695831DE3DBF1007DC603 /* JCCYStartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 284695821DE3DBF1007DC603 /* JCCYStartViewController.m */; };
 		284695891DE3DC4D007DC603 /* EAIntroPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 284695861DE3DC4D007DC603 /* EAIntroPage.m */; };
 		2846958A1DE3DC4D007DC603 /* EAIntroView.m in Sources */ = {isa = PBXBuildFile; fileRef = 284695881DE3DC4D007DC603 /* EAIntroView.m */; };
@@ -325,13 +325,20 @@
 		282DF77E1DE42D8800F9FAE9 /* TAPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAPageControl.m; sourceTree = "<group>"; };
 		282DF7891DE43FBC00F9FAE9 /* UserInfoData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoData.h; sourceTree = "<group>"; };
 		282DF78A1DE43FBC00F9FAE9 /* UserInfoData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoData.m; sourceTree = "<group>"; };
-		2835DAAD1DE52442008D2BCB /* level0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = level0.png; sourceTree = "<group>"; };
-		2835DAAE1DE52442008D2BCB /* level1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = level1.png; sourceTree = "<group>"; };
-		2835DAAF1DE52442008D2BCB /* level2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = level2.png; sourceTree = "<group>"; };
-		2835DAB01DE52442008D2BCB /* level3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = level3.png; sourceTree = "<group>"; };
-		2835DAB11DE52442008D2BCB /* level4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = level4.png; sourceTree = "<group>"; };
-		2835DAB21DE52442008D2BCB /* level5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = level5.png; sourceTree = "<group>"; };
-		2835DAB31DE52442008D2BCB /* level6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = level6.png; sourceTree = "<group>"; };
+		2835DABC1DE567B8008D2BCB /* HomeFirstCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeFirstCell.h; sourceTree = "<group>"; };
+		2835DABD1DE567B8008D2BCB /* HomeFirstCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeFirstCell.m; sourceTree = "<group>"; };
+		2835DABF1DE567E6008D2BCB /* HomeNormalCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeNormalCell.h; sourceTree = "<group>"; };
+		2835DAC01DE567E6008D2BCB /* HomeNormalCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeNormalCell.m; sourceTree = "<group>"; };
+		2835DACE1DE57BBF008D2BCB /* PPSXTitleLable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSXTitleLable.h; sourceTree = "<group>"; };
+		2835DACF1DE57BBF008D2BCB /* PPSXTitleLable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSXTitleLable.m; sourceTree = "<group>"; };
+		2835DAD31DE5A25A008D2BCB /* PPBulletinChirldViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBulletinChirldViewController.h; sourceTree = "<group>"; };
+		2835DAD41DE5A25A008D2BCB /* PPBulletinChirldViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBulletinChirldViewController.m; sourceTree = "<group>"; };
+		2835DAD51DE5A25A008D2BCB /* PPBulletinDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBulletinDetailViewController.h; sourceTree = "<group>"; };
+		2835DAD61DE5A25A008D2BCB /* PPBulletinDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBulletinDetailViewController.m; sourceTree = "<group>"; };
+		2835DAD71DE5A25A008D2BCB /* PPBulletinViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBulletinViewController.h; sourceTree = "<group>"; };
+		2835DAD81DE5A25A008D2BCB /* PPBulletinViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBulletinViewController.m; sourceTree = "<group>"; };
+		2835DAD91DE5A25A008D2BCB /* PPYXMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPYXMainViewController.h; sourceTree = "<group>"; };
+		2835DADA1DE5A25A008D2BCB /* PPYXMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPYXMainViewController.m; sourceTree = "<group>"; };
 		284695811DE3DBF1007DC603 /* JCCYStartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYStartViewController.h; sourceTree = "<group>"; };
 		284695821DE3DBF1007DC603 /* JCCYStartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYStartViewController.m; sourceTree = "<group>"; };
 		284695851DE3DC4D007DC603 /* EAIntroPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAIntroPage.h; sourceTree = "<group>"; };
@@ -919,18 +926,17 @@
 			path = TAPageControl;
 			sourceTree = "<group>";
 		};
-		2835DAAC1DE52432008D2BCB /* LevelImg */ = {
+		2835DABB1DE5677C008D2BCB /* 主页 */ = {
 			isa = PBXGroup;
 			children = (
-				2835DAAD1DE52442008D2BCB /* level0.png */,
-				2835DAAE1DE52442008D2BCB /* level1.png */,
-				2835DAAF1DE52442008D2BCB /* level2.png */,
-				2835DAB01DE52442008D2BCB /* level3.png */,
-				2835DAB11DE52442008D2BCB /* level4.png */,
-				2835DAB21DE52442008D2BCB /* level5.png */,
-				2835DAB31DE52442008D2BCB /* level6.png */,
+				2835DABC1DE567B8008D2BCB /* HomeFirstCell.h */,
+				2835DABD1DE567B8008D2BCB /* HomeFirstCell.m */,
+				2835DABF1DE567E6008D2BCB /* HomeNormalCell.h */,
+				2835DAC01DE567E6008D2BCB /* HomeNormalCell.m */,
+				2835DACE1DE57BBF008D2BCB /* PPSXTitleLable.h */,
+				2835DACF1DE57BBF008D2BCB /* PPSXTitleLable.m */,
 			);
-			name = LevelImg;
+			name = "主页";
 			sourceTree = "<group>";
 		};
 		284695841DE3DC34007DC603 /* 启动页 */ = {
@@ -949,7 +955,6 @@
 		284695941DE3E7B8007DC603 /* IMGFiles */ = {
 			isa = PBXGroup;
 			children = (
-				2835DAAC1DE52432008D2BCB /* LevelImg */,
 				284695951DE3E808007DC603 /* tabBarBtnImg */,
 				284695911DE3E649007DC603 /* loginBackImg.png */,
 				2846958B1DE3DEF2007DC603 /* yingdaoye.jpg */,
@@ -1571,6 +1576,7 @@
 		284D10AA1DDEDC4100F20D92 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				2835DABB1DE5677C008D2BCB /* 主页 */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -1744,6 +1750,14 @@
 			children = (
 				284D11481DDEE92000F20D92 /* HomeViewController.h */,
 				284D11491DDEE92000F20D92 /* HomeViewController.m */,
+				2835DAD71DE5A25A008D2BCB /* PPBulletinViewController.h */,
+				2835DAD81DE5A25A008D2BCB /* PPBulletinViewController.m */,
+				2835DAD91DE5A25A008D2BCB /* PPYXMainViewController.h */,
+				2835DADA1DE5A25A008D2BCB /* PPYXMainViewController.m */,
+				2835DAD31DE5A25A008D2BCB /* PPBulletinChirldViewController.h */,
+				2835DAD41DE5A25A008D2BCB /* PPBulletinChirldViewController.m */,
+				2835DAD51DE5A25A008D2BCB /* PPBulletinDetailViewController.h */,
+				2835DAD61DE5A25A008D2BCB /* PPBulletinDetailViewController.m */,
 			);
 			name = "主页";
 			sourceTree = "<group>";
@@ -2214,15 +2228,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				284D10151DDED93900F20D92 /* PlayButtonOverlayLargeTap@3x.png in Resources */,
-				2835DAB81DE52442008D2BCB /* level4.png in Resources */,
 				2880257B1DE2F1D800B8301E /* redPack_bar@2x.png in Resources */,
 				284D0EFB1DDED75800F20D92 /* LaunchScreen.storyboard in Resources */,
 				284D101F1DDED93900F20D92 /* VideoOverlay.png in Resources */,
 				284D10181DDED93900F20D92 /* UIBarButtonItemArrowLeft@3x.png in Resources */,
-				2835DAB41DE52442008D2BCB /* level0.png in Resources */,
 				284D10221DDED93900F20D92 /* .gitkeep in Resources */,
 				28ECC7CB1DE1869900525BDB /* UMSocialSDKResources.bundle in Resources */,
-				2835DAB71DE52442008D2BCB /* level3.png in Resources */,
 				284D100B1DDED93900F20D92 /* ImageSelectedSmallOff@2x.png in Resources */,
 				28ECC7BA1DE1869900525BDB /* WeiboSDK.bundle in Resources */,
 				284D10701DDED94C00F20D92 /* WSProgressBundle.bundle in Resources */,
@@ -2233,7 +2244,6 @@
 				284D101D1DDED93900F20D92 /* UIBarButtonItemGrid@2x.png in Resources */,
 				284D10051DDED93900F20D92 /* ImageSelectedOff@2x.png in Resources */,
 				284D10131DDED93900F20D92 /* PlayButtonOverlayLargeTap.png in Resources */,
-				2835DAB91DE52442008D2BCB /* level5.png in Resources */,
 				284D10201DDED93900F20D92 /* VideoOverlay@2x.png in Resources */,
 				282DF7811DE42D8800F9FAE9 /* dotActive@3x.png in Resources */,
 				284D100D1DDED93900F20D92 /* ImageSelectedSmallOn.png in Resources */,
@@ -2244,7 +2254,6 @@
 				284D100A1DDED93900F20D92 /* ImageSelectedSmallOff.png in Resources */,
 				2846958C1DE3DEF2007DC603 /* yingdaoye.jpg in Resources */,
 				282DF7831DE42D8800F9FAE9 /* dotInactive@2x.png in Resources */,
-				2835DAB51DE52442008D2BCB /* level1.png in Resources */,
 				2880257A1DE2F1D800B8301E /* redPack_bar1@2x.png in Resources */,
 				28ECC7C51DE1869900525BDB /* README.txt in Resources */,
 				2880257C1DE2F1D800B8301E /* firm_bar1@2x.png in Resources */,
@@ -2256,7 +2265,6 @@
 				284D0F6B1DDED91500F20D92 /* ImageResources.bundle in Resources */,
 				284D10101DDED93900F20D92 /* PlayButtonOverlayLarge.png in Resources */,
 				284D100C1DDED93900F20D92 /* ImageSelectedSmallOff@3x.png in Resources */,
-				2835DAB61DE52442008D2BCB /* level2.png in Resources */,
 				282DF7801DE42D8800F9FAE9 /* dotActive@2x.png in Resources */,
 				284D101E1DDED93900F20D92 /* UIBarButtonItemGrid@3x.png in Resources */,
 				2880257F1DE2F1D800B8301E /* home_bar@2x.png in Resources */,
@@ -2281,7 +2289,6 @@
 				284D10071DDED93900F20D92 /* ImageSelectedOn.png in Resources */,
 				284695921DE3E649007DC603 /* loginBackImg.png in Resources */,
 				288025791DE2F1D800B8301E /* miji_bar@2x.png in Resources */,
-				2835DABA1DE52442008D2BCB /* level6.png in Resources */,
 				28ECC7C41DE1869900525BDB /* read_me.txt in Resources */,
 				284D10161DDED93900F20D92 /* UIBarButtonItemArrowLeft.png in Resources */,
 			);
@@ -2355,12 +2362,14 @@
 				284D107F1DDED95C00F20D92 /* FMDatabaseAdditions.m in Sources */,
 				284D10CF1DDEDF4E00F20D92 /* DALabeledCircularProgressView.m in Sources */,
 				284D113B1DDEE69800F20D92 /* EYTextPopupView.m in Sources */,
+				2835DABE1DE567B8008D2BCB /* HomeFirstCell.m in Sources */,
 				284D0F711DDED91500F20D92 /* MLSelectPhotoPickerBrowserPhoto.m in Sources */,
 				284D111C1DDEE28F00F20D92 /* PPFileOperate.m in Sources */,
 				284D11531DDEE94B00F20D92 /* FourViewController.m in Sources */,
 				284D0FB51DDED92900F20D92 /* MJRefreshHeader.m in Sources */,
 				284D104E1DDED94300F20D92 /* MKAnnotationView+WebCache.m in Sources */,
 				284D0FC01DDED92900F20D92 /* MJRefreshConst.m in Sources */,
+				2835DADB1DE5A25A008D2BCB /* PPBulletinChirldViewController.m in Sources */,
 				284D0F801DDED91500F20D92 /* MLSelectPhotoPickerGroupTableViewCell.m in Sources */,
 				284D10531DDED94300F20D92 /* SDWebImageDownloader.m in Sources */,
 				282DF76E1DE42BCE00F9FAE9 /* NJBannerImageView.m in Sources */,
@@ -2377,6 +2386,7 @@
 				284D0FC11DDED92900F20D92 /* NSBundle+MJRefresh.m in Sources */,
 				28ECC7CE1DE1869900525BDB /* UMSocialShareScrollView.m in Sources */,
 				284D105D1DDED94300F20D92 /* UIView+WebCacheOperation.m in Sources */,
+				2835DADE1DE5A25A008D2BCB /* PPYXMainViewController.m in Sources */,
 				284D0F701DDED91500F20D92 /* MLSelectPhotoAssets.m in Sources */,
 				284D110F1DDEE1E100F20D92 /* PPToolsClass.m in Sources */,
 				284D0F7A1DDED91500F20D92 /* MLSelectPhotoPickerBrowserPhotoImageView.m in Sources */,
@@ -2396,10 +2406,12 @@
 				284D110D1DDEE1E100F20D92 /* PPAPPDataClass.m in Sources */,
 				284D111A1DDEE28F00F20D92 /* DBoperate.m in Sources */,
 				284D106C1DDED94C00F20D92 /* FBShimmeringLayer.m in Sources */,
+				2835DADC1DE5A25A008D2BCB /* PPBulletinDetailViewController.m in Sources */,
 				284D0FBC1DDED92900F20D92 /* MJRefreshGifHeader.m in Sources */,
 				284D0FB31DDED92900F20D92 /* MJRefreshComponent.m in Sources */,
 				284D110E1DDEE1E100F20D92 /* PPFileDownloadManage.m in Sources */,
 				284D0EEA1DDED75800F20D92 /* main.m in Sources */,
+				2835DAD01DE57BBF008D2BCB /* PPSXTitleLable.m in Sources */,
 				284D11501DDEE93700F20D92 /* ThreeViewController.m in Sources */,
 				284D10711DDED94C00F20D92 /* WSProgressHUD.m in Sources */,
 				284D105C1DDED94300F20D92 /* UIImageView+WebCache.m in Sources */,
@@ -2428,10 +2440,12 @@
 				284695831DE3DBF1007DC603 /* JCCYStartViewController.m in Sources */,
 				284D10271DDED93900F20D92 /* MWPhotoBrowser.m in Sources */,
 				284D0F6C1DDED91500F20D92 /* SideScrollingCheckCell.m in Sources */,
+				2835DAC11DE567E6008D2BCB /* HomeNormalCell.m in Sources */,
 				284D0F7B1DDED91500F20D92 /* MLSelectPhotoPickerBrowserPhotoScrollView.m in Sources */,
 				282DF7871DE42D8800F9FAE9 /* TADotView.m in Sources */,
 				284D10801DDED95C00F20D92 /* FMDatabasePool.m in Sources */,
 				284D106D1DDED94C00F20D92 /* FBShimmeringView.m in Sources */,
+				2835DADD1DE5A25A008D2BCB /* PPBulletinViewController.m in Sources */,
 				284D10281DDED93900F20D92 /* MWTapDetectingImageView.m in Sources */,
 				284D0FB81DDED92900F20D92 /* MJRefreshAutoStateFooter.m in Sources */,
 				284D10931DDED96E00F20D92 /* AFSecurityPolicy.m in Sources */,
@@ -2637,7 +2651,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jingchengkeji.wtband.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "5b43817c-f0d1-4ccc-a788-b7ed2fb5a7f1";
+				PROVISIONING_PROFILE = "0554a90e-abb8-451c-81ef-466772d87552";
 				PROVISIONING_PROFILE_SPECIFIER = ceshiall;
 			};
 			name = Debug;
