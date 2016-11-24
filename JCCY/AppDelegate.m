@@ -312,8 +312,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     self.viewController = ppLoginNavigationController;
     [self.window setRootViewController:self.viewController];
     [self.window makeKeyAndVisible];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:@"isLogin"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
     [WSProgressHUD showShimmeringString:@"已退出登录" maskType:WSProgressHUDMaskTypeClear maskWithout:WSProgressHUDMaskWithoutDefault];
     
     [self autoDismiss];

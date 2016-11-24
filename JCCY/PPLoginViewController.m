@@ -108,20 +108,20 @@
                     
                     message = [NSString stringWithFormat:@"name: %@\n icon: %@\n gender: %@\n  %@",resp.name,resp.iconurl,resp.gender,resp.uid];
                     // 保存信息
-                    NSString *userId = resp.uid;
-                    NSString *userIcon = resp.iconurl;
+//                    NSString *userId = resp.uid;
+//                    NSString *userIcon = resp.iconurl;
                     NSString *accessToken = resp.accessToken;
-                    NSString *name = resp.name;
+//                    NSString *name = resp.name;
                     NSString *unionid = [resp.originalResponse objectForKey:@"unionid"];
 
                     
 
-                    [[NSUserDefaults standardUserDefaults] setObject:userId forKey:@"userId"];
-                    [[NSUserDefaults standardUserDefaults] setObject:userIcon forKey:@"userIcon"];
-                    [[NSUserDefaults standardUserDefaults] setObject:accessToken forKey:@"accessToken"];
-                    [[NSUserDefaults standardUserDefaults] setObject:name forKey:@"userName"];
-                    [[NSUserDefaults standardUserDefaults] setObject:unionid forKey:@"unionid"];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
+//                    [[NSUserDefaults standardUserDefaults] setObject:userId forKey:@"userId"];
+//                    [[NSUserDefaults standardUserDefaults] setObject:userIcon forKey:@"userIcon"];
+//                    [[NSUserDefaults standardUserDefaults] setObject:accessToken forKey:@"accessToken"];
+//                    [[NSUserDefaults standardUserDefaults] setObject:name forKey:@"userName"];
+//                    [[NSUserDefaults standardUserDefaults] setObject:unionid forKey:@"unionid"];
+//                    [[NSUserDefaults standardUserDefaults] synchronize];
 
                     
                     [self checkPhoneBangdingSucc:unionid :accessToken];
@@ -201,6 +201,8 @@
                           [WSProgressHUD autoDismiss:2];
                           
                           NSDictionary *dataDic = [json objectForKey:@"data"];
+                          
+                          NSUInteger scores = [[dataDic objectForKey:@"scores"] integerValue];
                           NSUInteger golds = [[dataDic objectForKey:@"golds"] integerValue];
                           NSUInteger present_time = [[dataDic objectForKey:@"present_time"] integerValue];
                           NSUInteger time_service_1 = [[dataDic objectForKey:@"time_service_1"] integerValue];
@@ -215,6 +217,7 @@
 
                           NSUserDefaults *userDefauls = [NSUserDefaults standardUserDefaults];
                           [userDefauls setObject:[NSNumber numberWithInteger:golds] forKey:@"golds"];
+                          [userDefauls setObject:[NSNumber numberWithInteger:scores] forKey:@"scores"];
                           [userDefauls setObject:[NSNumber numberWithInteger:present_time] forKey:@"present_time"];
                           [userDefauls setObject:[NSNumber numberWithInteger:time_service_1] forKey:@"time_service_1"];
                           [userDefauls setObject:[NSNumber numberWithInteger:time_service_2] forKey:@"time_service_2"];

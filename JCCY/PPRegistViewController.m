@@ -216,7 +216,8 @@
                           [WSProgressHUD autoDismiss:2];
                           //保存绑定信息
                           [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isBangding"];
-                          
+                          [[NSUserDefaults standardUserDefaults] setObject:phoneNumberField.text forKey:@"user_phone"];
+                          [[NSUserDefaults standardUserDefaults] synchronize];
                           [self.navigationController popViewControllerAnimated:YES];
                       }else{
                           NSString *msg = [json objectForKey:@"info"];
@@ -239,7 +240,7 @@
         [theTimer invalidate];
         seconds = 60;
         [getYanZhengBtn setTitle:@"获取验证码" forState: UIControlStateNormal];
-        [getYanZhengBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [getYanZhengBtn setTitleColor:[UIColor colorFromHexRGB:@"e56357"] forState:UIControlStateNormal];
         [getYanZhengBtn setEnabled:YES];
     }else{
         seconds--;

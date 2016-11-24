@@ -21,6 +21,11 @@
 //咨询中心
 #import "PPBulletinViewController.h"
 
+//资讯详情
+#import "PPBulletinDetailViewController.h"
+
+//用户资料
+#import "JCCYMyListViewController.h"
 
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
 
@@ -48,8 +53,8 @@
     [super viewWillAppear:YES];
     //刷新我的信息
     [self initMyView];
-    
 }
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -57,6 +62,7 @@
 
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.barTintColor = [UIColor colorFromHexRGB:@"e60013"];
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.title = @"首页";
     
     
@@ -382,6 +388,20 @@
                        timeOutSeconds:10
                       completionBlock:^(NSDictionary *json) {
                           
+//                          {
+//                              "arctype_id" = 4;
+//                              id = 44;
+//                              "is_delete" = 0;
+//                              "is_effect" = 1;
+//                              level = 0;
+//                              pic = "http://wutong.jingchengidea.com/upload/other/image/20161108147859526112.jpg";
+//                              pubdate = "2016-11-08";
+//                              sort = 50;
+//                              time = 1478595250;
+//                              title = "\U8bc1\U5238\U4fdd\U8bc1\U91d1\U4e0a\U5468\U51c0\U8f6c\U516561\U4ebf\U5143 \U8fde\U7eed\U4e24\U5468\U51c0\U8f6c\U5165";
+//                              url = "http://wutong.jingchengidea.com/index.php?m=Api&c=ArchivesIndex&a=view&a_id=44";
+//                          }
+                          
                           NSInteger code = [[json objectForKey:@"code"] integerValue];
                           if (code == 1) {
                               NSDictionary *dataDic = [json objectForKey:@"data"];
@@ -448,14 +468,19 @@
 
 
 
-
-//跳入用户详情页
+#pragma mark ---跳入用户详情页 -----
 -(void)userInfoBtnAction{
-    
+    JCCYMyListViewController  *jCCYMyListViewController = [[JCCYMyListViewController alloc] init];
+    jCCYMyListViewController.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:jCCYMyListViewController animated:YES];
 }
 
 //下拉刷新
 -(void)refreshTableView{
+    //获取首页广告数据
+    [self getAdData];
+    //获取列表数据
+    [self getTableListData];
     if ([mainTableView.mj_header isRefreshing]) {
         [mainTableView.mj_header endRefreshing];
     }
@@ -529,6 +554,23 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    int level = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"level"] intValue];
+    
+    NSInteger user_level = [[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] intValue];
+    
+    if (user_level > level || user_level == level ) {
+        PPBulletinDetailViewController *pPBulletinDetailViewController = [[PPBulletinDetailViewController alloc] init];
+        pPBulletinDetailViewController.hidesBottomBarWhenPushed = YES;
+        pPBulletinDetailViewController.documentPath = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"url"];
+        pPBulletinDetailViewController.titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+        [self.navigationController pushViewController:pPBulletinDetailViewController animated:YES];
+    }else{
+        [WSProgressHUD showWithStatus:@"权限不足" maskType:WSProgressHUDMaskTypeDefault];
+        [WSProgressHUD autoDismiss:1];
+    }
+    
+
     
 }
 

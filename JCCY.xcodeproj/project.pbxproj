@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		280CF6DD1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6DC1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m */; };
+		280CF6E31DE694B400E1BA59 /* JCCYMyListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6E21DE694B400E1BA59 /* JCCYMyListViewController.m */; };
+		280CF6E71DE6956A00E1BA59 /* SettingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6E61DE6956A00E1BA59 /* SettingTableViewCell.m */; };
+		280CF6EA1DE6E7C600E1BA59 /* JCCYLevelInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6E91DE6E7C600E1BA59 /* JCCYLevelInfoViewController.m */; };
+		280CF6ED1DE720A800E1BA59 /* JCCYSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6EC1DE720A800E1BA59 /* JCCYSettingViewController.m */; };
+		280CF6F01DE7479D00E1BA59 /* JCCYUsedHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6EF1DE7479D00E1BA59 /* JCCYUsedHistoryViewController.m */; };
+		280CF6F31DE747B000E1BA59 /* JCCYPayHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6F21DE747B000E1BA59 /* JCCYPayHistoryViewController.m */; };
 		282DF76E1DE42BCE00F9FAE9 /* NJBannerImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF76B1DE42BCE00F9FAE9 /* NJBannerImageView.m */; };
 		282DF76F1DE42BCE00F9FAE9 /* NJBannerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF76D1DE42BCE00F9FAE9 /* NJBannerView.m */; };
 		282DF77F1DE42D8800F9FAE9 /* dotActive.png in Resources */ = {isa = PBXBuildFile; fileRef = 282DF7711DE42D8800F9FAE9 /* dotActive.png */; };
@@ -308,6 +314,18 @@
 /* Begin PBXFileReference section */
 		280CF6DB1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYZiXunTableViewCell.h; sourceTree = "<group>"; };
 		280CF6DC1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYZiXunTableViewCell.m; sourceTree = "<group>"; };
+		280CF6E11DE694B400E1BA59 /* JCCYMyListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYMyListViewController.h; sourceTree = "<group>"; };
+		280CF6E21DE694B400E1BA59 /* JCCYMyListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYMyListViewController.m; sourceTree = "<group>"; };
+		280CF6E51DE6956A00E1BA59 /* SettingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingTableViewCell.h; sourceTree = "<group>"; };
+		280CF6E61DE6956A00E1BA59 /* SettingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingTableViewCell.m; sourceTree = "<group>"; };
+		280CF6E81DE6E7C600E1BA59 /* JCCYLevelInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYLevelInfoViewController.h; sourceTree = "<group>"; };
+		280CF6E91DE6E7C600E1BA59 /* JCCYLevelInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYLevelInfoViewController.m; sourceTree = "<group>"; };
+		280CF6EB1DE720A800E1BA59 /* JCCYSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYSettingViewController.h; sourceTree = "<group>"; };
+		280CF6EC1DE720A800E1BA59 /* JCCYSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYSettingViewController.m; sourceTree = "<group>"; };
+		280CF6EE1DE7479D00E1BA59 /* JCCYUsedHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYUsedHistoryViewController.h; sourceTree = "<group>"; };
+		280CF6EF1DE7479D00E1BA59 /* JCCYUsedHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYUsedHistoryViewController.m; sourceTree = "<group>"; };
+		280CF6F11DE747B000E1BA59 /* JCCYPayHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYPayHistoryViewController.h; sourceTree = "<group>"; };
+		280CF6F21DE747B000E1BA59 /* JCCYPayHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYPayHistoryViewController.m; sourceTree = "<group>"; };
 		282DF76A1DE42BCE00F9FAE9 /* NJBannerImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJBannerImageView.h; sourceTree = "<group>"; };
 		282DF76B1DE42BCE00F9FAE9 /* NJBannerImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NJBannerImageView.m; sourceTree = "<group>"; };
 		282DF76C1DE42BCE00F9FAE9 /* NJBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJBannerView.h; sourceTree = "<group>"; };
@@ -919,6 +937,15 @@
 				280CF6DC1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m */,
 			);
 			name = "资讯消息";
+			sourceTree = "<group>";
+		};
+		280CF6E41DE6953900E1BA59 /* 用户信息 */ = {
+			isa = PBXGroup;
+			children = (
+				280CF6E51DE6956A00E1BA59 /* SettingTableViewCell.h */,
+				280CF6E61DE6956A00E1BA59 /* SettingTableViewCell.m */,
+			);
+			name = "用户信息";
 			sourceTree = "<group>";
 		};
 		282DF7691DE42BCE00F9FAE9 /* NJBannerView */ = {
@@ -1604,6 +1631,7 @@
 		284D10AA1DDEDC4100F20D92 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				280CF6E41DE6953900E1BA59 /* 用户信息 */,
 				2835DABB1DE5677C008D2BCB /* 主页 */,
 			);
 			name = View;
@@ -1822,6 +1850,16 @@
 		284D11571DDEE95C00F20D92 /* 用户资料和设置 */ = {
 			isa = PBXGroup;
 			children = (
+				280CF6E11DE694B400E1BA59 /* JCCYMyListViewController.h */,
+				280CF6E21DE694B400E1BA59 /* JCCYMyListViewController.m */,
+				280CF6E81DE6E7C600E1BA59 /* JCCYLevelInfoViewController.h */,
+				280CF6E91DE6E7C600E1BA59 /* JCCYLevelInfoViewController.m */,
+				280CF6EB1DE720A800E1BA59 /* JCCYSettingViewController.h */,
+				280CF6EC1DE720A800E1BA59 /* JCCYSettingViewController.m */,
+				280CF6EE1DE7479D00E1BA59 /* JCCYUsedHistoryViewController.h */,
+				280CF6EF1DE7479D00E1BA59 /* JCCYUsedHistoryViewController.m */,
+				280CF6F11DE747B000E1BA59 /* JCCYPayHistoryViewController.h */,
+				280CF6F21DE747B000E1BA59 /* JCCYPayHistoryViewController.m */,
 			);
 			name = "用户资料和设置";
 			sourceTree = "<group>";
@@ -2352,6 +2390,7 @@
 				284D114A1DDEE92000F20D92 /* HomeViewController.m in Sources */,
 				284D10561DDED94300F20D92 /* SDWebImagePrefetcher.m in Sources */,
 				2846958A1DE3DC4D007DC603 /* EAIntroView.m in Sources */,
+				280CF6F01DE7479D00E1BA59 /* JCCYUsedHistoryViewController.m in Sources */,
 				284D0EF61DDED75800F20D92 /* JCCY.xcdatamodeld in Sources */,
 				284D11371DDEE69800F20D92 /* EYInputPopupView.m in Sources */,
 				28ECC7221DE1784E00525BDB /* PPRegistViewController.m in Sources */,
@@ -2363,6 +2402,7 @@
 				284D0F761DDED91500F20D92 /* MLSelectPhotoPickerAssetsViewController.m in Sources */,
 				284D0FBA1DDED92900F20D92 /* MJRefreshBackNormalFooter.m in Sources */,
 				282DF7851DE42D8800F9FAE9 /* TAAbstractDotView.m in Sources */,
+				280CF6E31DE694B400E1BA59 /* JCCYMyListViewController.m in Sources */,
 				284D104F1DDED94300F20D92 /* NSData+ImageContentType.m in Sources */,
 				284D109C1DDED97F00F20D92 /* ASPopUpView.m in Sources */,
 				284D11411DDEE76000F20D92 /* EYTagView.m in Sources */,
@@ -2383,6 +2423,7 @@
 				284D107F1DDED95C00F20D92 /* FMDatabaseAdditions.m in Sources */,
 				284D10CF1DDEDF4E00F20D92 /* DALabeledCircularProgressView.m in Sources */,
 				284D113B1DDEE69800F20D92 /* EYTextPopupView.m in Sources */,
+				280CF6F31DE747B000E1BA59 /* JCCYPayHistoryViewController.m in Sources */,
 				2835DABE1DE567B8008D2BCB /* HomeFirstCell.m in Sources */,
 				284D0F711DDED91500F20D92 /* MLSelectPhotoPickerBrowserPhoto.m in Sources */,
 				284D111C1DDEE28F00F20D92 /* PPFileOperate.m in Sources */,
@@ -2407,6 +2448,7 @@
 				284D0FC11DDED92900F20D92 /* NSBundle+MJRefresh.m in Sources */,
 				28ECC7CE1DE1869900525BDB /* UMSocialShareScrollView.m in Sources */,
 				284D105D1DDED94300F20D92 /* UIView+WebCacheOperation.m in Sources */,
+				280CF6EA1DE6E7C600E1BA59 /* JCCYLevelInfoViewController.m in Sources */,
 				2835DADE1DE5A25A008D2BCB /* PPYXMainViewController.m in Sources */,
 				284D0F701DDED91500F20D92 /* MLSelectPhotoAssets.m in Sources */,
 				284D110F1DDEE1E100F20D92 /* PPToolsClass.m in Sources */,
@@ -2419,6 +2461,7 @@
 				284D10961DDED96E00F20D92 /* AFURLSessionManager.m in Sources */,
 				284D0FB91DDED92900F20D92 /* MJRefreshBackGifFooter.m in Sources */,
 				284D106F1DDED94C00F20D92 /* WSIndefiniteAnimationView.m in Sources */,
+				280CF6E71DE6956A00E1BA59 /* SettingTableViewCell.m in Sources */,
 				284D11261DDEE41000F20D92 /* PPViewController.m in Sources */,
 				28ECC7CD1DE1869900525BDB /* UMShareMenuSelectionView.m in Sources */,
 				284D10BC1DDEDDE200F20D92 /* ChineseString.m in Sources */,
@@ -2449,6 +2492,7 @@
 				284D0FB21DDED92900F20D92 /* MJRefreshBackFooter.m in Sources */,
 				284D102A1DDED93900F20D92 /* MWZoomingScrollView.m in Sources */,
 				284D105A1DDED94300F20D92 /* UIImage+WebP.m in Sources */,
+				280CF6ED1DE720A800E1BA59 /* JCCYSettingViewController.m in Sources */,
 				284D0FBE1DDED92900F20D92 /* MJRefreshStateHeader.m in Sources */,
 				284D10591DDED94300F20D92 /* UIImage+MultiFormat.m in Sources */,
 				284D0F771DDED91500F20D92 /* MLSelectPhotoPickerGroupViewController.m in Sources */,
