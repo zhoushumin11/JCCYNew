@@ -21,8 +21,6 @@
         allcontentView = [[UIView alloc] init];
         h_titleLabel = [[UILabel alloc] init];
         
-        self.frame = CGRectMake(0, 0, PPMainViewWidth, 44);
-
         
         allcontentView.backgroundColor = [UIColor whiteColor];
         [self.contentView addSubview:allcontentView];

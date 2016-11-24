@@ -60,8 +60,8 @@ UIActivityIndicatorView  *activityIndicator;
     self.view.backgroundColor = [UIColor colorFromHexRGB:@"f8f8f8"];
     
     navBarHairlineImageView = [self findHairlineImageViewUnder:self.navigationController.navigationBar];
-
-    documentPath = [documentPath stringByReplacingOccurrencesOfString:@"\\" withString:@"/"];
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+    documentPath = [NSString stringWithFormat:@"%@&token=%@",documentPath,token];
     
     [self createWEBView];
 }

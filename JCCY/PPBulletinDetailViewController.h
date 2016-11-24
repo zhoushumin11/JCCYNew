@@ -11,7 +11,6 @@
 @interface PPBulletinDetailViewController : PPViewController
 
 @property(nonatomic,strong) NSString *documentPath;
-@property(nonatomic,strong) NSString *noticeId;//公告id
 @property(nonatomic,strong) NSString *titleStr;//公告标题
 
 @end

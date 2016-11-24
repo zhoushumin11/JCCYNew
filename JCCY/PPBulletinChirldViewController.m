@@ -7,11 +7,12 @@
 //
 
 #import "PPBulletinChirldViewController.h"
-#import "HomeNormalCell.h"
 #import "UIImageView+WebCache.h"
 #import "PPBulletinDetailViewController.h"
 #import "NJBannerView.h"
 #import "TAPageControl.h"
+
+#import "JCCYZiXunTableViewCell.h"
 
 @interface PPBulletinChirldViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -82,6 +83,9 @@
         self.adBannerView = nil;
     }
     
+    scrollNewsArray = [NSMutableArray array];
+    scrollNewsArray = list;
+    
     NSMutableArray *currentDatas = [NSMutableArray arrayWithCapacity:0];
     NSMutableArray *titleList = [NSMutableArray arrayWithCapacity:0];
     
@@ -103,7 +107,8 @@
                                 @"ad_id":ad_id,
                                 @"ad_parameter":ad_parameter,
                                 @"ad_title":ad_title,
-                                @"ad_type":ad_type
+                                @"ad_type":ad_type,
+                                @"index":[NSString stringWithFormat:@"%d",i]
                                 };
         [currentDatas addObject:newsa];
         [titleList addObject:ad_title];
@@ -137,7 +142,16 @@
 }
 //滚动新闻点击事件
 -(void)endterNewsPage:(NSDictionary *)dic{
-    NSLog(@"diandji");
+    
+    int i = [[dic objectForKey:@"index"] intValue];
+    
+    NSString *titleStr = [[scrollNewsArray objectAtIndex:i] objectForKey:@"title"];
+    
+//    PPBulletinDetailViewController *pPBulletinDetailViewController = [[PPBulletinDetailViewController alloc] init];
+//    pPBulletinDetailViewController.hidesBottomBarWhenPushed = YES;
+//    pPBulletinDetailViewController.documentPath = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"url"];
+//    pPBulletinDetailViewController.titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+//    [self.navigationController pushViewController:pPBulletinDetailViewController animated:YES];
 }
 
 
@@ -178,21 +192,39 @@
 
 -(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-        static NSString *identify = @"PPBulletinCell";
-        HomeNormalCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
-        if (cell == nil) {
-            cell = [[HomeNormalCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
-            cell.selectedBackgroundView.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
-            
-        }
-        cell.h_titleLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+    static NSString *identify = @"JCCYZiXunTableViewCell";
+    JCCYZiXunTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+    if (cell == nil) {
+        cell = [[JCCYZiXunTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
+        cell.selectedBackgroundView.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
         
-        return cell;
+    }
+    
+    NSString *titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+    NSString *aStr = @"【";
+    NSString *bStr = @"】";
+    NSString *columnStr = [[self.columnArray objectAtIndex:self.nowIndex] objectForKey:@"typename"];
+    
+    NSString *columnSSS = [[aStr stringByAppendingString:columnStr] stringByAppendingString:bStr];
+    
+    titleStr = [NSString stringWithFormat:@"%@%@",columnSSS,titleStr];
+    cell.h_titleLabel.text = titleStr;
+    cell.h_subtitleLabel.text = @"梧桐证券";
+    
+    NSNumber *num = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"];
+    double i = [num doubleValue]/1000;
+    NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"hh:mm"];
+    NSString *timeStr = [dateFormat stringFromDate:nd];
+    
+    cell.h_timeLabel.text = timeStr;
+    return cell;
     
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 44;
+    return 70;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -201,9 +233,8 @@
     
     PPBulletinDetailViewController *pPBulletinDetailViewController = [[PPBulletinDetailViewController alloc] init];
     pPBulletinDetailViewController.hidesBottomBarWhenPushed = YES;
-    pPBulletinDetailViewController.documentPath = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"documentPath"];
-    pPBulletinDetailViewController.noticeId = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"noticeId"];
-    pPBulletinDetailViewController.titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"noticeTitle"];
+    pPBulletinDetailViewController.documentPath = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"url"];
+    pPBulletinDetailViewController.titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
     [self.navigationController pushViewController:pPBulletinDetailViewController animated:YES];
     
 }

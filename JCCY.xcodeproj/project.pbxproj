@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		280CF6DD1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6DC1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m */; };
 		282DF76E1DE42BCE00F9FAE9 /* NJBannerImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF76B1DE42BCE00F9FAE9 /* NJBannerImageView.m */; };
 		282DF76F1DE42BCE00F9FAE9 /* NJBannerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF76D1DE42BCE00F9FAE9 /* NJBannerView.m */; };
 		282DF77F1DE42D8800F9FAE9 /* dotActive.png in Resources */ = {isa = PBXBuildFile; fileRef = 282DF7711DE42D8800F9FAE9 /* dotActive.png */; };
@@ -305,6 +306,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		280CF6DB1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYZiXunTableViewCell.h; sourceTree = "<group>"; };
+		280CF6DC1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYZiXunTableViewCell.m; sourceTree = "<group>"; };
 		282DF76A1DE42BCE00F9FAE9 /* NJBannerImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJBannerImageView.h; sourceTree = "<group>"; };
 		282DF76B1DE42BCE00F9FAE9 /* NJBannerImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NJBannerImageView.m; sourceTree = "<group>"; };
 		282DF76C1DE42BCE00F9FAE9 /* NJBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJBannerView.h; sourceTree = "<group>"; };
@@ -894,6 +897,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		280CF6D91DE675E600E1BA59 /* 资讯消息 */ = {
+			isa = PBXGroup;
+			children = (
+				2835DAD91DE5A25A008D2BCB /* PPYXMainViewController.h */,
+				2835DADA1DE5A25A008D2BCB /* PPYXMainViewController.m */,
+				2835DAD71DE5A25A008D2BCB /* PPBulletinViewController.h */,
+				2835DAD81DE5A25A008D2BCB /* PPBulletinViewController.m */,
+				2835DAD31DE5A25A008D2BCB /* PPBulletinChirldViewController.h */,
+				2835DAD41DE5A25A008D2BCB /* PPBulletinChirldViewController.m */,
+				2835DAD51DE5A25A008D2BCB /* PPBulletinDetailViewController.h */,
+				2835DAD61DE5A25A008D2BCB /* PPBulletinDetailViewController.m */,
+			);
+			name = "资讯消息";
+			sourceTree = "<group>";
+		};
+		280CF6DA1DE67D6600E1BA59 /* 资讯消息 */ = {
+			isa = PBXGroup;
+			children = (
+				280CF6DB1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.h */,
+				280CF6DC1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m */,
+			);
+			name = "资讯消息";
+			sourceTree = "<group>";
+		};
 		282DF7691DE42BCE00F9FAE9 /* NJBannerView */ = {
 			isa = PBXGroup;
 			children = (
@@ -929,6 +956,7 @@
 		2835DABB1DE5677C008D2BCB /* 主页 */ = {
 			isa = PBXGroup;
 			children = (
+				280CF6DA1DE67D6600E1BA59 /* 资讯消息 */,
 				2835DABC1DE567B8008D2BCB /* HomeFirstCell.h */,
 				2835DABD1DE567B8008D2BCB /* HomeFirstCell.m */,
 				2835DABF1DE567E6008D2BCB /* HomeNormalCell.h */,
@@ -1585,7 +1613,7 @@
 			isa = PBXGroup;
 			children = (
 				284695841DE3DC34007DC603 /* 启动页 */,
-				284D11571DDEE95C00F20D92 /* UserInfoAndSetting */,
+				284D11571DDEE95C00F20D92 /* 用户资料和设置 */,
 				284D11431DDEE8C900F20D92 /* 主页 */,
 				284D11471DDEE8EA00F20D92 /* 实盘 */,
 				284D11461DDEE8E600F20D92 /* 红包 */,
@@ -1750,14 +1778,7 @@
 			children = (
 				284D11481DDEE92000F20D92 /* HomeViewController.h */,
 				284D11491DDEE92000F20D92 /* HomeViewController.m */,
-				2835DAD71DE5A25A008D2BCB /* PPBulletinViewController.h */,
-				2835DAD81DE5A25A008D2BCB /* PPBulletinViewController.m */,
-				2835DAD91DE5A25A008D2BCB /* PPYXMainViewController.h */,
-				2835DADA1DE5A25A008D2BCB /* PPYXMainViewController.m */,
-				2835DAD31DE5A25A008D2BCB /* PPBulletinChirldViewController.h */,
-				2835DAD41DE5A25A008D2BCB /* PPBulletinChirldViewController.m */,
-				2835DAD51DE5A25A008D2BCB /* PPBulletinDetailViewController.h */,
-				2835DAD61DE5A25A008D2BCB /* PPBulletinDetailViewController.m */,
+				280CF6D91DE675E600E1BA59 /* 资讯消息 */,
 			);
 			name = "主页";
 			sourceTree = "<group>";
@@ -1798,11 +1819,11 @@
 			name = "实盘";
 			sourceTree = "<group>";
 		};
-		284D11571DDEE95C00F20D92 /* UserInfoAndSetting */ = {
+		284D11571DDEE95C00F20D92 /* 用户资料和设置 */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			name = UserInfoAndSetting;
+			name = "用户资料和设置";
 			sourceTree = "<group>";
 		};
 		28ECC7231DE1869800525BDB /* UMSocial */ = {
@@ -2424,6 +2445,7 @@
 				282DF76F1DE42BCE00F9FAE9 /* NJBannerView.m in Sources */,
 				284D0F6D1DDED91500F20D92 /* SideScrollingLayout.m in Sources */,
 				284D10551DDED94300F20D92 /* SDWebImageManager.m in Sources */,
+				280CF6DD1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m in Sources */,
 				284D0FB21DDED92900F20D92 /* MJRefreshBackFooter.m in Sources */,
 				284D102A1DDED93900F20D92 /* MWZoomingScrollView.m in Sources */,
 				284D105A1DDED94300F20D92 /* UIImage+WebP.m in Sources */,

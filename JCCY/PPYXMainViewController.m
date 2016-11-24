@@ -12,7 +12,6 @@
 #import "PPSXTitleLable.h"
 
 
-
 @interface PPYXMainViewController ()<UIScrollViewDelegate>
 /// 标签的滚动label
 @property (weak, nonatomic) UIScrollView *smallScview;

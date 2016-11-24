@@ -181,8 +181,9 @@
                       
                       if (dateArray.count == 0) {
                           [WSProgressHUD dismiss];
+                          //没有数据时设置错误状态图
                           UIImageView *backimage = [[UIImageView alloc] initWithFrame:CGRectMake(0,-64, PPMainViewWidth, PPMainViewHeight)];
-                          backimage.image = [UIImage imageNamed:@"BulletinDefault"];
+                          backimage.image = [UIImage imageNamed:@"BulletinDefault.png"];
                           [self.view addSubview:backimage];
                           return ;
                       }
@@ -195,8 +196,6 @@
                           pPBulletinChirldViewController.title = [[columnArray objectAtIndex:i] objectForKey:@"typename"];
                           [vcArray addObject:pPBulletinChirldViewController];
                       }
-                      //创建小视图
-                      [self creatVC:vcArray];
                       
                       chirldViewArray = vcArray;
                       
@@ -253,7 +252,7 @@
                           }
                           NSDictionary *dataDic = [json objectForKey:@"data"];
                           NSArray *dataArrrays = [dataDic objectForKey:@"list"];
-                          
+                          NSDictionary *pageDic = [dataDic objectForKey:@"page"];
                           dataArray = [NSMutableArray arrayWithArray:dataArrrays];
                           
                           if (dataArray.count < 20) {
@@ -264,7 +263,10 @@
                               ui.bulletinlistTableView.mj_footer.hidden = NO;
                           }
                           
+                          ui.columnArray = columnArray;
+                          ui.nowIndex = vcindex;
                           ui.dataArray = dataArray;
+                          ui.pageMainDic = pageDic;
                           [ui creatScrollNews:scrollNewsArray];
                           [ui.bulletinlistTableView reloadData];
                           if ([dataArray count] == 0) {
@@ -289,37 +291,46 @@
 -(void)refreshMoreTableViewData{
     
     PPBulletinChirldViewController *ui = chirldViewArray[vcindex];
-    NSDictionary *lastdict = [ui.dataArray lastObject];
+    NSDictionary *pageDic = ui.pageMainDic;
+    NSInteger nowPageNum = [[pageDic objectForKey:@"now_page"] integerValue];
     NSString *columnIDStr = [[columnArray objectAtIndex:vcindex] objectForKey:@"typeid"];
-    //    [self getonlineData:columnIDStr];
     @autoreleasepool {
-        NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
         NSString *dJson = nil;
-        if ([columnIDStr isEqualToString:@"0"]) {
-            dJson = [NSString stringWithFormat:@"{\"userId\":\"%@\",\"lastTime\":\"%@\"}",userid,[lastdict objectForKey:@"createTime"]];
-        }else{
-            dJson = [NSString stringWithFormat:@"{\"columnId\":\"%@\",\"userId\":\"%@\",\"lastTime\":\"%@\"}",columnIDStr,userid,[lastdict objectForKey:@"createTime"]];
-        }
+        
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%ld\"}",87,token,[columnIDStr intValue],nowPageNum];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
-        [pprddata1 startAFRequest:@"wap/notice/getNoticeList"
+        [pprddata1 startAFRequest:@"/index.php/Api/Archives/index/"
                       requestdata:dJson
                    timeOutSeconds:10
                   completionBlock:^(NSDictionary *json) {
-                      NSArray *data = [json objectForKey:@"data"];
-                      NSInteger datacount = [ui.dataArray count];
-                      ui.dataArray = [NSMutableArray arrayWithArray:[ui.dataArray arrayByAddingObjectsFromArray:data]];
                       
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
                       
-                      if (dataArray.count == datacount) {
-                          ui.bulletinlistTableView.mj_footer.hidden = YES;
-                          [ui.bulletinlistTableView.mj_footer endRefreshingWithNoMoreData];
-                      }
-                      
-                      [ui.bulletinlistTableView reloadData];
-                      
-                      if ([ui.bulletinlistTableView.mj_footer isRefreshing]) {
-                          [ui.bulletinlistTableView.mj_footer endRefreshing];
+                      if (code == 1) {//接口响应正确
+                          NSDictionary *dataDic = [json objectForKey:@"data"];
+                          NSArray *dataArrrays = [dataDic objectForKey:@"list"];
+                          NSInteger datacount = [ui.dataArray count];
+                          NSDictionary *pageDic = [dataDic objectForKey:@"page"];
+                          ui.columnArray = columnArray;
+                          ui.nowIndex = vcindex;
+                          ui.pageMainDic = pageDic;
+                          ui.dataArray = [NSMutableArray arrayWithArray:[ui.dataArray arrayByAddingObjectsFromArray:dataArrrays]];
+                          if (dataArray.count == datacount) {
+                              ui.bulletinlistTableView.mj_footer.hidden = YES;
+                              [ui.bulletinlistTableView.mj_footer endRefreshingWithNoMoreData];
+                          }
+                          
+                          [ui.bulletinlistTableView reloadData];
+                          
+                          if ([ui.bulletinlistTableView.mj_footer isRefreshing]) {
+                              [ui.bulletinlistTableView.mj_footer endRefreshing];
+                          }
+                      }else{//接口返回错误
+                          if ([ui.bulletinlistTableView.mj_footer isRefreshing]) {
+                              [ui.bulletinlistTableView.mj_footer endRefreshing];
+                          }
                       }
                       
                   }
