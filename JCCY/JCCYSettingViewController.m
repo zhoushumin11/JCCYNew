@@ -10,7 +10,7 @@
 #import "PPRegistViewController.h"
 #import "UIButton+WebCache.h"
 
-@interface JCCYSettingViewController ()
+@interface JCCYSettingViewController ()<UIAlertViewDelegate>
 
 
 @property(nonatomic,strong) UILabel *huancunLabel;
@@ -198,23 +198,37 @@
 #pragma 清理缓存图片
 - (void)clearTmpPics
 {
-    NSUInteger size = [[SDImageCache sharedImageCache] getSize];
-    NSString *clearCacheName = [NSString stringWithFormat:@"清除缓存(%@)",[self getDataSizeString:size]];
-    [[SDImageCache sharedImageCache] clearMemory];
-    [[SDImageCache sharedImageCache] cleanDisk];
-    [[SDImageCache sharedImageCache] clearDisk];
-    
-    //    [[SDImageCache sharedImageCache] clearMemory];//可有可无
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"成功" message:clearCacheName delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"是否要清理缓存？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消",nil];
+    alert.tag = 20161125;
     [alert show];
-    
-    
-    //刷新数据
-    NSUInteger size1 = [[SDImageCache sharedImageCache] getSize];
-    NSString *sizeStr = [self getDataSizeString:size1];
-    huancunLabel.text = sizeStr;
+
 
 }
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    if (alertView.tag == 20161125) {
+        if (buttonIndex == 0) {
+            NSUInteger size = [[SDImageCache sharedImageCache] getSize];
+            NSString *clearCacheName = [NSString stringWithFormat:@"清除缓存(%@)",[self getDataSizeString:size]];
+            [[SDImageCache sharedImageCache] clearMemory];
+            [[SDImageCache sharedImageCache] cleanDisk];
+            [[SDImageCache sharedImageCache] clearDisk];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"成功" message:clearCacheName delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alert show];
+            //刷新数据
+            NSUInteger size1 = [[SDImageCache sharedImageCache] getSize];
+            NSString *sizeStr = [self getDataSizeString:size1];
+            huancunLabel.text = sizeStr;
+        }else{
+            return;
+        }
+    }
+    
+
+}
+
 #pragma mark 包大小转换工具类（将包大小转换成合适单位）
 -(NSString *)getDataSizeString:(NSUInteger) nSize
 {

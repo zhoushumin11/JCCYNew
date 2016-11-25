@@ -1,12 +1,12 @@
 //
-//  TwoViewController.m
+//  FiemShowByTypeViewController.m
 //  JCCY
 //
-//  Created by 周书敏 on 2016/11/18.
+//  Created by 周书敏 on 2016/11/26.
 //
 //
 
-#import "FirmViewController.h"
+#import "FiemShowByTypeViewController.h"
 #import "UIButton+WebCache.h"
 #import "UIImageView+WebCache.h"
 
@@ -17,7 +17,7 @@
 
 #import "SCAvatarBrowser.h"
 
-@interface FirmViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface FiemShowByTypeViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
     NSTimer *timer;
 }
@@ -36,7 +36,7 @@
 
 @end
 
-@implementation FirmViewController
+@implementation FiemShowByTypeViewController
 
 @synthesize reFreshTimeLabel,reFreshBtn,reFreshTimeString,refreshTimeNum,mainHeadView,dataArray,mainTableView;
 
@@ -49,7 +49,7 @@
         self.extendedLayoutIncludesOpaqueBars = NO;
         self.modalPresentationCapturesStatusBarAppearance = NO;
     }
-
+    
     self.view.backgroundColor = [UIColor colorFromHexRGB:@"f8f8f8"];
     
     dataArray = [NSMutableArray array];
@@ -193,8 +193,8 @@
     
     //访问服务器
     [self getServerData];
-
-
+    
+    
 }
 
 #pragma mark -- 初始化直播数据
@@ -306,7 +306,7 @@
                           [mainTableView reloadData];
                       }else{
                           
-                    }
+                      }
                       
                   } failedBlock:^(NSError *error) {
                       
@@ -331,7 +331,7 @@
     if (![live_picStr isEqual:[NSNull null]]) { //图片内容
         return 180;
     }else{
-    CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
+        CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
         float wh = strSize.height + 60;
         if (wh < 110) {
             return  120;
@@ -368,7 +368,7 @@
         cell.timeLabel.text = timeStr;
         
         NSString *icon_picStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_pic"];
-
+        
         //设置头像图片
         [cell.iConView sd_setImageWithURL:[NSURL URLWithString:icon_picStr] forState:UIControlStateNormal placeholderImage:nil options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             if (image == nil) {
@@ -386,7 +386,7 @@
         
         cell.contenImageView.tag = indexPath.row;
         [cell.contenImageView addTarget:self action:@selector(contenImageViewAction:) forControlEvents:UIControlEventTouchUpInside];
-
+        
         return cell;
     }else{//文字内容
         static NSString *identify = @"FirmStringCell";
@@ -437,7 +437,7 @@
         
     }];
     [SCAvatarBrowser showImageView:self.avatar];
-
+    
 }
 
 
@@ -451,13 +451,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

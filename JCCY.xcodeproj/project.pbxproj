@@ -11,6 +11,8 @@
 		280082DB1DE81D33000DACED /* FirmIMGCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 280082DA1DE81D33000DACED /* FirmIMGCell.m */; };
 		280082DE1DE81D4D000DACED /* FirmStringCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 280082DD1DE81D4D000DACED /* FirmStringCell.m */; };
 		280082E01DE83337000DACED /* user_head_default.png in Resources */ = {isa = PBXBuildFile; fileRef = 280082DF1DE83337000DACED /* user_head_default.png */; };
+		280082E71DE89DF8000DACED /* SCAvatarBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 280082E51DE89DF8000DACED /* SCAvatarBrowser.m */; };
+		280082EA1DE8A040000DACED /* FiemShowByTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 280082E91DE8A040000DACED /* FiemShowByTypeViewController.m */; };
 		280CF6DD1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6DC1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m */; };
 		280CF6E31DE694B400E1BA59 /* JCCYMyListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6E21DE694B400E1BA59 /* JCCYMyListViewController.m */; };
 		280CF6E71DE6956A00E1BA59 /* SettingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6E61DE6956A00E1BA59 /* SettingTableViewCell.m */; };
@@ -323,6 +325,10 @@
 		280082DC1DE81D4D000DACED /* FirmStringCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FirmStringCell.h; sourceTree = "<group>"; };
 		280082DD1DE81D4D000DACED /* FirmStringCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirmStringCell.m; sourceTree = "<group>"; };
 		280082DF1DE83337000DACED /* user_head_default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_head_default.png; sourceTree = "<group>"; };
+		280082E51DE89DF8000DACED /* SCAvatarBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCAvatarBrowser.m; sourceTree = "<group>"; };
+		280082E61DE89DF8000DACED /* SCAvatarBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCAvatarBrowser.h; sourceTree = "<group>"; };
+		280082E81DE8A040000DACED /* FiemShowByTypeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FiemShowByTypeViewController.h; sourceTree = "<group>"; };
+		280082E91DE8A040000DACED /* FiemShowByTypeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FiemShowByTypeViewController.m; sourceTree = "<group>"; };
 		280CF6DB1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYZiXunTableViewCell.h; sourceTree = "<group>"; };
 		280CF6DC1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYZiXunTableViewCell.m; sourceTree = "<group>"; };
 		280CF6E11DE694B400E1BA59 /* JCCYMyListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYMyListViewController.h; sourceTree = "<group>"; };
@@ -946,6 +952,15 @@
 			name = "实盘";
 			sourceTree = "<group>";
 		};
+		280082E41DE89DE1000DACED /* SCAvatarBrowser */ = {
+			isa = PBXGroup;
+			children = (
+				280082E51DE89DF8000DACED /* SCAvatarBrowser.m */,
+				280082E61DE89DF8000DACED /* SCAvatarBrowser.h */,
+			);
+			path = SCAvatarBrowser;
+			sourceTree = "<group>";
+		};
 		280CF6D91DE675E600E1BA59 /* 资讯消息 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1133,6 +1148,7 @@
 		284D0F1E1DDED7C200F20D92 /* ThirdLibrary */ = {
 			isa = PBXGroup;
 			children = (
+				280082E41DE89DE1000DACED /* SCAvatarBrowser */,
 				280082D41DE7EADE000DACED /* ALToastView */,
 				282DF7701DE42D8800F9FAE9 /* TAPageControl */,
 				282DF7691DE42BCE00F9FAE9 /* NJBannerView */,
@@ -1877,6 +1893,8 @@
 			children = (
 				284D114B1DDEE92D00F20D92 /* FirmViewController.h */,
 				284D114C1DDEE92D00F20D92 /* FirmViewController.m */,
+				280082E81DE8A040000DACED /* FiemShowByTypeViewController.h */,
+				280082E91DE8A040000DACED /* FiemShowByTypeViewController.m */,
 			);
 			name = "实盘";
 			sourceTree = "<group>";
@@ -2463,12 +2481,14 @@
 				280CF6F31DE747B000E1BA59 /* JCCYPayHistoryViewController.m in Sources */,
 				2835DABE1DE567B8008D2BCB /* HomeFirstCell.m in Sources */,
 				284D0F711DDED91500F20D92 /* MLSelectPhotoPickerBrowserPhoto.m in Sources */,
+				280082E71DE89DF8000DACED /* SCAvatarBrowser.m in Sources */,
 				284D111C1DDEE28F00F20D92 /* PPFileOperate.m in Sources */,
 				284D11531DDEE94B00F20D92 /* FourViewController.m in Sources */,
 				284D0FB51DDED92900F20D92 /* MJRefreshHeader.m in Sources */,
 				284D104E1DDED94300F20D92 /* MKAnnotationView+WebCache.m in Sources */,
 				284D0FC01DDED92900F20D92 /* MJRefreshConst.m in Sources */,
 				2835DADB1DE5A25A008D2BCB /* PPBulletinChirldViewController.m in Sources */,
+				280082EA1DE8A040000DACED /* FiemShowByTypeViewController.m in Sources */,
 				284D0F801DDED91500F20D92 /* MLSelectPhotoPickerGroupTableViewCell.m in Sources */,
 				284D10531DDED94300F20D92 /* SDWebImageDownloader.m in Sources */,
 				282DF76E1DE42BCE00F9FAE9 /* NJBannerImageView.m in Sources */,
