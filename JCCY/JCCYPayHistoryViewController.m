@@ -10,24 +10,60 @@
 
 @interface JCCYPayHistoryViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property(nonatomic,strong) NSMutableArray *dataArray;
+@property(nonatomic,strong) UITableView *mainTableView;
+
 @end
 
 @implementation JCCYPayHistoryViewController
+
+@synthesize mainTableView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.title = @"充值记录";
     
-    UITableView *mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewHeight) style:UITableViewStyleGrouped];
+    self.view.backgroundColor = [UIColor colorFromHexRGB:@"f8f8f8"];
+    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth,self.view.bounds.size.height) style:UITableViewStylePlain];
+    mainTableView.backgroundColor = [UIColor clearColor];
+    mainTableView.separatorInset = UIEdgeInsetsZero;
+    //        _bulletinlistTableView.tableHeaderView = [[UIView alloc] init];
+    if ([mainTableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [mainTableView setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([mainTableView respondsToSelector:@selector(setLayoutMargins:)]) {
+        [mainTableView setLayoutMargins:UIEdgeInsetsZero];
+    }
+    mainTableView.separatorColor = [UIColor colorFromHexRGB:@"f0f0f0"];
+    MJRefreshNormalHeader *cmheader = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshTableView)];//@selector(loadMylogList)
+    cmheader.lastUpdatedTimeLabel.hidden = YES;
+    
+    mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(refreshMoreTableView)];
+    mainTableView.mj_footer.hidden = YES;
+    
+    mainTableView.mj_header = cmheader;
     mainTableView.delegate = self;
     mainTableView.dataSource = self;
+    
     [self.view addSubview:mainTableView];
+    
     
     //获取数据
     [self getdata];
     
 }
+
+-(void)refreshTableView{
+    
+    
+}
+
+-(void)refreshMoreTableView{
+
+
+}
+
+
 
 -(void)getdata{
     NSString *dJson = nil;
@@ -38,7 +74,7 @@
         dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
-        [pprddata1 startAFRequest:@"/index.php/Api/Update/update_conf/"
+        [pprddata1 startAFRequest:@"/index.php/Api/UserRecharge/list_recharge/"
                       requestdata:dJson
                    timeOutSeconds:10
                   completionBlock:^(NSDictionary *json) {
@@ -56,21 +92,39 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0,0, PPMainViewWidth, 44)];
-    view.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
+    view.backgroundColor = [UIColor grayColor];
     
-    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/2, 44)];
+    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/4, 44)];
     lable1.textAlignment = NSTextAlignmentCenter;
-    lable1.text = @"等级";
+    lable1.textColor = [UIColor whiteColor];
+    lable1.text = @"充值时间";
     lable1.backgroundColor = [UIColor clearColor];
-    lable1.font = [UIFont boldSystemFontOfSize:20];
+    lable1.font = [UIFont boldSystemFontOfSize:18];
     [view addSubview:lable1];
     
-    UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/2, 0, PPMainViewWidth/2, 44)];
+    UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4, 0, PPMainViewWidth/4, 44)];
     lable2.textAlignment = NSTextAlignmentCenter;
-    lable2.text = @"所需积分";
+    lable2.textColor = [UIColor whiteColor];
+    lable2.text = @"充值金额";
     lable2.backgroundColor = [UIColor clearColor];
-    lable2.font = [UIFont boldSystemFontOfSize:20];
+    lable2.font = [UIFont boldSystemFontOfSize:18];
     [view addSubview:lable2];
+    
+    UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*2, 0, PPMainViewWidth/4, 44)];
+    lable3.textAlignment = NSTextAlignmentCenter;
+    lable3.textColor = [UIColor whiteColor];
+    lable3.text = @"兑换金币";
+    lable3.backgroundColor = [UIColor clearColor];
+    lable3.font = [UIFont boldSystemFontOfSize:18];
+    [view addSubview:lable3];
+    
+    UILabel *lable4 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*3, 0, PPMainViewWidth/4, 44)];
+    lable4.textAlignment = NSTextAlignmentCenter;
+    lable4.textColor = [UIColor whiteColor];
+    lable4.text = @"充值方式";
+    lable4.backgroundColor = [UIColor clearColor];
+    lable4.font = [UIFont boldSystemFontOfSize:18];
+    [view addSubview:lable4];
     
     return view;
 }
@@ -80,7 +134,7 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return self.dataArray.count;
+    return 4;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -92,30 +146,37 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
     }
     
-    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/2, 44)];
+    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/4, 44)];
     lable1.textAlignment = NSTextAlignmentCenter;
-    lable1.text = [[self.dataArray objectAtIndex:indexPath.row] objectForKey:@"level_name"];
+    lable1.textColor = [UIColor blackColor];
+    lable1.text = @"2016-11-10";
     lable1.backgroundColor = [UIColor clearColor];
-    lable1.font = [UIFont systemFontOfSize:18];
+    lable1.font = [UIFont systemFontOfSize:14];
     [cell.contentView addSubview:lable1];
     
-    UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/2, 0, PPMainViewWidth/2, 44)];
+    UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4, 0, PPMainViewWidth/4, 44)];
     lable2.textAlignment = NSTextAlignmentCenter;
-    lable2.text = [[self.dataArray objectAtIndex:indexPath.row] objectForKey:@"level_cost"];
+    lable2.textColor = [UIColor redColor];
+    lable2.text = @"¥100.00";
     lable2.backgroundColor = [UIColor clearColor];
-    lable2.font = [UIFont systemFontOfSize:18];
+    lable2.font = [UIFont systemFontOfSize:14];
     [cell.contentView addSubview:lable2];
     
-    if ((indexPath.row+1 )% 2 == 0) {
-        cell.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
-    }else{
-        cell.backgroundColor = [UIColor whiteColor];
-    }
+    UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*2, 0, PPMainViewWidth/4, 44)];
+    lable3.textAlignment = NSTextAlignmentCenter;
+    lable3.text = @"1000";
+    lable3.textColor = [UIColor blackColor];
+    lable3.backgroundColor = [UIColor clearColor];
+    lable3.font = [UIFont systemFontOfSize:14];
+    [cell.contentView addSubview:lable3];
     
-    //    "level_cost" = 0;
-    //    "level_id" = "Lv.0";
-    //    "level_name" = "Lv.0";
-    
+    UILabel *lable4 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*3, 0, PPMainViewWidth/4, 44)];
+    lable4.textAlignment = NSTextAlignmentCenter;
+    lable4.text = @"系统";
+    lable4.textColor = [UIColor blackColor];
+    lable4.backgroundColor = [UIColor clearColor];
+    lable4.font = [UIFont systemFontOfSize:14];
+    [cell.contentView addSubview:lable4];
     
     return cell;
 }

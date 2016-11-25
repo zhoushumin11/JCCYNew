@@ -250,14 +250,15 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    if (indexPath.row == 1) {//消费记录
-        JCCYUsedHistoryViewController *sCCYUsedHistoryViewController = [[JCCYUsedHistoryViewController alloc] init];
-        sCCYUsedHistoryViewController.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:sCCYUsedHistoryViewController animated:YES];
-    }else if (indexPath.row == 2){//充值记录
+    if (indexPath.row == 1) {////充值记录
+        
         JCCYPayHistoryViewController *jCCYPayHistoryViewController = [[JCCYPayHistoryViewController alloc] init];
         jCCYPayHistoryViewController.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:jCCYPayHistoryViewController animated:YES];
+    }else if (indexPath.row == 2){//消费记录
+        JCCYUsedHistoryViewController *sCCYUsedHistoryViewController = [[JCCYUsedHistoryViewController alloc] init];
+        sCCYUsedHistoryViewController.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:sCCYUsedHistoryViewController animated:YES];
     }
     
 }

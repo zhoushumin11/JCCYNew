@@ -12,10 +12,12 @@
 
 @property(nonatomic,strong) NSMutableArray *dataArray;
 
+@property(nonatomic,strong) UITableView *mainTableView;
+
 @end
 
 @implementation JCCYUsedHistoryViewController
-@synthesize dataArray;
+@synthesize dataArray,mainTableView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -24,14 +26,47 @@
     
     dataArray = [NSMutableArray array];
     
-    UITableView *mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewHeight) style:UITableViewStyleGrouped];
+    self.view.backgroundColor = [UIColor colorFromHexRGB:@"f8f8f8"];
+    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth,self.view.bounds.size.height) style:UITableViewStylePlain];
+    mainTableView.backgroundColor = [UIColor clearColor];
+    mainTableView.separatorInset = UIEdgeInsetsZero;
+    //        _bulletinlistTableView.tableHeaderView = [[UIView alloc] init];
+    if ([mainTableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [mainTableView setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([mainTableView respondsToSelector:@selector(setLayoutMargins:)]) {
+        [mainTableView setLayoutMargins:UIEdgeInsetsZero];
+    }
+    mainTableView.separatorColor = [UIColor colorFromHexRGB:@"f0f0f0"];
+    MJRefreshNormalHeader *cmheader = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshTableView)];//@selector(loadMylogList)
+    cmheader.lastUpdatedTimeLabel.hidden = YES;
+    
+    mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(refreshMoreTableView)];
+    mainTableView.mj_footer.hidden = YES;
+    
+    mainTableView.mj_header = cmheader;
     mainTableView.delegate = self;
     mainTableView.dataSource = self;
+    
     [self.view addSubview:mainTableView];
+    
+    
     //获取数据
     [self getdata];
     
 }
+
+-(void)refreshTableView{
+    
+    
+}
+
+-(void)refreshMoreTableView{
+    
+    
+}
+
+
 
 -(void)getdata{
     NSString *dJson = nil;
@@ -60,21 +95,31 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0,0, PPMainViewWidth, 44)];
-    view.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
+    view.backgroundColor = [UIColor grayColor];
     
-    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/2, 44)];
+    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/3, 44)];
     lable1.textAlignment = NSTextAlignmentCenter;
-    lable1.text = @"等级";
+    lable1.textColor = [UIColor whiteColor];
+    lable1.text = @"消费时间";
     lable1.backgroundColor = [UIColor clearColor];
-    lable1.font = [UIFont boldSystemFontOfSize:20];
+    lable1.font = [UIFont boldSystemFontOfSize:18];
     [view addSubview:lable1];
     
-    UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/2, 0, PPMainViewWidth/2, 44)];
+    UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/3, 0, PPMainViewWidth/3, 44)];
     lable2.textAlignment = NSTextAlignmentCenter;
-    lable2.text = @"所需积分";
+    lable2.textColor = [UIColor whiteColor];
+    lable2.text = @"消费的项目";
     lable2.backgroundColor = [UIColor clearColor];
-    lable2.font = [UIFont boldSystemFontOfSize:20];
+    lable2.font = [UIFont boldSystemFontOfSize:18];
     [view addSubview:lable2];
+    
+    UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/3*2, 0, PPMainViewWidth/3, 44)];
+    lable3.textAlignment = NSTextAlignmentCenter;
+    lable3.textColor = [UIColor whiteColor];
+    lable3.text = @"消费金币";
+    lable3.backgroundColor = [UIColor clearColor];
+    lable3.font = [UIFont boldSystemFontOfSize:18];
+    [view addSubview:lable3];
     
     return view;
 }
@@ -84,7 +129,7 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return dataArray.count;
+    return 4;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -96,30 +141,29 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
     }
     
-    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/2, 44)];
+    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/3, 44)];
     lable1.textAlignment = NSTextAlignmentCenter;
-    lable1.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"level_name"];
+    lable1.textColor = [UIColor blackColor];
+    lable1.text = @"2016-11-10";
     lable1.backgroundColor = [UIColor clearColor];
-    lable1.font = [UIFont systemFontOfSize:18];
+    lable1.font = [UIFont systemFontOfSize:14];
     [cell.contentView addSubview:lable1];
     
-    UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/2, 0, PPMainViewWidth/2, 44)];
+    UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/3, 0, PPMainViewWidth/3, 44)];
     lable2.textAlignment = NSTextAlignmentCenter;
-    lable2.text = [[self.dataArray objectAtIndex:indexPath.row] objectForKey:@"level_cost"];
+    lable2.textColor = [UIColor blackColor];
+    lable2.text = @"钻石";
     lable2.backgroundColor = [UIColor clearColor];
-    lable2.font = [UIFont systemFontOfSize:18];
+    lable2.font = [UIFont systemFontOfSize:14];
     [cell.contentView addSubview:lable2];
     
-    if ((indexPath.row+1 )% 2 == 0) {
-        cell.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
-    }else{
-        cell.backgroundColor = [UIColor whiteColor];
-    }
-    
-    //    "level_cost" = 0;
-    //    "level_id" = "Lv.0";
-    //    "level_name" = "Lv.0";
-    
+    UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/3*2, 0, PPMainViewWidth/3, 44)];
+    lable3.textAlignment = NSTextAlignmentCenter;
+    lable3.text = @"2000";
+    lable3.textColor = [UIColor redColor];
+    lable3.backgroundColor = [UIColor clearColor];
+    lable3.font = [UIFont systemFontOfSize:14];
+    [cell.contentView addSubview:lable3];
     
     return cell;
 }
