@@ -527,10 +527,20 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
                           
                           NSString *KEFU_TELPHONE = [dataDic objectForKey:@"KEFU_TELPHONE"];
                           NSString *IOS_IS_PRODUCE = [dataDic objectForKey:@"IOS_IS_PRODUCE"];
+                          //微信支付相关
                           NSString *WX_APPID = [dataDic objectForKey:@"WX_APPID"];
                           NSString *WX_APPSECRET = [dataDic objectForKey:@"WX_APPSECRET"];
-                          NSString *ALIPAY_SELLER_ID = [dataDic objectForKey:@"ALIPAY_SELLER_ID"];
-                          NSString *ALIPAY_PARTNER = [dataDic objectForKey:@"ALIPAY_PARTNER"];
+                          //支付宝相关
+                          NSString *ALIPAY_ACCOUNT = [dataDic objectForKey:@"ALIPAY_ACCOUNT"];
+                          NSString *ALIPAY_APPID = [dataDic objectForKey:@"ALIPAY_APPID"];
+                          NSString *ALIPAY_PID = [dataDic objectForKey:@"ALIPAY_PID"];
+                          NSString *ALIPAY_PRIVATE = [dataDic objectForKey:@"ALIPAY_PRIVATE"];
+                          NSString *ALIPAY_PUBLIC = [dataDic objectForKey:@"ALIPAY_PUBLIC"] ;
+                          NSString *ALIPAY_SWITCH = [dataDic objectForKey:@"ALIPAY_SWITCH"];
+                          
+                          
+                          
+                          //默认刷新时间
                           NSString *LIVE_REFRESH_SECOND = [dataDic objectForKey:@"LIVE_REFRESH_SECOND"];
                           
                           
@@ -538,9 +548,15 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
                           [[NSUserDefaults standardUserDefaults] setObject:IOS_IS_PRODUCE forKey:@"IOS_IS_PRODUCE"];
                           [[NSUserDefaults standardUserDefaults] setObject:WX_APPID forKey:@"WX_APPID"];
                           [[NSUserDefaults standardUserDefaults] setObject:WX_APPSECRET forKey:@"WX_APPSECRET"];
-                          [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_SELLER_ID forKey:@"ALIPAY_SELLER_ID"];
-                          [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_PARTNER forKey:@"ALIPAY_PARTNER"];
                           [[NSUserDefaults standardUserDefaults] setObject:LIVE_REFRESH_SECOND forKey:@"LIVE_REFRESH_SECOND"];
+                          
+                          [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_PRIVATE forKey:@"ALIPAY_PRIVATE"];
+                          [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_APPID forKey:@"ALIPAY_APPID"];
+                          [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_PID forKey:@"ALIPAY_PID"];
+                          [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_PUBLIC forKey:@"ALIPAY_PUBLIC"];
+                          [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_SWITCH forKey:@"ALIPAY_SWITCH"];
+                          [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_ACCOUNT forKey:@"ALIPAY_ACCOUNT"];
+
                           [[NSUserDefaults standardUserDefaults] synchronize];
                           
                       }

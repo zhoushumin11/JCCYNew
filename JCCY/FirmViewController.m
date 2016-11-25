@@ -46,7 +46,14 @@
     self.view.backgroundColor = [UIColor colorFromHexRGB:@"f8f8f8"];
     
     dataArray = [NSMutableArray array];
-    refreshTimeNum = 60;
+    
+    NSString *LIVE_REFRESH_SECOND = [[NSUserDefaults standardUserDefaults] objectForKey:@"LIVE_REFRESH_SECOND"];
+    if ([LIVE_REFRESH_SECOND isEqual:[NSNull null]] || LIVE_REFRESH_SECOND == nil) {
+        refreshTimeNum = 60;
+    }else{
+        refreshTimeNum = [LIVE_REFRESH_SECOND integerValue];
+    }
+    
     //创建顶部视图
     [self creatHeadViews];
     //创建表视图
@@ -54,7 +61,7 @@
     
 }
 -(void)creatMainTableView{
-    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, PPMainViewWidth,self.view.bounds.size.height-64-50-44) style:UITableViewStylePlain];
+    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, PPMainViewWidth,self.view.bounds.size.height-64-50-44-4) style:UITableViewStylePlain];
     mainTableView.backgroundColor = [UIColor clearColor];
     mainTableView.separatorInset = UIEdgeInsetsZero;
     //        _bulletinlistTableView.tableHeaderView = [[UIView alloc] init];
@@ -259,9 +266,8 @@
     if (![live_picStr isEqual:[NSNull null]]) { //图片内容
         return 180;
     }else{
-    CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 100, 15);
-        
-        return strSize.height + 30 +20+20+20;
+    CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
+        return strSize.height + 60;
     }
 }
 
@@ -279,7 +285,7 @@
         if (cell == nil) {
             cell = [[FirmIMGCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
         }
-//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         
         cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
@@ -308,7 +314,9 @@
                 [cell.contenImageView setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
             }
         }];
-
+        
+        cell.contenImageView.tag = indexPath.row;
+        [cell.contenImageView addTarget:self action:@selector(contenImageViewAction:) forControlEvents:UIControlEventTouchUpInside];
 
         return cell;
     }else{//文字内容
@@ -318,7 +326,7 @@
         if (cell == nil) {
             cell = [[FirmStringCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
         }
-//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
         
         NSInteger num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] integerValue];
@@ -343,10 +351,16 @@
         colorStr = [colorStr substringFromIndex:1];
         cell.contenStringView.textColor = [UIColor colorFromHexRGB:colorStr];
         
-        CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 100, 15);
-        cell.contenStringView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, strSize.height+20);
+        CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
+        cell.contenStringSuperView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, strSize.height);
+        cell.contenStringView.frame = CGRectMake(10, 0, PPMainViewWidth - 120, strSize.height);
         return cell;
     }
+    
+}
+
+-(void)contenImageViewAction:(UIButton *)btn{
+    NSString *imagePath = [[dataArray objectAtIndex:btn.tag] objectForKey:@"live_pic_xx"];
     
 }
 

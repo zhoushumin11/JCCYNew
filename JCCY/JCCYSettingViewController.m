@@ -167,14 +167,20 @@
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_pic"];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_province"];
     
-    
     //清除公共数据
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"KEFU_TELPHONE"];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"IOS_IS_PRODUCE"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_APPID"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_APPSECRET"];
+    //微信
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_ACCOUNT"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_APPID"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_PID"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_PRIVATE"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_PUBLIC"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_SWITCH"];
+    //支付宝
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_SELLER_ID"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_PARTNER"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_PRIVATE"];
+    //服务器刷新时间
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LIVE_REFRESH_SECOND"];
 
     

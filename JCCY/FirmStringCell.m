@@ -38,17 +38,20 @@
         [self.allcontentView addSubview:self.iConView];
         
         //内容父视图
-//        self.contenStringSuperView setBackgroundColor = ;
-        
         [self.contenStringSuperView setBackgroundColor:[UIColor colorFromHexRGB:@"f0f0f0"]];
+        [self.contenStringSuperView setEnabled:NO];
+        self.contenStringSuperView.clipsToBounds = YES;
+        self.contenStringSuperView.layer.cornerRadius = 8;
+        [self.allcontentView addSubview:self.contenStringSuperView];
+
         
         //内容图片
         self.contenStringView.clipsToBounds = YES;
         self.contenStringView.layer.cornerRadius = 8;
         self.contenStringView.numberOfLines = 0;
         self.contenStringView.font = [UIFont systemFontOfSize:15];
-        self.contenStringView.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
-        [self.allcontentView addSubview:self.contenStringView];
+        self.contenStringView.backgroundColor = [UIColor clearColor];
+        [self.contenStringSuperView addSubview:self.contenStringView];
         
         
         
