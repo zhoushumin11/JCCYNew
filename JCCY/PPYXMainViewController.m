@@ -97,7 +97,7 @@
     self.smallScview.bounces = NO;
     
     [self.view addSubview:smallScrollView];
-    CGFloat lblX = 20;
+    CGFloat lblX = 10;
     ///这里可以修改标签的个数
     for (int i = 0; i < self.VCArr.count; i++) {
         UIViewController *vc = self.VCArr[i];

@@ -175,7 +175,7 @@
     
     
     self.levelImgView = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.levelImgView.frame = CGRectMake(PPMainViewWidth/2+10,self.headView.center.y+50, 50, 24);
+    self.levelImgView.frame = CGRectMake(PPMainViewWidth/2,self.headView.center.y+48, 50, 24);
     self.levelImgView.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
     [self setLevelImg]; //设置图标
     [self.headView addSubview:self.levelImgView];
@@ -197,7 +197,7 @@
    [self.iconImgView sd_setImageWithURL:[NSURL URLWithString:user_headImg] forState:UIControlStateNormal placeholderImage:nil options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
        
        if (image == nil) {
-           [self.iconImgView setImage:[UIImage imageNamed:@"wechatLoginBtn"] forState:UIControlStateNormal];
+           [self.iconImgView setImage:[UIImage imageNamed:@"user_head_default"] forState:UIControlStateNormal];
        }
        
     }];
@@ -259,8 +259,11 @@
         JCCYUsedHistoryViewController *sCCYUsedHistoryViewController = [[JCCYUsedHistoryViewController alloc] init];
         sCCYUsedHistoryViewController.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:sCCYUsedHistoryViewController animated:YES];
+    }else if (indexPath.row == 3){ //客服电话
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@",self.KEFU_TELPHONE]]];
+    }else if (indexPath.row == 0){//在线充值
+        
     }
-    
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {

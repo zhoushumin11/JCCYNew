@@ -33,7 +33,8 @@
         
         // 内容
         self.settingTitleLabel.textColor = [UIColor colorFromHexRGB:@"0a0a0a"];
-        self.settingTitleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:15];
+//        self.settingTitleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:15];
+        self.settingTitleLabel.font = [UIFont systemFontOfSize:15];
         self.settingTitleLabel.textAlignment = NSTextAlignmentLeft;
         [self.allcontentView addSubview:self.settingTitleLabel];
         
@@ -46,7 +47,7 @@
     [super layoutSubviews];
     self.allcontentView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     self.iConView.frame = CGRectMake(10, 0, 50, 50);
-    self.settingTitleLabel.frame = CGRectMake(70, 0, self.frame.size.width-50, 50);
+    self.settingTitleLabel.frame = CGRectMake(60, 0, self.frame.size.width-50, 50);
     
 }
 

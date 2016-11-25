@@ -34,6 +34,9 @@
 
 @property(nonatomic,strong) NSMutableArray *dataArray;//表数据
 @property(nonatomic,strong) NSMutableArray *scrollNewsArray;//滚动数据
+
+@property(nonatomic,strong) NSDictionary *pageDic; //分页字典
+
 //主表视图
 @property(nonatomic,strong) UITableView *mainTableView;
 
@@ -42,11 +45,13 @@
 @property (nonatomic,strong) UIView *mainTableViewHeaderView; //表头视图
 
 
+
+
 @end
 
 @implementation HomeViewController
 
-@synthesize user_info_btn,mainTableView,dataArray,scrollNewsArray,adBannerView,user_info_Level,mainTableViewHeaderView;
+@synthesize user_info_btn,mainTableView,dataArray,scrollNewsArray,adBannerView,user_info_Level,mainTableViewHeaderView,pageDic;
 
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -62,9 +67,7 @@
 
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.barTintColor = [UIColor colorFromHexRGB:@"e60013"];
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.title = @"首页";
-    
     
     
     //检查是否绑定手机号了
@@ -79,7 +82,8 @@
     //初始化tableView的数据
     dataArray = [NSMutableArray array];
     scrollNewsArray = [NSMutableArray array];
-    
+    pageDic = [NSDictionary dictionary];
+
     //初始化用户button
     user_info_btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     user_info_btn.frame = CGRectMake(-10, 0, 80, 44);
@@ -132,7 +136,7 @@
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, ww-30, ww, 20)];
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont systemFontOfSize:14];
-        label.textColor = [UIColor grayColor];
+        label.textColor = [UIColor blackColor];
         label.backgroundColor = [UIColor clearColor];
         label.text = buttonTitleArr[i];
         [btn addSubview:label];
@@ -149,14 +153,14 @@
     
     UILabel *goLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth - 40,0,40,44)];
     goLabel.text = @">";
-    goLabel.textColor = [UIColor grayColor];
+    goLabel.textColor = [UIColor blackColor];
     goLabel.textAlignment = NSTextAlignmentCenter;
     [zixunMsgView addSubview:goLabel];
     
     //资讯信息label
     UILabel *zixunTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(44,0,80,44)];
     zixunTitleLabel.text = @"资讯消息";
-    zixunTitleLabel.textColor = [UIColor grayColor];
+    zixunTitleLabel.textColor = [UIColor blackColor];
     [zixunMsgView addSubview:zixunTitleLabel];
     
     UIButton *zixunBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -232,7 +236,7 @@
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, ww-30, ww, 20)];
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont systemFontOfSize:14];
-        label.textColor = [UIColor grayColor];
+        label.textColor = [UIColor blackColor];
         label.backgroundColor = [UIColor clearColor];
         label.text = buttonTitleArr[i];
         [btn addSubview:label];
@@ -249,14 +253,14 @@
     //>label
     UILabel *goLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth - 40,0,40,44)];
     goLabel.text = @">";
-    goLabel.textColor = [UIColor grayColor];
+    goLabel.textColor = [UIColor blackColor];
     goLabel.textAlignment = NSTextAlignmentCenter;
     [zixunMsgView addSubview:goLabel];
     
     //资讯信息label
     UILabel *zixunTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(44,0,80,44)];
     zixunTitleLabel.text = @"资讯消息";
-    zixunTitleLabel.textColor = [UIColor grayColor];
+    zixunTitleLabel.textColor = [UIColor blackColor];
     [zixunMsgView addSubview:zixunTitleLabel];
     
     UIButton *zixunBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -387,26 +391,16 @@
                           requestdata:dJson
                        timeOutSeconds:10
                       completionBlock:^(NSDictionary *json) {
-                          
-//                          {
-//                              "arctype_id" = 4;
-//                              id = 44;
-//                              "is_delete" = 0;
-//                              "is_effect" = 1;
-//                              level = 0;
-//                              pic = "http://wutong.jingchengidea.com/upload/other/image/20161108147859526112.jpg";
-//                              pubdate = "2016-11-08";
-//                              sort = 50;
-//                              time = 1478595250;
-//                              title = "\U8bc1\U5238\U4fdd\U8bc1\U91d1\U4e0a\U5468\U51c0\U8f6c\U516561\U4ebf\U5143 \U8fde\U7eed\U4e24\U5468\U51c0\U8f6c\U5165";
-//                              url = "http://wutong.jingchengidea.com/index.php?m=Api&c=ArchivesIndex&a=view&a_id=44";
-//                          }
-                          
                           NSInteger code = [[json objectForKey:@"code"] integerValue];
                           if (code == 1) {
                               NSDictionary *dataDic = [json objectForKey:@"data"];
                               NSArray *listArr = [dataDic objectForKey:@"list"];
+                              if ([listArr isEqual:[NSNull null]]) {
+                                  return;
+                              }
                               dataArray = [NSMutableArray arrayWithArray:listArr];
+                              pageDic = [dataDic objectForKey:@"page"];
+                              
                               if (dataArray.count>0) {
                                   //刷新列表
                                   [mainTableView reloadData];
@@ -426,6 +420,50 @@
         }
 }
 
+
+//获取更多首页新闻数据
+-(void)getTableListData:(NSInteger)page{
+    NSString *dJson = nil;
+    @autoreleasepool {
+        
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%ld\"}",87,token,0,page];
+        //获取类型接
+        PPRDData *pprddata1 = [[PPRDData alloc] init];
+        [pprddata1 startAFRequest:@"/index.php/Api/Archives/index/"
+                      requestdata:dJson
+                   timeOutSeconds:10
+                  completionBlock:^(NSDictionary *json) {
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      if (code == 1) {
+                          NSDictionary *dataDic = [json objectForKey:@"data"];
+                          NSArray *listArr = [dataDic objectForKey:@"list"];
+                          
+                          if ([listArr isEqual:[NSNull null]]) {
+                              return;
+                          }
+                          dataArray = [NSMutableArray arrayWithArray:[dataArray arrayByAddingObjectsFromArray:listArr]];
+                          pageDic = [dataDic objectForKey:@"page"];
+
+                          if (dataArray.count>0) {
+                              //刷新列表
+                              [mainTableView reloadData];
+                              
+                          }else{
+                              
+                          }
+                          
+                          
+                      }else{
+                          //异常处理
+                      }
+                      
+                  } failedBlock:^(NSError *error) {
+                      
+                  }];
+    }
+}
 
 //获取首页广告数据
 -(void)getAdData{
@@ -488,7 +526,14 @@
 
 //上拉加载更多
 -(void)refreshMoreTableView{
+    //获取列表数据
+    NSString *pageStr = [[pageDic objectForKey:@"now_page"] stringValue];
     
+    if ([pageStr isEqual:[NSNull null]]) {
+        return;
+    }
+    [self getTableListData:[pageStr integerValue]];
+
 }
 
 #pragma mark --- UITableViewDelegate -----
@@ -566,8 +611,8 @@
         pPBulletinDetailViewController.titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
         [self.navigationController pushViewController:pPBulletinDetailViewController animated:YES];
     }else{
-        [WSProgressHUD showWithStatus:@"权限不足" maskType:WSProgressHUDMaskTypeDefault];
-        [WSProgressHUD autoDismiss:1];
+        [ALToastView toastInView:self.view withText:@"权限不足"];
+
     }
     
 

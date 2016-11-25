@@ -20,7 +20,10 @@
     NSDictionary  *textAttributes=@{NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName:[UIFont systemFontOfSize:18]};
     // 设置导航栏的字体大小  颜色
     [self.navigationBar setTitleTextAttributes:textAttributes];
-    
+    self.navigationBar.tintColor = [UIColor whiteColor];
+    self.navigationBar.barTintColor = [UIColor colorFromHexRGB:@"e60013"];
+    self.navigationBar.barStyle = UIBarStyleBlack;
+
     // Do any additional setup after loading the view.
 }
 - (void)didReceiveMemoryWarning {

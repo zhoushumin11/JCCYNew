@@ -25,5 +25,6 @@
 #import "UserInfoData.h"
 //#import "TipContentView.h"
 #import "PPViewController.h"
+#import "ALToastView.h"
 
 #endif

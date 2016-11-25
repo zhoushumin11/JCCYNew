@@ -33,7 +33,7 @@
         
         
         h_titleLabel.textColor = [UIColor blackColor];
-        h_titleLabel.font = SystemFont(15);
+        h_titleLabel.font = [UIFont systemFontOfSize:16];
         h_titleLabel.numberOfLines = 2;
         h_titleLabel.textAlignment = NSTextAlignmentLeft;
         [allcontentView addSubview:h_titleLabel];

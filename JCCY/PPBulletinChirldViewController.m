@@ -209,16 +209,29 @@
     
     titleStr = [NSString stringWithFormat:@"%@%@",columnSSS,titleStr];
     cell.h_titleLabel.text = titleStr;
-    cell.h_subtitleLabel.text = @"梧桐证券";
     
-    NSNumber *num = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"];
-    double i = [num doubleValue]/1000;
-    NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"hh:mm"];
-    NSString *timeStr = [dateFormat stringFromDate:nd];
+    NSString *dateStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"pubdate"];
     
-    cell.h_timeLabel.text = timeStr;
+    cell.h_subtitleLabel.text = dateStr;
+    
+    int levels = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"level"] intValue];
+    NSString *levelStr = @"";
+    if (levels == 0) {
+        cell.h_quanxianLabel.text = levelStr;
+    }else{
+        levelStr = [NSString stringWithFormat:@"%d",levels];
+        levelStr = [@"LV." stringByAppendingString:levelStr];
+        cell.h_quanxianLabel.text = levelStr;
+    }
+    
+//    NSNumber *num = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"];
+//    double i = [num doubleValue]/1000;
+//    NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];
+//    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+//    [dateFormat setDateFormat:@"hh:mm"];
+//    NSString *timeStr = [dateFormat stringFromDate:nd];
+    
+//    cell.h_timeLabel.text = timeStr;
     return cell;
     
 }
@@ -231,11 +244,19 @@
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    PPBulletinDetailViewController *pPBulletinDetailViewController = [[PPBulletinDetailViewController alloc] init];
-    pPBulletinDetailViewController.hidesBottomBarWhenPushed = YES;
-    pPBulletinDetailViewController.documentPath = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"url"];
-    pPBulletinDetailViewController.titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
-    [self.navigationController pushViewController:pPBulletinDetailViewController animated:YES];
+    int level = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"level"] intValue];
+    
+    NSInteger user_level = [[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] intValue];
+    
+    if (user_level > level || user_level == level ) {
+        PPBulletinDetailViewController *pPBulletinDetailViewController = [[PPBulletinDetailViewController alloc] init];
+        pPBulletinDetailViewController.hidesBottomBarWhenPushed = YES;
+        pPBulletinDetailViewController.documentPath = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"url"];
+        pPBulletinDetailViewController.titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+        [self.navigationController pushViewController:pPBulletinDetailViewController animated:YES];
+    }else{
+        [ALToastView toastInView:self.view withText:@"权限不足"];
+    }
     
 }
 

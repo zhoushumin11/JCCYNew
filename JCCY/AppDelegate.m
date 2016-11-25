@@ -367,7 +367,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
             if(![isLooked isEqualToString:@"1"]){//没有看过滑动页,启动滑动页
                 [self bootStartViewController];
             }else{//直接启动登录页面
-    
+                
                 [self setupViewControllers];
     
         }
@@ -497,14 +497,57 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
         self.viewController = ppLoginNavigationController;
     }else{
         self.viewController = pptabBarController;
+        //刷新公共信息
+        [self updataPublicInfo];
     }
     
     
     [_window setRootViewController:self.viewController];
 
-    
-    
-    
+}
+
+#pragma  mark ---- 当服务器提示要做公共信息更新时 ----
+-(void)updataPublicInfo{
+    NSString *dJson = nil;
+    @autoreleasepool {
+        
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+        //获取类型接
+        PPRDData *pprddata1 = [[PPRDData alloc] init];
+        [pprddata1 startAFRequest:@"/index.php/Api/Update/update_conf/"
+                      requestdata:dJson
+                   timeOutSeconds:10
+                  completionBlock:^(NSDictionary *json) {
+                      
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      if (code == 1) {
+                          NSDictionary *dataDic = [json objectForKey:@"data"];
+                          
+                          NSString *KEFU_TELPHONE = [dataDic objectForKey:@"KEFU_TELPHONE"];
+                          NSString *IOS_IS_PRODUCE = [dataDic objectForKey:@"IOS_IS_PRODUCE"];
+                          NSString *WX_APPID = [dataDic objectForKey:@"WX_APPID"];
+                          NSString *WX_APPSECRET = [dataDic objectForKey:@"WX_APPSECRET"];
+                          NSString *ALIPAY_SELLER_ID = [dataDic objectForKey:@"ALIPAY_SELLER_ID"];
+                          NSString *ALIPAY_PARTNER = [dataDic objectForKey:@"ALIPAY_PARTNER"];
+                          NSString *LIVE_REFRESH_SECOND = [dataDic objectForKey:@"LIVE_REFRESH_SECOND"];
+                          
+                          
+                          [[NSUserDefaults standardUserDefaults] setObject:KEFU_TELPHONE forKey:@"KEFU_TELPHONE"];
+                          [[NSUserDefaults standardUserDefaults] setObject:IOS_IS_PRODUCE forKey:@"IOS_IS_PRODUCE"];
+                          [[NSUserDefaults standardUserDefaults] setObject:WX_APPID forKey:@"WX_APPID"];
+                          [[NSUserDefaults standardUserDefaults] setObject:WX_APPSECRET forKey:@"WX_APPSECRET"];
+                          [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_SELLER_ID forKey:@"ALIPAY_SELLER_ID"];
+                          [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_PARTNER forKey:@"ALIPAY_PARTNER"];
+                          [[NSUserDefaults standardUserDefaults] setObject:LIVE_REFRESH_SECOND forKey:@"LIVE_REFRESH_SECOND"];
+                          [[NSUserDefaults standardUserDefaults] synchronize];
+                          
+                      }
+                  } failedBlock:^(NSError *error) {
+                      
+                  }];
+    }
 }
 
 #pragma mark - 网络判断

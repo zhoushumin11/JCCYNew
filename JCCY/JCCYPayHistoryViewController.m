@@ -9,6 +9,11 @@
 #import "JCCYPayHistoryViewController.h"
 
 @interface JCCYPayHistoryViewController ()<UITableViewDataSource,UITableViewDelegate>
+{
+    NSInteger now_page; //当前分页
+}
+@property(nonatomic,strong) NSDictionary *pageDic;//分页字典
+
 @property(nonatomic,strong) NSMutableArray *dataArray;
 @property(nonatomic,strong) UITableView *mainTableView;
 
@@ -16,12 +21,17 @@
 
 @implementation JCCYPayHistoryViewController
 
-@synthesize mainTableView;
+
+@synthesize mainTableView,dataArray,pageDic;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.title = @"充值记录";
+    
+    dataArray = [NSMutableArray array];
+    self.pageDic = [NSDictionary dictionary];
+    now_page = 1;
     
     self.view.backgroundColor = [UIColor colorFromHexRGB:@"f8f8f8"];
     mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth,self.view.bounds.size.height) style:UITableViewStylePlain];
@@ -54,16 +64,18 @@
 }
 
 -(void)refreshTableView{
-    
+    [self getdata];
     
 }
 
 -(void)refreshMoreTableView{
-
-
+    
+    NSString *pageNumsss = [[pageDic objectForKey:@"now_page"] stringValue];
+    if ([pageNumsss isEqual:[NSNull null]]) {
+        return;
+    }
+    [self getdata:[pageNumsss integerValue]];
 }
-
-
 
 -(void)getdata{
     NSString *dJson = nil;
@@ -71,7 +83,7 @@
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%d\"}",87,token,1];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/UserRecharge/list_recharge/"
@@ -79,14 +91,69 @@
                    timeOutSeconds:10
                   completionBlock:^(NSDictionary *json) {
                       
+                      if ([mainTableView.mj_header isRefreshing]) {
+                          [mainTableView.mj_header endRefreshing];
+                      }
+                      
                       NSInteger code = [[json objectForKey:@"code"] integerValue];
                       if (code == 1) {
+                          NSDictionary *dataDic = [json objectForKey:@"data"];
+                          NSArray *listArray = [dataDic objectForKey:@"list"];
                           
+                          if ([listArray isEqual:[NSNull null]]) {
+                              return;
+                          }
+                          dataArray = [NSMutableArray arrayWithArray:listArray];
+                          NSDictionary *pageDicNow = [dataDic objectForKey:@"page"];
+                          self.pageDic = pageDicNow;
                           
+                          [mainTableView reloadData];
                       }
                   } failedBlock:^(NSError *error) {
+                      if ([mainTableView.mj_header isRefreshing]) {
+                          [mainTableView.mj_header endRefreshing];
+                      }
+            }];
+     }
+}
+
+-(void)getdata:(NSInteger)nowPage{
+    NSString *dJson = nil;
+    @autoreleasepool {
+        
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%ld\"}",87,token,nowPage];
+        //获取类型接
+        PPRDData *pprddata1 = [[PPRDData alloc] init];
+        [pprddata1 startAFRequest:@"/index.php/Api/UserRecharge/list_recharge/"
+                      requestdata:dJson
+                   timeOutSeconds:10
+                  completionBlock:^(NSDictionary *json) {
                       
-                  }];
+                      if ([mainTableView.mj_header isRefreshing]) {
+                          [mainTableView.mj_header endRefreshing];
+                      }
+                      
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      if (code == 1) {
+                          NSDictionary *dataDic = [json objectForKey:@"data"];
+                          NSArray *listArray = [dataDic objectForKey:@"list"];
+                          
+                          if ([listArray isEqual:[NSNull null]]) {
+                              return;
+                          }
+                          dataArray = [NSMutableArray arrayWithArray:listArray];
+                          NSDictionary *pageDicNow = [dataDic objectForKey:@"page"];
+                          self.pageDic = [pageDicNow mutableCopy];
+                          
+                          [mainTableView reloadData];
+                      }
+                  } failedBlock:^(NSError *error) {
+                      if ([mainTableView.mj_header isRefreshing]) {
+                          [mainTableView.mj_header endRefreshing];
+                      }
+            }];
     }
 }
 

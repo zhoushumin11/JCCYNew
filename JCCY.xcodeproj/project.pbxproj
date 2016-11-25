@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		280082D71DE7EAE9000DACED /* ALToastView.m in Sources */ = {isa = PBXBuildFile; fileRef = 280082D61DE7EAE9000DACED /* ALToastView.m */; };
+		280082DB1DE81D33000DACED /* FirmIMGCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 280082DA1DE81D33000DACED /* FirmIMGCell.m */; };
+		280082DE1DE81D4D000DACED /* FirmStringCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 280082DD1DE81D4D000DACED /* FirmStringCell.m */; };
+		280082E01DE83337000DACED /* user_head_default.png in Resources */ = {isa = PBXBuildFile; fileRef = 280082DF1DE83337000DACED /* user_head_default.png */; };
 		280CF6DD1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6DC1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m */; };
 		280CF6E31DE694B400E1BA59 /* JCCYMyListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6E21DE694B400E1BA59 /* JCCYMyListViewController.m */; };
 		280CF6E71DE6956A00E1BA59 /* SettingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 280CF6E61DE6956A00E1BA59 /* SettingTableViewCell.m */; };
@@ -312,6 +316,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		280082D51DE7EAE9000DACED /* ALToastView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALToastView.h; sourceTree = "<group>"; };
+		280082D61DE7EAE9000DACED /* ALToastView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALToastView.m; sourceTree = "<group>"; };
+		280082D91DE81D33000DACED /* FirmIMGCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FirmIMGCell.h; sourceTree = "<group>"; };
+		280082DA1DE81D33000DACED /* FirmIMGCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirmIMGCell.m; sourceTree = "<group>"; };
+		280082DC1DE81D4D000DACED /* FirmStringCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FirmStringCell.h; sourceTree = "<group>"; };
+		280082DD1DE81D4D000DACED /* FirmStringCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirmStringCell.m; sourceTree = "<group>"; };
+		280082DF1DE83337000DACED /* user_head_default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_head_default.png; sourceTree = "<group>"; };
 		280CF6DB1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYZiXunTableViewCell.h; sourceTree = "<group>"; };
 		280CF6DC1DE67D8900E1BA59 /* JCCYZiXunTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYZiXunTableViewCell.m; sourceTree = "<group>"; };
 		280CF6E11DE694B400E1BA59 /* JCCYMyListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYMyListViewController.h; sourceTree = "<group>"; };
@@ -915,6 +926,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		280082D41DE7EADE000DACED /* ALToastView */ = {
+			isa = PBXGroup;
+			children = (
+				280082D51DE7EAE9000DACED /* ALToastView.h */,
+				280082D61DE7EAE9000DACED /* ALToastView.m */,
+			);
+			path = ALToastView;
+			sourceTree = "<group>";
+		};
+		280082D81DE81CF8000DACED /* 实盘 */ = {
+			isa = PBXGroup;
+			children = (
+				280082D91DE81D33000DACED /* FirmIMGCell.h */,
+				280082DA1DE81D33000DACED /* FirmIMGCell.m */,
+				280082DC1DE81D4D000DACED /* FirmStringCell.h */,
+				280082DD1DE81D4D000DACED /* FirmStringCell.m */,
+			);
+			name = "实盘";
+			sourceTree = "<group>";
+		};
 		280CF6D91DE675E600E1BA59 /* 资讯消息 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1010,6 +1041,7 @@
 		284695941DE3E7B8007DC603 /* IMGFiles */ = {
 			isa = PBXGroup;
 			children = (
+				280082DF1DE83337000DACED /* user_head_default.png */,
 				284695951DE3E808007DC603 /* tabBarBtnImg */,
 				284695911DE3E649007DC603 /* loginBackImg.png */,
 				2846958B1DE3DEF2007DC603 /* yingdaoye.jpg */,
@@ -1101,6 +1133,7 @@
 		284D0F1E1DDED7C200F20D92 /* ThirdLibrary */ = {
 			isa = PBXGroup;
 			children = (
+				280082D41DE7EADE000DACED /* ALToastView */,
 				282DF7701DE42D8800F9FAE9 /* TAPageControl */,
 				282DF7691DE42BCE00F9FAE9 /* NJBannerView */,
 				28ECC7D01DE29DF300525BDB /* JPush */,
@@ -1631,6 +1664,7 @@
 		284D10AA1DDEDC4100F20D92 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				280082D81DE81CF8000DACED /* 实盘 */,
 				280CF6E41DE6953900E1BA59 /* 用户信息 */,
 				2835DABB1DE5677C008D2BCB /* 主页 */,
 			);
@@ -2341,6 +2375,7 @@
 				284D10171DDED93900F20D92 /* UIBarButtonItemArrowLeft@2x.png in Resources */,
 				284D100F1DDED93900F20D92 /* ImageSelectedSmallOn@3x.png in Resources */,
 				284D101C1DDED93900F20D92 /* UIBarButtonItemGrid.png in Resources */,
+				280082E01DE83337000DACED /* user_head_default.png in Resources */,
 				284D10121DDED93900F20D92 /* PlayButtonOverlayLarge@3x.png in Resources */,
 				284D10061DDED93900F20D92 /* ImageSelectedOff@3x.png in Resources */,
 				284D10091DDED93900F20D92 /* ImageSelectedOn@3x.png in Resources */,
@@ -2375,6 +2410,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				284D10501DDED94300F20D92 /* SDImageCache.m in Sources */,
+				280082D71DE7EAE9000DACED /* ALToastView.m in Sources */,
 				282DF7861DE42D8800F9FAE9 /* TAAnimatedDotView.m in Sources */,
 				284D10571DDED94300F20D92 /* UIButton+WebCache.m in Sources */,
 				284D0FC21DDED92900F20D92 /* UIScrollView+MJExtension.m in Sources */,
@@ -2408,6 +2444,7 @@
 				284D11411DDEE76000F20D92 /* EYTagView.m in Sources */,
 				282DF78B1DE43FBC00F9FAE9 /* UserInfoData.m in Sources */,
 				284D10581DDED94300F20D92 /* UIImage+GIF.m in Sources */,
+				280082DB1DE81D33000DACED /* FirmIMGCell.m in Sources */,
 				284D10951DDED96E00F20D92 /* AFURLResponseSerialization.m in Sources */,
 				284D11251DDEE41000F20D92 /* PPTabBarController.m in Sources */,
 				284D0F791DDED91500F20D92 /* MLPhotoPickerImageView.m in Sources */,
@@ -2444,6 +2481,7 @@
 				284D113A1DDEE69800F20D92 /* EYTagPopupView.m in Sources */,
 				282DF7881DE42D8800F9FAE9 /* TAPageControl.m in Sources */,
 				284D0FB71DDED92900F20D92 /* MJRefreshAutoNormalFooter.m in Sources */,
+				280082DE1DE81D4D000DACED /* FirmStringCell.m in Sources */,
 				28ECC7CC1DE1869900525BDB /* UMShareMenuItem.m in Sources */,
 				284D0FC11DDED92900F20D92 /* NSBundle+MJRefresh.m in Sources */,
 				28ECC7CE1DE1869900525BDB /* UMSocialShareScrollView.m in Sources */,

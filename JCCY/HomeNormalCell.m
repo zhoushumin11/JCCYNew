@@ -26,7 +26,9 @@
         [self.contentView addSubview:allcontentView];
         
         h_titleLabel.textColor = [UIColor blackColor];
-        h_titleLabel.font = SystemFont(15);
+//        h_titleLabel.font = SystemFont(15);
+        h_titleLabel.font = [UIFont systemFontOfSize:15];
+        
         h_titleLabel.textAlignment = NSTextAlignmentLeft;
         [allcontentView addSubview:h_titleLabel];
         

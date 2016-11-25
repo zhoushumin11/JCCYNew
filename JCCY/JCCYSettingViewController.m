@@ -167,6 +167,17 @@
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_pic"];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_province"];
     
+    
+    //清除公共数据
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"KEFU_TELPHONE"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"IOS_IS_PRODUCE"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_APPID"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_APPSECRET"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_SELLER_ID"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_PARTNER"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LIVE_REFRESH_SECOND"];
+
+    
     //清除登录信息
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"isLogin"];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"token"];
