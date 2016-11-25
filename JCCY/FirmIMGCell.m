@@ -30,22 +30,26 @@
         [self.contentView addSubview:self.allcontentView];
         
         //头像
-        self.iConView.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+        self.iConView.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+        self.iConView.clipsToBounds = YES;
+        self.iConView.layer.cornerRadius = 25;
         [self.allcontentView addSubview:self.iConView];
         
         //内容图片
         self.contenImageView.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+        self.contenImageView.clipsToBounds = YES;
+        self.contenImageView.layer.cornerRadius = 8;
         [self.allcontentView addSubview:self.contenImageView];
         
         //姓名
         self.userNameLabel.textColor = [UIColor colorFromHexRGB:@"0a0a0a"];
         //        self.settingTitleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:15];
         self.userNameLabel.font = [UIFont systemFontOfSize:15];
-        self.userNameLabel.textAlignment = NSTextAlignmentLeft;
+        self.userNameLabel.textAlignment = NSTextAlignmentCenter;
         [self.allcontentView addSubview:self.userNameLabel];
         
         //时间
-        self.timeLabel.textColor = [UIColor colorFromHexRGB:@"0a0a0a"];
+        self.timeLabel.textColor = [UIColor grayColor];
         self.timeLabel.font = [UIFont systemFontOfSize:15];
         self.timeLabel.textAlignment = NSTextAlignmentLeft;
         [self.allcontentView addSubview:self.timeLabel];
@@ -58,10 +62,10 @@
     [super layoutSubviews];
     self.allcontentView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     
-    self.iConView.frame = CGRectMake(10, 10, 70, 70);
-    self.userNameLabel.frame = CGRectMake(20,80, 70, 30);
-    self.timeLabel.frame = CGRectMake(80, 10, 100, 30);
-    self.contenImageView.frame = CGRectMake(80, 50, 100, 80);
+    self.iConView.frame = CGRectMake(20, 10, 50, 50);
+    self.userNameLabel.frame = CGRectMake(15,75, 60, 30);
+    self.timeLabel.frame = CGRectMake(90, 10, 200, 30);
+    self.contenImageView.frame = CGRectMake(90, 50, 200, 120);
     
     
 }

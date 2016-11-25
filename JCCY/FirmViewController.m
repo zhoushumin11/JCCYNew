@@ -54,7 +54,7 @@
     
 }
 -(void)creatMainTableView{
-    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, PPMainViewWidth,self.view.bounds.size.height) style:UITableViewStylePlain];
+    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, PPMainViewWidth,self.view.bounds.size.height-64-50-44) style:UITableViewStylePlain];
     mainTableView.backgroundColor = [UIColor clearColor];
     mainTableView.separatorInset = UIEdgeInsetsZero;
     //        _bulletinlistTableView.tableHeaderView = [[UIView alloc] init];
@@ -256,10 +256,12 @@
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSString *live_picStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_pic"];
-    if ([live_picStr isEqual:[NSNull null]]) { //图片内容
-        return 120;
+    if (![live_picStr isEqual:[NSNull null]]) { //图片内容
+        return 180;
     }else{
-        return 100;
+    CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 100, 15);
+        
+        return strSize.height + 30 +20+20+20;
     }
 }
 
@@ -268,20 +270,32 @@
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-
-    NSString *live_picStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_pic"];
     
-    if ([live_picStr isEqual:[NSNull null]]) { //图片内容
+    
+    NSString *live_picStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_pic"];
+    if (![live_picStr isEqual:[NSNull null]]) { //图片内容
         static NSString *identify = @"FirmIMGCell";
         FirmIMGCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
         if (cell == nil) {
             cell = [[FirmIMGCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
         }
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         
+        cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
+        
+        NSInteger num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] integerValue];
+        double i = [[NSNumber numberWithInteger:num] doubleValue]/1000;
+        NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];
+        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+        [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm"];
+        NSString *timeStr = [dateFormat stringFromDate:nd];
+        cell.timeLabel.text = timeStr;
+        
+        NSString *icon_picStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_pic"];
+
         //设置头像图片
-        [cell.iConView sd_setImageWithURL:[NSURL URLWithString:live_picStr] forState:UIControlStateNormal placeholderImage:nil options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        [cell.iConView sd_setImageWithURL:[NSURL URLWithString:icon_picStr] forState:UIControlStateNormal placeholderImage:nil options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             if (image == nil) {
                 [cell.iConView setImage:[UIImage imageNamed:@"user_head_default"] forState:UIControlStateNormal];
             }
@@ -304,14 +318,33 @@
         if (cell == nil) {
             cell = [[FirmStringCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
         }
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
         
+        NSInteger num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] integerValue];
+        double i = [[NSNumber numberWithInteger:num] doubleValue]/1000;
+        NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];
+        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+        [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm"];
+        NSString *timeStr = [dateFormat stringFromDate:nd];
+        cell.timeLabel.text = timeStr;
         
+        NSString *icon_picStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_pic"];
         
+        //设置头像图片
+        [cell.iConView sd_setImageWithURL:[NSURL URLWithString:icon_picStr] forState:UIControlStateNormal placeholderImage:nil options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            if (image == nil) {
+                [cell.iConView setImage:[UIImage imageNamed:@"user_head_default"] forState:UIControlStateNormal];
+            }
+        }];
         
+        cell.contenStringView.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"];
+        NSString *colorStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title_color"];
+        colorStr = [colorStr substringFromIndex:1];
+        cell.contenStringView.textColor = [UIColor colorFromHexRGB:colorStr];
         
-        
-        
+        CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 100, 15);
+        cell.contenStringView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, strSize.height+20);
         return cell;
     }
     
