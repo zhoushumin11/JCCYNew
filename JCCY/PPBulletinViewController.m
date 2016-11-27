@@ -65,6 +65,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshMoreTableViewData) name:@"refreshMoreTableViewData" object:nil];
     
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshZixunxiaoxiById:) name:@"refreshZixunxiaoxiById" object:nil];
+
     self.title = @"资讯消息";
     //数据初始化
     vcindex = 0;
@@ -82,6 +84,13 @@
     //刷新广告
     [self getAdData];
     
+}
+
+#pragma mark-- 通过id 刷新视图 --- 
+-(void)refreshZixunxiaoxiById:(NSNotification *)obj{
+    NSString *ad_parameter = [obj object];
+    self.colunmId_index = ad_parameter;
+    [self getonlineSliderData];
 }
 
 #pragma mark ---- 获取首页广告数据---
@@ -188,8 +197,23 @@
                           return ;
                       }
                       
-                      
-                      columnArray = [NSMutableArray arrayWithArray:dateArray];
+                      //如果传了id 就要排序
+                      if ([self.colunmId_index isEqualToString:@""] || self.colunmId_index == nil) {
+                          columnArray = [NSMutableArray arrayWithArray:dateArray];
+
+                      }else{
+                          NSMutableArray *data_paixu = [NSMutableArray arrayWithArray:dateArray];
+                          for (int j = 0; j<data_paixu.count; j++) {
+                              NSString *typeid = [[data_paixu objectAtIndex:j] objectForKey:@"typeid"];
+                              NSDictionary *fisrtDic = [data_paixu objectAtIndex:j];
+                              if ([typeid isEqualToString:self.colunmId_index]) {
+                                  [data_paixu removeObjectAtIndex:j];
+                                  [data_paixu insertObject:fisrtDic atIndex:0];
+                              }
+                          }
+                          columnArray = [NSMutableArray arrayWithArray:data_paixu];
+                      }
+   
  
                       for (int i = 0; i<columnArray.count; i++) {
                           pPBulletinChirldViewController = [[PPBulletinChirldViewController alloc] init];
@@ -210,9 +234,11 @@
                       [self addChildViewController:tabBarVC];
                       
                       
+                      
                       //刷新第0个视图
                       NSString *columnIdstring = [[columnArray objectAtIndex:vcindex] objectForKey:@"typeid"];
                       [self getonlineData:columnIdstring];
+                      
                       
                   }
                       failedBlock:^(NSError *error) {

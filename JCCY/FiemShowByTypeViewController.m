@@ -42,8 +42,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"实盘";
     
+    if ([self.typeString isEqualToString:@"1"]) {
+        self.title = @"赞赏";
+    }else if ([self.typeString isEqualToString:@"2"]){
+        self.title = @"钻石";
+    }else if ([self.typeString isEqualToString:@"3"]){
+        self.title = @"黄金";
+    }else if ([self.typeString isEqualToString:@"0"]){
+        self.title = @"实盘";
+    }
     if( ([[[UIDevice currentDevice] systemVersion] doubleValue]>=7.0)) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.extendedLayoutIncludesOpaqueBars = NO;
@@ -68,7 +76,7 @@
     
 }
 -(void)creatMainTableView{
-    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, PPMainViewWidth,self.view.bounds.size.height-64-50-44-4) style:UITableViewStylePlain];
+    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, PPMainViewWidth,self.view.bounds.size.height-64-50) style:UITableViewStylePlain];
     mainTableView.backgroundColor = [UIColor clearColor];
     mainTableView.separatorInset = UIEdgeInsetsZero;
     //        _bulletinlistTableView.tableHeaderView = [[UIView alloc] init];
@@ -96,12 +104,6 @@
     [self timerInvalidate];
 }
 
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:YES];
-    [self getServerData];
-    //刷新我的信息
-    [self initMyView];
-}
 -(void)initMyView{
     
     //初始化用户button
@@ -273,6 +275,8 @@
 //获取直播数据
 -(void)getServerData{
     
+    NSInteger platform = [self.typeString integerValue];
+    
     //显示刷新视图
     [self initZhiboDatas11];
     NSString *dJson = nil;
@@ -280,7 +284,7 @@
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"platform\":\"%d\"}",87,token,0];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"platform\":\"%ld\"}",87,token,platform];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Live/index/"

@@ -27,6 +27,8 @@
 //用户资料
 #import "JCCYMyListViewController.h"
 
+#import "FiemShowByTypeViewController.h"
+
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
 
 @property (nonatomic, strong) UIButton *user_info_btn; //用户信息button
@@ -292,28 +294,80 @@
     
 }
 
-//资讯消息栏点击事件
+#pragma mark --资讯消息栏点击事件
 -(void)zixunBtnAction{
     PPBulletinViewController *jCCYNewsMainViewController = [[PPBulletinViewController alloc] init];
     jCCYNewsMainViewController.hidesBottomBarWhenPushed = YES;
+    jCCYNewsMainViewController.colunmId_index = @"";
     [self.navigationController pushViewController:jCCYNewsMainViewController animated:YES];
 }
-
+#pragma mark --首页button响应
 //首页button响应事假
 -(void)homeBtnAction:(UIButton *)btn{
     if (btn.tag == 2016) {//实盘
-        
+        self.tabBarController.selectedIndex = 1;
     }else if (btn.tag == 2017){//赞赏
-        
+        FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+        fiemShowByTypeViewController.typeString = @"1";
+        fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
     }else if (btn.tag == 2018){//钻石
-        
+        FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+        fiemShowByTypeViewController.typeString = @"2";
+        fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
     }else if (btn.tag == 2019){//黄金
-        
+        FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+        fiemShowByTypeViewController.typeString = @"3";
+        fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
     }
 }
 
+#pragma mark --滚动新闻点击事件
 //滚动新闻点击事件
 -(void)endterNewsPage:(NSDictionary *)dic{
+    
+    NSInteger ad_type = [[dic objectForKey:@"ad_type"] integerValue];
+    if (ad_type == 0) {//0为网页外链 ad_parameter为网址
+        NSString *ad_parameter = [dic objectForKey:@"ad_parameter"];
+        PPBulletinDetailViewController *pPBulletinDetailViewController = [[PPBulletinDetailViewController alloc] init];
+        pPBulletinDetailViewController.hidesBottomBarWhenPushed = YES;
+        pPBulletinDetailViewController.documentPath = ad_parameter;
+        pPBulletinDetailViewController.titleStr = [dic objectForKey:@"ad_title"];
+        [self.navigationController pushViewController:pPBulletinDetailViewController animated:YES];
+    }else if (ad_type == 1){//1为文章栏目ad_parameter为栏目id
+        NSString *ad_parameter = [dic objectForKey:@"ad_parameter"];
+        PPBulletinViewController *jCCYNewsMainViewController = [[PPBulletinViewController alloc] init];
+        jCCYNewsMainViewController.hidesBottomBarWhenPushed = YES;
+        jCCYNewsMainViewController.colunmId_index = ad_parameter;
+        [self.navigationController pushViewController:jCCYNewsMainViewController animated:YES];
+    }else if (ad_type == 2){//为直播间ad_parameter为直播间类别0免费1赞赏2钻石 3黄金
+        NSString *ad_parameter = [dic objectForKey:@"ad_parameter"];
+        if ([ad_parameter isEqualToString:@"0"]) {
+            self.tabBarController.selectedIndex = 1;
+        }else if ([ad_parameter isEqualToString:@"1"]){
+            FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+            fiemShowByTypeViewController.typeString = @"1";
+            fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
+        }else if ([ad_parameter isEqualToString:@"2"]){
+            FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+            fiemShowByTypeViewController.typeString = @"2";
+            fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
+        }else if ([ad_parameter isEqualToString:@"3"]){
+            FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+            fiemShowByTypeViewController.typeString = @"3";
+            fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
+        }
+
+    }else if (ad_type == 3){//为金币充值页面
+        
+    }else if (ad_type == 4){//为购买红包里盘页面
+        self.tabBarController.selectedIndex = 2;
+    }
     
 }
 
@@ -345,7 +399,7 @@
 //创建主视图
 -(void)creatMainView{
     self.view.backgroundColor = [UIColor colorFromHexRGB:@"f8f8f8"];
-    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth,self.view.bounds.size.height) style:UITableViewStylePlain];
+    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth,self.view.bounds.size.height+2) style:UITableViewStylePlain];
     mainTableView.backgroundColor = [UIColor clearColor];
     mainTableView.separatorInset = UIEdgeInsetsZero;
     //        _bulletinlistTableView.tableHeaderView = [[UIView alloc] init];

@@ -26,5 +26,7 @@
 //#import "TipContentView.h"
 #import "PPViewController.h"
 #import "ALToastView.h"
+#import "BXExtensions.h"
+
 
 #endif

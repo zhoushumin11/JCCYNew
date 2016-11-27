@@ -10,4 +10,6 @@
 
 @interface PPBulletinViewController : PPViewController
 
+@property(nonatomic,strong) NSString *colunmId_index;
+
 @end

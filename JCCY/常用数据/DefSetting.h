@@ -18,7 +18,10 @@
 #define isAtLeastiOS7 (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
 #define IMG(imgname) [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]pathForResource:imgname ofType:@"png"]]
 
-
+#define BXScreenH [UIScreen mainScreen].bounds.size.height
+#define BXScreenW [UIScreen mainScreen].bounds.size.width
+// 设置颜色
+#define BXColor(r, g, b) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
 typedef enum : NSUInteger {
     PPkrpsType,
     PPInitiateType,

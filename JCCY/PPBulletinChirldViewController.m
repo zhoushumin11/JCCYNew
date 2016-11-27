@@ -14,6 +14,8 @@
 
 #import "JCCYZiXunTableViewCell.h"
 
+#import "FiemShowByTypeViewController.h"
+
 @interface PPBulletinChirldViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic, strong) NJBannerView *adBannerView;//广告滚动页
@@ -143,15 +145,46 @@
 //滚动新闻点击事件
 -(void)endterNewsPage:(NSDictionary *)dic{
     
-    int i = [[dic objectForKey:@"index"] intValue];
-    
-    NSString *titleStr = [[scrollNewsArray objectAtIndex:i] objectForKey:@"title"];
-    
-//    PPBulletinDetailViewController *pPBulletinDetailViewController = [[PPBulletinDetailViewController alloc] init];
-//    pPBulletinDetailViewController.hidesBottomBarWhenPushed = YES;
-//    pPBulletinDetailViewController.documentPath = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"url"];
-//    pPBulletinDetailViewController.titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
-//    [self.navigationController pushViewController:pPBulletinDetailViewController animated:YES];
+    NSInteger ad_type = [[dic objectForKey:@"ad_type"] integerValue];
+    if (ad_type == 0) {//0为网页外链 ad_parameter为网址
+        NSString *ad_parameter = [dic objectForKey:@"ad_parameter"];
+        PPBulletinDetailViewController *pPBulletinDetailViewController = [[PPBulletinDetailViewController alloc] init];
+        pPBulletinDetailViewController.hidesBottomBarWhenPushed = YES;
+        pPBulletinDetailViewController.documentPath = ad_parameter;
+        pPBulletinDetailViewController.titleStr = [dic objectForKey:@"ad_title"];
+        [self.navigationController pushViewController:pPBulletinDetailViewController animated:YES];
+    }else if (ad_type == 1){//1为文章栏目ad_parameter为栏目id
+        NSString *ad_parameter = [dic objectForKey:@"ad_parameter"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshZixunxiaoxiById" object:ad_parameter];
+        
+    }else if (ad_type == 2){//为直播间ad_parameter为直播间类别0免费1赞赏2钻石 3黄金
+        NSString *ad_parameter = [dic objectForKey:@"ad_parameter"];
+        if ([ad_parameter isEqualToString:@"0"]) {
+            FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+            fiemShowByTypeViewController.typeString = @"0";
+            fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];        }else if ([ad_parameter isEqualToString:@"1"]){
+            FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+            fiemShowByTypeViewController.typeString = @"1";
+            fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
+        }else if ([ad_parameter isEqualToString:@"2"]){
+            FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+            fiemShowByTypeViewController.typeString = @"2";
+            fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
+        }else if ([ad_parameter isEqualToString:@"3"]){
+            FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+            fiemShowByTypeViewController.typeString = @"3";
+            fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
+        }
+        
+    }else if (ad_type == 3){//为金币充值页面
+        
+    }else if (ad_type == 4){//为购买红包里盘页面
+        self.tabBarController.selectedIndex = 2;
+    }
 }
 
 
