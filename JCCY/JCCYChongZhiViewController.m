@@ -14,6 +14,8 @@
 
 @property(nonatomic,strong) UIView *buttonsView;
 
+@property(nonatomic,strong) UIView *payView;
+
 @property(nonatomic,assign) NSString *conf_recharge_id; //当前充值金额类型id
 
 
@@ -25,7 +27,7 @@
 
 @implementation JCCYChongZhiViewController
 
-@synthesize dataArray,mainScrollView,buttonsView,conf_recharge_id;
+@synthesize dataArray,mainScrollView,buttonsView,conf_recharge_id,payView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -101,9 +103,10 @@
 
 -(void)creatButtons:(NSInteger)selectedIndex{
     
-    float viewY = (dataArray.count/3+1) *(PPMainViewWidth/3) +(dataArray.count * 10);
+    float viewY = (dataArray.count/3+1) *(((PPMainViewWidth-40)/3)-30) +(dataArray.count * 10);
     
     buttonsView  = [[UIView alloc] initWithFrame:CGRectMake(0, 50, PPMainViewWidth, viewY)];
+    
     
     for (int i= 0; i<dataArray.count; i++) {
         float buttonW = (PPMainViewWidth-40)/3;
@@ -150,6 +153,88 @@
     }
     
     [mainScrollView addSubview:buttonsView];
+    
+    //创建支付类型按钮
+    [self creatPayTypeBtns];
+}
+#pragma mark ---创建支付类型按钮 --
+-(void)creatPayTypeBtns{
+    
+    payView = [[UIView alloc] initWithFrame:CGRectMake(10,20+buttonsView.frame.origin.y+ buttonsView.frame.size.height, PPMainViewWidth-20, 120)];
+    payView.backgroundColor = [UIColor whiteColor];
+    [mainScrollView addSubview:payView];
+    
+    //设置支付类型按钮
+    [self creatPayTypeBtn:0];
+    
+    //确定 button
+    UIButton *quedingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    quedingBtn.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:17];
+    quedingBtn.frame = CGRectMake(35, payView.frame.origin.y + payView.frame.size.height+10, PPMainViewWidth-70, 45);
+    
+    [quedingBtn.layer setMasksToBounds:YES];
+    [quedingBtn.layer setCornerRadius:5.0]; //设置矩形四个圆角半径
+    quedingBtn.backgroundColor = [UIColor colorFromHexRGB:@"e60013"];
+    [quedingBtn setTitle:@"确认" forState:UIControlStateNormal];
+    [quedingBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [quedingBtn addTarget:self action:@selector(quedingPhone) forControlEvents:UIControlEventTouchUpInside];
+    //    @selector(login)
+    [mainScrollView addSubview:quedingBtn];
+    
+}
+
+#pragma 创建支付类型按钮
+-(void)creatPayTypeBtn:(NSInteger)payType{
+    NSArray *imageArray = [NSArray arrayWithObjects:@"zhifubao_PayType",@"weixin_PayType", nil];
+    NSArray *titleArray = [NSArray arrayWithObjects:@"支付宝钱包充值",@"微信充值", nil];
+    NSArray *subTitleArray = [NSArray arrayWithObjects:@"推荐支付宝用户使用",@"推荐有微信支付的账户的用户使用", nil];
+
+
+    for (int i = 0; i<2; i++) {
+        UIView *view  = [[UIView alloc] initWithFrame:CGRectMake(0, (60*i), PPMainViewWidth-20, 60)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 50, 50)];
+        imageView.image = [UIImage imageNamed:[imageArray objectAtIndex:i]];
+        [view addSubview:imageView];
+        
+        UILabel *titleLable = [[UILabel alloc] initWithFrame:CGRectMake(58, 5, 200, 20)];
+        titleLable.textColor = [UIColor grayColor];
+        titleLable.text = titleArray[i];
+        [view addSubview:titleLable];
+        
+        UILabel *sublabel  = [[UILabel alloc] initWithFrame:CGRectMake(58, 25, 200, 20)];
+        sublabel.textColor = [UIColor grayColor];
+        sublabel.text = subTitleArray[i];
+        [view addSubview:sublabel];
+        
+        UIButton *chooseeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        chooseeBtn.frame = CGRectMake(PPMainViewWidth - 20 - 40, 10, 40, 40);
+        
+        chooseeBtn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+        
+        if (payType == i) {
+            [chooseeBtn setImage:[UIImage imageNamed:@"payType_selected"] forState:UIControlStateNormal];
+        }else{
+            [chooseeBtn setImage:[UIImage imageNamed:@"payType_DisSelected"] forState:UIControlStateNormal];
+        }
+        
+        chooseeBtn.tag = i;
+        
+        [chooseeBtn addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:chooseeBtn];
+        
+        [payView addSubview:view];
+    }
+    
+}
+//支付类型
+-(void)choosePayTypeBtnAction:(UIButton *)btn{
+    
+    [self creatPayTypeBtn:btn.tag];
+}
+
+//确定充值
+-(void)quedingPhone{
+    
 }
 
 #pragma mark --- 充值金额类型按钮点击事件 -- 
