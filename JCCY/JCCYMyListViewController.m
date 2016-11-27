@@ -17,6 +17,8 @@
 #import "JCCYUsedHistoryViewController.h"
 #import "JCCYPayHistoryViewController.h"
 
+#import "JCCYChongZhiViewController.h"
+
 #define HEADHEIGHT (PPMainViewWidth*0.5)
 
 @interface JCCYMyListViewController ()<UITableViewDelegate,UITableViewDataSource>
@@ -262,7 +264,9 @@
     }else if (indexPath.row == 3){ //客服电话
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@",self.KEFU_TELPHONE]]];
     }else if (indexPath.row == 0){//在线充值
-        
+        JCCYChongZhiViewController *jCCYChongZhiViewController = [[JCCYChongZhiViewController alloc] init];
+        jCCYChongZhiViewController.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:jCCYChongZhiViewController animated:YES];
     }
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section

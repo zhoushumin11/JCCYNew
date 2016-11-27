@@ -43,6 +43,10 @@
 		280EF4361DEAE28B0016A041 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 280EF4231DEAE28B0016A041 /* UIView+Extension.m */; };
 		280EF4371DEAE28B0016A041 /* UIView+IBExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 280EF4251DEAE28B0016A041 /* UIView+IBExtension.m */; };
 		280EF4381DEAE28B0016A041 /* UIView+Runtime.m in Sources */ = {isa = PBXBuildFile; fileRef = 280EF4271DEAE28B0016A041 /* UIView+Runtime.m */; };
+		280EF43C1DEB05C80016A041 /* JCCYChongZhiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 280EF43B1DEB05C80016A041 /* JCCYChongZhiViewController.m */; };
+		280EF4401DEB0A650016A041 /* JCCYPayTypeButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 280EF43F1DEB0A650016A041 /* JCCYPayTypeButtonView.m */; };
+		280EF4431DEB0A7A0016A041 /* JCCYPayTypeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 280EF4421DEB0A7A0016A041 /* JCCYPayTypeView.m */; };
+		280EF4451DEB19690016A041 /* JCCY_YiXuan.png in Resources */ = {isa = PBXBuildFile; fileRef = 280EF4441DEB19690016A041 /* JCCY_YiXuan.png */; };
 		282DF76E1DE42BCE00F9FAE9 /* NJBannerImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF76B1DE42BCE00F9FAE9 /* NJBannerImageView.m */; };
 		282DF76F1DE42BCE00F9FAE9 /* NJBannerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF76D1DE42BCE00F9FAE9 /* NJBannerView.m */; };
 		282DF77F1DE42D8800F9FAE9 /* dotActive.png in Resources */ = {isa = PBXBuildFile; fileRef = 282DF7711DE42D8800F9FAE9 /* dotActive.png */; };
@@ -411,6 +415,13 @@
 		280EF4251DEAE28B0016A041 /* UIView+IBExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+IBExtension.m"; sourceTree = "<group>"; };
 		280EF4261DEAE28B0016A041 /* UIView+Runtime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Runtime.h"; sourceTree = "<group>"; };
 		280EF4271DEAE28B0016A041 /* UIView+Runtime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Runtime.m"; sourceTree = "<group>"; };
+		280EF43A1DEB05C80016A041 /* JCCYChongZhiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYChongZhiViewController.h; sourceTree = "<group>"; };
+		280EF43B1DEB05C80016A041 /* JCCYChongZhiViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYChongZhiViewController.m; sourceTree = "<group>"; };
+		280EF43E1DEB0A650016A041 /* JCCYPayTypeButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYPayTypeButtonView.h; sourceTree = "<group>"; };
+		280EF43F1DEB0A650016A041 /* JCCYPayTypeButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYPayTypeButtonView.m; sourceTree = "<group>"; };
+		280EF4411DEB0A7A0016A041 /* JCCYPayTypeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYPayTypeView.h; sourceTree = "<group>"; };
+		280EF4421DEB0A7A0016A041 /* JCCYPayTypeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYPayTypeView.m; sourceTree = "<group>"; };
+		280EF4441DEB19690016A041 /* JCCY_YiXuan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = JCCY_YiXuan.png; sourceTree = "<group>"; };
 		282DF76A1DE42BCE00F9FAE9 /* NJBannerImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJBannerImageView.h; sourceTree = "<group>"; };
 		282DF76B1DE42BCE00F9FAE9 /* NJBannerImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NJBannerImageView.m; sourceTree = "<group>"; };
 		282DF76C1DE42BCE00F9FAE9 /* NJBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJBannerView.h; sourceTree = "<group>"; };
@@ -1056,6 +1067,7 @@
 		280CF6E41DE6953900E1BA59 /* 用户信息 */ = {
 			isa = PBXGroup;
 			children = (
+				280EF43D1DEB09E90016A041 /* 充值 */,
 				280CF6E51DE6956A00E1BA59 /* SettingTableViewCell.h */,
 				280CF6E61DE6956A00E1BA59 /* SettingTableViewCell.m */,
 			);
@@ -1126,6 +1138,27 @@
 				280EF4271DEAE28B0016A041 /* UIView+Runtime.m */,
 			);
 			path = Category;
+			sourceTree = "<group>";
+		};
+		280EF4391DEB05570016A041 /* 充值 */ = {
+			isa = PBXGroup;
+			children = (
+				280EF43A1DEB05C80016A041 /* JCCYChongZhiViewController.h */,
+				280EF43B1DEB05C80016A041 /* JCCYChongZhiViewController.m */,
+			);
+			name = "充值";
+			sourceTree = "<group>";
+		};
+		280EF43D1DEB09E90016A041 /* 充值 */ = {
+			isa = PBXGroup;
+			children = (
+				280EF4441DEB19690016A041 /* JCCY_YiXuan.png */,
+				280EF43E1DEB0A650016A041 /* JCCYPayTypeButtonView.h */,
+				280EF43F1DEB0A650016A041 /* JCCYPayTypeButtonView.m */,
+				280EF4411DEB0A7A0016A041 /* JCCYPayTypeView.h */,
+				280EF4421DEB0A7A0016A041 /* JCCYPayTypeView.m */,
+			);
+			name = "充值";
 			sourceTree = "<group>";
 		};
 		282DF7691DE42BCE00F9FAE9 /* NJBannerView */ = {
@@ -2039,6 +2072,7 @@
 		284D11571DDEE95C00F20D92 /* 用户资料和设置 */ = {
 			isa = PBXGroup;
 			children = (
+				280EF4391DEB05570016A041 /* 充值 */,
 				280CF6E11DE694B400E1BA59 /* JCCYMyListViewController.h */,
 				280CF6E21DE694B400E1BA59 /* JCCYMyListViewController.m */,
 				280CF6E81DE6E7C600E1BA59 /* JCCYLevelInfoViewController.h */,
@@ -2523,6 +2557,7 @@
 				284D10211DDED93900F20D92 /* VideoOverlay@3x.png in Resources */,
 				284D101B1DDED93900F20D92 /* UIBarButtonItemArrowRight@3x.png in Resources */,
 				284D10041DDED93900F20D92 /* ImageSelectedOff.png in Resources */,
+				280EF4451DEB19690016A041 /* JCCY_YiXuan.png in Resources */,
 				282DF7821DE42D8800F9FAE9 /* dotInactive.png in Resources */,
 				284D10031DDED93900F20D92 /* ImageError@3x.png in Resources */,
 				284D10191DDED93900F20D92 /* UIBarButtonItemArrowRight.png in Resources */,
@@ -2589,6 +2624,7 @@
 				284D11371DDEE69800F20D92 /* EYInputPopupView.m in Sources */,
 				280EF3FB1DEADDA30016A041 /* BXBadgeView.m in Sources */,
 				28ECC7221DE1784E00525BDB /* PPRegistViewController.m in Sources */,
+				280EF43C1DEB05C80016A041 /* JCCYChongZhiViewController.m in Sources */,
 				284D10CE1DDEDF4E00F20D92 /* DACircularProgressView.m in Sources */,
 				284D10921DDED96E00F20D92 /* AFNetworkReachabilityManager.m in Sources */,
 				284D10BD1DDEDDE200F20D92 /* pinyin.c in Sources */,
@@ -2637,6 +2673,7 @@
 				284D10531DDED94300F20D92 /* SDWebImageDownloader.m in Sources */,
 				282DF76E1DE42BCE00F9FAE9 /* NJBannerImageView.m in Sources */,
 				284D10821DDED95C00F20D92 /* FMResultSet.m in Sources */,
+				280EF4401DEB0A650016A041 /* JCCYPayTypeButtonView.m in Sources */,
 				284D0F7C1DDED91500F20D92 /* MLSelectPhotoPickerBrowserPhotoView.m in Sources */,
 				280EF4351DEAE28B0016A041 /* UITextControl+FaultTolerance.m in Sources */,
 				284D10911DDED96E00F20D92 /* AFHTTPSessionManager.m in Sources */,
@@ -2684,6 +2721,7 @@
 				284D0FB31DDED92900F20D92 /* MJRefreshComponent.m in Sources */,
 				280EF4291DEAE28B0016A041 /* NSDate+Extension.m in Sources */,
 				284D110E1DDEE1E100F20D92 /* PPFileDownloadManage.m in Sources */,
+				280EF4431DEB0A7A0016A041 /* JCCYPayTypeView.m in Sources */,
 				284D0EEA1DDED75800F20D92 /* main.m in Sources */,
 				2835DAD01DE57BBF008D2BCB /* PPSXTitleLable.m in Sources */,
 				284D11501DDEE93700F20D92 /* ThreeViewController.m in Sources */,
