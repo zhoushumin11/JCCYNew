@@ -77,6 +77,9 @@
     [super viewDidLoad];
     self.delegate = self;
    
+    
+    self.tabBar.tintColor = [UIColor colorFromHexRGB:@"e60013"];
+    
     // 添加所有子控制器
     [self addAllChildVc];
  
@@ -113,20 +116,20 @@
     self.tabBar.tintColor = [UIColor colorFromHexRGB:@"e60013"];
 
     HomeViewController *home = [[HomeViewController alloc] init];
-    [self addOneChildVC:home title:@"首页" imageName:@"home_bar1@2x.png" selectedImageName:@"home_bar@2x.png"];
+    [self addOneChildVC:home title:@"首页" imageName:@"tabBar_icon_shouye_normal" selectedImageName:@"tabBar_icon_shouye_selected"];
     
     FirmViewController *customer = [[FirmViewController alloc] init];
 //    customer.tabBarItem.badgeValue = @"100";
-    [self addOneChildVC:customer title:@"实盘" imageName:@"firm_bar1@2x.png" selectedImageName:@"firm_bar@2x.png"];
+    [self addOneChildVC:customer title:@"实盘" imageName:@"tabBar_icon_shipan_normal" selectedImageName:@"tabBar_icon_shipan_selected"];
     
     ThreeViewController *insurance = [[ThreeViewController alloc] init];
-    [self addOneChildVC:insurance title:@"红包" imageName:@"tab_camera" selectedImageName:@"tab_camera"];
+    [self addOneChildVC:insurance title:@"红包" imageName:@"tab_redparket" selectedImageName:@"tab_redparket"];
     
     FourViewController *compare = [[FourViewController alloc] init];
-    [self addOneChildVC:compare title:@"秘籍" imageName:@"miji_bar@2x.png" selectedImageName:@"miji_bar@2x.png"];
+    [self addOneChildVC:compare title:@"秘籍" imageName:@"tabBar_icon_miji_normal" selectedImageName:@"tabBar_icon_miji_normal"];
     
     FiveViewController *profile = [[FiveViewController alloc]init];
-    [self addOneChildVC:profile title:@"开户" imageName:@"kaihu_bar@2x.png" selectedImageName:@"kaihu_bar@2x.png"];
+    [self addOneChildVC:profile title:@"开户" imageName:@"tabBar_icon_kaihu_normal" selectedImageName:@"tabBar_icon_kaihu_normal"];
     
     
     //    //2.初始化tabBar视图控制器
