@@ -15,10 +15,12 @@
 
 @property(nonatomic,strong) UIView *succ_View; //成功之后的界面
 
+@property(nonatomic,assign) NSInteger refreshTime; //刷新次数
+
 @end
 
 @implementation JCCYPayStatusQueryViewController
-@synthesize dingDangNumStr,imageView,tishiLabel,succ_View;
+@synthesize dingDangNumStr,imageView,tishiLabel,succ_View,refreshTime;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -28,6 +30,8 @@
     [self payStatusChaXun];
     
     self.title = @"充值查询";
+    
+    refreshTime = 0;
     
     imageView = [[UIImageView alloc] initWithFrame:CGRectMake(PPMainViewWidth/2 - 50, 100, 100, 100)];
     imageView.image = [UIImage imageNamed:@"pay_success"];
@@ -69,16 +73,18 @@
                           if ([dic isEqual:[NSNull null]]) {
                               return;
                           }
-                          
                           BOOL is_success = [[dic objectForKey:@"is_success"] boolValue];
-                          if(!is_success){//初始化充值成功状态的视图
-//                            [self creatSuccViewByrecharge_amount:[dic objectForKey:@"recharge_amount"] recharge_gold:[dic objectForKey:@"recharge_gold"]];
-                              [self creatSuccViewByrecharge_amount:@"1" recharge_gold:@"1000"];
-                          }else{
-                              
+                          if(is_success){//初始化充值成功状态的视图
+                            [self creatSuccViewByrecharge_amount:[dic objectForKey:@"recharge_amount"] recharge_gold:[dic objectForKey:@"recharge_gold"]];
+                          }else{//如果失败了 再查询3次
+                              if (refreshTime <3) {
+                                  refreshTime ++;
+                                  [self payStatusChaXun];
+                              }else{
+                                  return;
+                              }
                           }
 
-                          
                       }else{
                           //异常处理
                       }
@@ -133,8 +139,22 @@
     recharge_amountLa.text = [NSString stringWithFormat:@"%@",recharge_amount];
     [succ_View addSubview:recharge_amountLa];
     
+    //完成 button
+    UIButton *bangdingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    bangdingBtn.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:17];
+    bangdingBtn.frame = CGRectMake(35, 500, PPMainViewWidth-70, 45);
+    [bangdingBtn.layer setMasksToBounds:YES];
+    [bangdingBtn.layer setCornerRadius:5.0]; //设置矩形四个圆角半径
+    bangdingBtn.backgroundColor = [UIColor colorFromHexRGB:@"e60013"];
+    [bangdingBtn setTitle:@"完成" forState:UIControlStateNormal];
+    [bangdingBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [bangdingBtn addTarget:self action:@selector(bangdingPhone) forControlEvents:UIControlEventTouchUpInside];
+    //    @selector(login)
+    [self.view addSubview:bangdingBtn];
     
-    
+}
+-(void)bangdingPhone{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

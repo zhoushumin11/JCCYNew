@@ -64,7 +64,6 @@
 		280EF52A1DEBDE3A0016A041 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 280EF5291DEBDE3A0016A041 /* libssl.a */; };
 		280EF52C1DEBDE4A0016A041 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 280EF52B1DEBDE490016A041 /* libcrypto.a */; };
 		280EF5321DEC173F0016A041 /* JCCYPayStatusQueryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 280EF5311DEC173F0016A041 /* JCCYPayStatusQueryViewController.m */; };
-		280EF5341DEC19420016A041 /* pay_status_gif.gif in Resources */ = {isa = PBXBuildFile; fileRef = 280EF5331DEC19420016A041 /* pay_status_gif.gif */; };
 		280EF5361DEC274F0016A041 /* pay_success.png in Resources */ = {isa = PBXBuildFile; fileRef = 280EF5351DEC274F0016A041 /* pay_success.png */; };
 		282DF76E1DE42BCE00F9FAE9 /* NJBannerImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF76B1DE42BCE00F9FAE9 /* NJBannerImageView.m */; };
 		282DF76F1DE42BCE00F9FAE9 /* NJBannerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF76D1DE42BCE00F9FAE9 /* NJBannerView.m */; };
@@ -535,7 +534,6 @@
 		280EF52B1DEBDE490016A041 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
 		280EF5301DEC173F0016A041 /* JCCYPayStatusQueryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYPayStatusQueryViewController.h; sourceTree = "<group>"; };
 		280EF5311DEC173F0016A041 /* JCCYPayStatusQueryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYPayStatusQueryViewController.m; sourceTree = "<group>"; };
-		280EF5331DEC19420016A041 /* pay_status_gif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = pay_status_gif.gif; sourceTree = "<group>"; };
 		280EF5351DEC274F0016A041 /* pay_success.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pay_success.png; sourceTree = "<group>"; };
 		282DF76A1DE42BCE00F9FAE9 /* NJBannerImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJBannerImageView.h; sourceTree = "<group>"; };
 		282DF76B1DE42BCE00F9FAE9 /* NJBannerImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NJBannerImageView.m; sourceTree = "<group>"; };
@@ -1257,7 +1255,6 @@
 				280EF43B1DEB05C80016A041 /* JCCYChongZhiViewController.m */,
 				280EF5301DEC173F0016A041 /* JCCYPayStatusQueryViewController.h */,
 				280EF5311DEC173F0016A041 /* JCCYPayStatusQueryViewController.m */,
-				280EF5331DEC19420016A041 /* pay_status_gif.gif */,
 			);
 			name = "充值";
 			sourceTree = "<group>";
@@ -2756,7 +2753,6 @@
 				284D0F811DDED91500F20D92 /* MLSelectPhoto.bundle in Resources */,
 				280EF5361DEC274F0016A041 /* pay_success.png in Resources */,
 				284D100A1DDED93900F20D92 /* ImageSelectedSmallOff.png in Resources */,
-				280EF5341DEC19420016A041 /* pay_status_gif.gif in Resources */,
 				2846958C1DE3DEF2007DC603 /* yingdaoye.jpg in Resources */,
 				282DF7831DE42D8800F9FAE9 /* dotInactive@2x.png in Resources */,
 				28ECC7C51DE1869900525BDB /* README.txt in Resources */,
