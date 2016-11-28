@@ -15,7 +15,9 @@
 #import "DataSigner.h"
 #import <AlipaySDK/AlipaySDK.h>
 
-@interface JCCYChongZhiViewController ()<UIScrollViewDelegate>
+#import "WXApi.h"
+
+@interface JCCYChongZhiViewController ()<UIScrollViewDelegate,WXApiDelegate>
 
 @property(nonatomic,strong) UIScrollView *mainScrollView;
 
@@ -381,19 +383,11 @@
 
 }
 
+
 //调用支付宝支付
 - (void)doAlipayPay
 {
-    
-    
-//    [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_PRIVATE forKey:@"ALIPAY_PRIVATE"];
-//    [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_APPID forKey:@"ALIPAY_APPID"];
-//    [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_PID forKey:@"ALIPAY_PID"];
-//    [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_PUBLIC forKey:@"ALIPAY_PUBLIC"];
-//    [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_SWITCH forKey:@"ALIPAY_SWITCH"];
-//    [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_ACCOUNT forKey:@"ALIPAY_ACCOUNT"];
-    
-    
+
     //重要说明
     //这里只是为了方便直接向商户展示支付宝的整个支付流程；所以Demo中加签过程直接放在客户端完成；
     //真实App里，privateKey等数据严禁放在客户端，加签过程务必要放在服务端完成；
@@ -514,8 +508,85 @@
 
 //调用微信支付
 -(void)payByWeChat{
-    
+    [WXApi registerApp:@"wxbc85f05c6861a34e" withDescription:@"梧桐证券"];
+    [self WXPay];
 }
+- (void)WXPay{
+    
+
+//    {
+//        appid = wxb4ba3c02aa476ea1;
+//        noncestr = 031ee7db0b82e1afc225011b88dcfdaf;
+//        package = "Sign=WXPay";
+//        partnerid = 1305176001;
+//        prepayid = wx20161128234353ceba1557a90744559453;
+//        sign = A9216F276ABC3A72BFD12AA9D5400429;
+//        timestamp = 1480347833;
+//    }
+
+
+    NSString *WX_APPID = [[NSUserDefaults standardUserDefaults] objectForKey:@"WX_APPID"];
+    NSString *WX_APPSECRET = [[NSUserDefaults standardUserDefaults] objectForKey:@"WX_APPSECRET"];
+    NSString *WEIXIN_SWITCH = [[NSUserDefaults standardUserDefaults] objectForKey:@"WEIXIN_SWITCH"];
+    NSString *WX_PAY_KEY = [[NSUserDefaults standardUserDefaults] objectForKey:@"WX_PAY_KEY"];
+    NSString *WX_SHANGHUHAO = [[NSUserDefaults standardUserDefaults] objectForKey:@"WX_SHANGHUHAO"];
+    
+    //需要创建这个支付对象
+    PayReq *req   = [[PayReq alloc] init];
+    //由用户微信号和AppID组成的唯一标识，用于校验微信用户
+    req.openID = [NSString stringWithFormat:@"%@wxbc85f05c6861a34e",WX_APPID];
+    
+    // 商家id，在注册的时候给的
+    req.partnerId = WX_SHANGHUHAO;
+    
+    // 预支付订单这个是后台跟微信服务器交互后，微信服务器传给你们服务器的，你们服务器再传给你
+    req.prepayId  = @"";
+    
+    // 根据财付通文档填写的数据和签名
+    //这个比较特殊，是固定的，只能是即req.package = Sign=WXPay
+    req.package   = @"Sign=WXPay";
+    
+    // 随机编码，为了防止重复的，在后台生成
+    req.nonceStr  = recharge_number;
+    
+    // 这个是时间戳，也是在后台生成的，为了验证支付的
+    
+    NSDateFormatter* formatter = [NSDateFormatter new];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString * stamp = [formatter stringFromDate:[NSDate date]];
+    req.timeStamp = stamp.intValue;
+    
+    // 这个签名也是后台做的
+    req.sign = @"A9216F276ABC3A72BFD12AA9D5400429";
+    
+    //发送请求到微信，等待微信返回onResp
+    [WXApi sendReq:req];
+}
+
+//微信SDK自带的方法，处理从微信客户端完成操作后返回程序之后的回调方法,显示支付结果的
+-(void)onResp:(BaseResp*)resp
+{
+    //启动微信支付的response
+    NSString *payResoult = [NSString stringWithFormat:@"errcode:%d", resp.errCode];
+    if([resp isKindOfClass:[PayResp class]]){
+        //支付返回结果，实际支付结果需要去微信服务器端查询
+        switch (resp.errCode) {
+            case 0:
+                payResoult = @"支付结果：成功！";
+                break;
+            case -1:
+                payResoult = @"支付结果：失败！";
+                break;
+            case -2:
+                payResoult = @"用户已经退出支付！";
+                break;
+            default:
+                payResoult = [NSString stringWithFormat:@"支付结果：失败！retcode = %d, retstr = %@", resp.errCode,resp.errStr];
+                break;
+        }
+    }
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

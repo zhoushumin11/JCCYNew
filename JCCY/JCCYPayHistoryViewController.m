@@ -201,7 +201,7 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 4;
+    return dataArray.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -216,7 +216,12 @@
     UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/4, 44)];
     lable1.textAlignment = NSTextAlignmentCenter;
     lable1.textColor = [UIColor blackColor];
-    lable1.text = @"2016-11-10";
+    int num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] intValue];
+    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:MM:ss"];
+    NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:num];
+    NSString *confromTimespStr = [formatter stringFromDate:confromTimesp];
+    lable1.text = confromTimespStr;
     lable1.backgroundColor = [UIColor clearColor];
     lable1.font = [UIFont systemFontOfSize:14];
     [cell.contentView addSubview:lable1];

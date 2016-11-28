@@ -17,6 +17,8 @@
 #import "JCCYStartViewController.h"
 
 #import <AlipaySDK/AlipaySDK.h>
+#import "WXApi.h"
+#import "WXApiManager.h"
 
 //五个控制器
 #import "HomeViewController.h"
@@ -39,7 +41,7 @@
 #import <AdSupport/ASIdentifierManager.h>
 
 
-@interface AppDelegate ()<CoreStatusProtocol,UITabBarControllerDelegate,JPUSHRegisterDelegate,UMSocialPlatformProvider,UIAlertViewDelegate>
+@interface AppDelegate ()<CoreStatusProtocol,UITabBarControllerDelegate,JPUSHRegisterDelegate,UMSocialPlatformProvider,UIAlertViewDelegate,WXApiDelegate>
 {
     PPNavigationController *curNavController;
     NSDictionary *notifactionUserInfo;
@@ -443,8 +445,13 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
                           NSString *KEFU_TELPHONE = [dataDic objectForKey:@"KEFU_TELPHONE"];
                           NSString *IOS_IS_PRODUCE = [dataDic objectForKey:@"IOS_IS_PRODUCE"];
                           //微信支付相关
+                          
                           NSString *WX_APPID = [dataDic objectForKey:@"WX_APPID"];
                           NSString *WX_APPSECRET = [dataDic objectForKey:@"WX_APPSECRET"];
+                          NSString *WEIXIN_SWITCH = [dataDic objectForKey:@"WEIXIN_SWITCH"];
+                          NSString *WX_PAY_KEY = [dataDic objectForKey:@"WX_PAY_KEY"];
+                          NSString *WX_SHANGHUHAO = [dataDic objectForKey:@"WX_SHANGHUHAO"];
+                          
                           //支付宝相关
                           NSString *ALIPAY_ACCOUNT = [dataDic objectForKey:@"ALIPAY_ACCOUNT"];
                           NSString *ALIPAY_APPID = [dataDic objectForKey:@"ALIPAY_APPID"];
@@ -462,8 +469,15 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
                           
                           [[NSUserDefaults standardUserDefaults] setObject:KEFU_TELPHONE forKey:@"KEFU_TELPHONE"];
                           [[NSUserDefaults standardUserDefaults] setObject:IOS_IS_PRODUCE forKey:@"IOS_IS_PRODUCE"];
+                          
+                          
                           [[NSUserDefaults standardUserDefaults] setObject:WX_APPID forKey:@"WX_APPID"];
                           [[NSUserDefaults standardUserDefaults] setObject:WX_APPSECRET forKey:@"WX_APPSECRET"];
+                          [[NSUserDefaults standardUserDefaults] setObject:WEIXIN_SWITCH forKey:@"WEIXIN_SWITCH"];
+                          [[NSUserDefaults standardUserDefaults] setObject:WX_PAY_KEY forKey:@"WX_PAY_KEY"];
+                          [[NSUserDefaults standardUserDefaults] setObject:WX_SHANGHUHAO forKey:@"WX_SHANGHUHAO"];
+                          
+                          
                           [[NSUserDefaults standardUserDefaults] setObject:LIVE_REFRESH_SECOND forKey:@"LIVE_REFRESH_SECOND"];
                           
                           [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_PRIVATE forKey:@"ALIPAY_PRIVATE"];
@@ -473,10 +487,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
                           [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_SWITCH forKey:@"ALIPAY_SWITCH"];
                           [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_ACCOUNT forKey:@"ALIPAY_ACCOUNT"];
                           
-                          
                           [[NSUserDefaults standardUserDefaults] setObject:CHONGZHI_CONTENT forKey:@"CHONGZHI_CONTENT"];
 
-                          
 
                           [[NSUserDefaults standardUserDefaults] synchronize];
                           
@@ -510,6 +522,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
+    [WXApi handleOpenURL:url delegate:[WXApiManager sharedManager]];
+    
     BOOL result = [[UMSocialManager defaultManager] handleOpenURL:url];
     if (!result) {
         
@@ -578,11 +592,12 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
          annotation:(id)annotation
 {
     
-//    BOOL result = [[UMSocialManager defaultManager] handleOpenURL:url];
-//    if (!result) {
-//        
-//    }
-//    return result;
+    [[UMSocialManager defaultManager] handleOpenURL:url];
+
+    //如果是微信的
+    if ([url.host isEqualToString:@"pay"]) {
+        [WXApi handleOpenURL:url delegate:self];
+    }
     
     if ([url.host isEqualToString:@"safepay"]) {
         // 支付跳转支付宝钱包进行支付，处理支付结果
@@ -612,9 +627,17 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     return YES;
 }
 
+
+
 // NOTE: 9.0以后使用新API接口
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options
 {
+    
+    //如果是微信的
+    if ([url.host isEqualToString:@"pay"]) {
+        [WXApi handleOpenURL:url delegate:self];
+    }
+    
     if ([url.host isEqualToString:@"safepay"]) {
         // 支付跳转支付宝钱包进行支付，处理支付结果
         [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
@@ -639,6 +662,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
             }
             NSLog(@"授权结果 authCode = %@", authCode?:@"");
         }];
+        
     }
     return YES;
 }

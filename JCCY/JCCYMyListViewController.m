@@ -85,6 +85,67 @@
     
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
+
+    [self getUserInfo];
+}
+-(void)getUserInfo{
+    
+    NSString *dJson = nil;
+    //得到自己当前的下属
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+    //获取类型接口
+    PPRDData *pprddata1 = [[PPRDData alloc] init];
+    [pprddata1 startAFRequest:@"/index.php/Api/User/get_info/"
+                  requestdata:dJson
+               timeOutSeconds:10
+              completionBlock:^(NSDictionary *json) {
+                  NSInteger code = [[json objectForKey:@"code"] integerValue];
+                  if (code == 1) {
+                      
+                      NSDictionary *dataDic = [json objectForKey:@"data"];
+                      
+                      NSUInteger scores = [[dataDic objectForKey:@"scores"] integerValue];
+                      NSUInteger golds = [[dataDic objectForKey:@"golds"] integerValue];
+                      NSUInteger present_time = [[dataDic objectForKey:@"present_time"] integerValue];
+                      NSUInteger time_service_1 = [[dataDic objectForKey:@"time_service_1"] integerValue];
+                      NSUInteger time_service_2 = [[dataDic objectForKey:@"time_service_2"] integerValue];
+                      NSUInteger time_service_3 = [[dataDic objectForKey:@"time_service_3"] integerValue];
+                      NSString *user_chinese_name = [dataDic objectForKey:@"user_chinese_name"];
+                      NSString *user_city = [dataDic objectForKey:@"user_city"];
+                      NSString *user_level = [dataDic objectForKey:@"user_level"];
+                      NSString *user_phone = [dataDic objectForKey:@"user_phone"];
+                      NSString *user_pic = [dataDic objectForKey:@"user_pic"];
+                      NSString *user_province = [dataDic objectForKey:@"user_province"];
+                      
+                      NSUserDefaults *userDefauls = [NSUserDefaults standardUserDefaults];
+                      [userDefauls setObject:[NSNumber numberWithInteger:golds] forKey:@"golds"];
+                      [userDefauls setObject:[NSNumber numberWithInteger:scores] forKey:@"scores"];
+                      [userDefauls setObject:[NSNumber numberWithInteger:present_time] forKey:@"present_time"];
+                      [userDefauls setObject:[NSNumber numberWithInteger:time_service_1] forKey:@"time_service_1"];
+                      [userDefauls setObject:[NSNumber numberWithInteger:time_service_2] forKey:@"time_service_2"];
+                      [userDefauls setObject:[NSNumber numberWithInteger:time_service_3] forKey:@"time_service_3"];
+                      [userDefauls setObject:user_chinese_name forKey:@"user_chinese_name"];
+                      [userDefauls setObject:user_city forKey:@"user_city"];
+                      [userDefauls setObject:user_level forKey:@"user_level"];
+                      [userDefauls setObject:user_phone forKey:@"user_phone"];
+                      [userDefauls setObject:user_pic forKey:@"user_pic"];
+                      [userDefauls setObject:user_province forKey:@"user_province"];
+                      [userDefauls synchronize];
+
+                      [settingTableView reloadData];
+                  }else{
+                      
+                  }
+              }
+                  failedBlock:^(NSError *error) {
+                      
+            }];
+    
+}
+
 #pragma mark ---- 设置界面----
 
 -(void)settingAction{
