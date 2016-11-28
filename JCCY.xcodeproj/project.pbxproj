@@ -49,6 +49,8 @@
 		280EF4491DEB382E0016A041 /* payType_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 280EF4471DEB382E0016A041 /* payType_selected.png */; };
 		280EF44C1DEB38FD0016A041 /* weixin_PayType.png in Resources */ = {isa = PBXBuildFile; fileRef = 280EF44A1DEB38FD0016A041 /* weixin_PayType.png */; };
 		280EF44D1DEB38FD0016A041 /* zhifubao_PayType.png in Resources */ = {isa = PBXBuildFile; fileRef = 280EF44B1DEB38FD0016A041 /* zhifubao_PayType.png */; };
+		280EF4511DEBD43C0016A041 /* AlipaySDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 280EF44F1DEBD43C0016A041 /* AlipaySDK.bundle */; };
+		280EF4521DEBD43C0016A041 /* AlipaySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280EF4501DEBD43C0016A041 /* AlipaySDK.framework */; };
 		282DF76E1DE42BCE00F9FAE9 /* NJBannerImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF76B1DE42BCE00F9FAE9 /* NJBannerImageView.m */; };
 		282DF76F1DE42BCE00F9FAE9 /* NJBannerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF76D1DE42BCE00F9FAE9 /* NJBannerView.m */; };
 		282DF77F1DE42D8800F9FAE9 /* dotActive.png in Resources */ = {isa = PBXBuildFile; fileRef = 282DF7711DE42D8800F9FAE9 /* dotActive.png */; };
@@ -416,6 +418,8 @@
 		280EF4471DEB382E0016A041 /* payType_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = payType_selected.png; sourceTree = "<group>"; };
 		280EF44A1DEB38FD0016A041 /* weixin_PayType.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = weixin_PayType.png; sourceTree = "<group>"; };
 		280EF44B1DEB38FD0016A041 /* zhifubao_PayType.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zhifubao_PayType.png; sourceTree = "<group>"; };
+		280EF44F1DEBD43C0016A041 /* AlipaySDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AlipaySDK.bundle; sourceTree = "<group>"; };
+		280EF4501DEBD43C0016A041 /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AlipaySDK.framework; sourceTree = "<group>"; };
 		282DF76A1DE42BCE00F9FAE9 /* NJBannerImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJBannerImageView.h; sourceTree = "<group>"; };
 		282DF76B1DE42BCE00F9FAE9 /* NJBannerImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NJBannerImageView.m; sourceTree = "<group>"; };
 		282DF76C1DE42BCE00F9FAE9 /* NJBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJBannerView.h; sourceTree = "<group>"; };
@@ -929,6 +933,7 @@
 				28ECC7AB1DE1869900525BDB /* libSocialInstagram.a in Frameworks */,
 				284D10FB1DDEE0D700F20D92 /* CFNetwork.framework in Frameworks */,
 				284D10F91DDEE0CE00F20D92 /* MobileCoreServices.framework in Frameworks */,
+				280EF4521DEBD43C0016A041 /* AlipaySDK.framework in Frameworks */,
 				284D10F71DDEE0B300F20D92 /* VideoToolbox.framework in Frameworks */,
 				284D10F51DDEE09E00F20D92 /* QuartzCore.framework in Frameworks */,
 				28ECC7C61DE1869900525BDB /* libSocialWhatsApp.a in Frameworks */,
@@ -1134,6 +1139,15 @@
 			name = "充值";
 			sourceTree = "<group>";
 		};
+		280EF44E1DEBD43C0016A041 /* AliPaySDK */ = {
+			isa = PBXGroup;
+			children = (
+				280EF44F1DEBD43C0016A041 /* AlipaySDK.bundle */,
+				280EF4501DEBD43C0016A041 /* AlipaySDK.framework */,
+			);
+			path = AliPaySDK;
+			sourceTree = "<group>";
+		};
 		282DF7691DE42BCE00F9FAE9 /* NJBannerView */ = {
 			isa = PBXGroup;
 			children = (
@@ -1277,6 +1291,7 @@
 		284D0F1E1DDED7C200F20D92 /* ThirdLibrary */ = {
 			isa = PBXGroup;
 			children = (
+				280EF44E1DEBD43C0016A041 /* AliPaySDK */,
 				280EF4061DEAE28B0016A041 /* Category */,
 				280082E41DE89DE1000DACED /* SCAvatarBrowser */,
 				280082D41DE7EADE000DACED /* ALToastView */,
@@ -2480,6 +2495,7 @@
 				284D100B1DDED93900F20D92 /* ImageSelectedSmallOff@2x.png in Resources */,
 				28ECC7BA1DE1869900525BDB /* WeiboSDK.bundle in Resources */,
 				284D10701DDED94C00F20D92 /* WSProgressBundle.bundle in Resources */,
+				280EF4511DEBD43C0016A041 /* AlipaySDK.bundle in Resources */,
 				284D100E1DDED93900F20D92 /* ImageSelectedSmallOn@2x.png in Resources */,
 				28ECC7B61DE1869900525BDB /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
 				284D0EF81DDED75800F20D92 /* Assets.xcassets in Resources */,
@@ -2896,6 +2912,7 @@
 					"$(PROJECT_DIR)/JCCY/UMSocial/SocialLibraries/QQ",
 					"$(PROJECT_DIR)/JCCY/UMSocial/SocialLibraries/Twitter",
 					"$(PROJECT_DIR)/JCCY/UMSocial/UMSocialSDK",
+					"$(PROJECT_DIR)/JCCY/AliPaySDK",
 				);
 				GCC_PREFIX_HEADER = /Users/zhoushumin/Desktop/JCCY/JCCY/PrefixHeader.pch;
 				INFOPLIST_FILE = JCCY/Info.plist;
@@ -2948,6 +2965,7 @@
 					"$(PROJECT_DIR)/JCCY/UMSocial/SocialLibraries/QQ",
 					"$(PROJECT_DIR)/JCCY/UMSocial/SocialLibraries/Twitter",
 					"$(PROJECT_DIR)/JCCY/UMSocial/UMSocialSDK",
+					"$(PROJECT_DIR)/JCCY/AliPaySDK",
 				);
 				GCC_PREFIX_HEADER = /Users/zhoushumin/Desktop/JCCY/JCCY/PrefixHeader.pch;
 				INFOPLIST_FILE = JCCY/Info.plist;

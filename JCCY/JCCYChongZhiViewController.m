@@ -17,6 +17,10 @@
 @property(nonatomic,strong) UIView *payView;
 
 @property(nonatomic,assign) NSString *conf_recharge_id; //当前充值金额类型id
+@property(nonatomic,assign) NSString *conf_recharge_amount; //当前充值金额
+@property(nonatomic,assign) NSString *conf_recharge_gold; //当前充值到账金币数
+
+@property(nonatomic,assign) NSInteger pay_type; //充值的方式  1支付宝 2微信支付
 
 
 @property(nonatomic,strong) NSMutableArray *dataArray;
@@ -27,13 +31,15 @@
 
 @implementation JCCYChongZhiViewController
 
-@synthesize dataArray,mainScrollView,buttonsView,conf_recharge_id,payView;
+@synthesize dataArray,mainScrollView,buttonsView,conf_recharge_id,payView,pay_type,conf_recharge_amount,conf_recharge_gold;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"在线充值";
-    
+    self.view.backgroundColor = [UIColor whiteColor];
     dataArray = [NSMutableArray array];
+    //支付类型 默认支付宝
+    pay_type = 1;
     //获取充值数据
     [self getChongZhiStatus];
     
@@ -66,6 +72,9 @@
                           if (dataArray.count > 0) {
                               
                               conf_recharge_id = [[dataArray objectAtIndex:0] objectForKey:@"conf_recharge_id"];
+                              conf_recharge_amount = [[dataArray objectAtIndex:0] objectForKey:@"conf_recharge_amount"];
+                              conf_recharge_gold = [[dataArray objectAtIndex:0] objectForKey:@"conf_recharge_gold"];
+                              
                               [self creatViews];
                           }
                           
@@ -154,18 +163,29 @@
     
     [mainScrollView addSubview:buttonsView];
     
-    //创建支付类型按钮
-    [self creatPayTypeBtns];
+    if (payView) {
+        
+    }else{
+        //创建支付类型按钮
+        [self creatPayTypeBtns];
+    }
 }
 #pragma mark ---创建支付类型按钮 --
 -(void)creatPayTypeBtns{
     
+    //设置支付类型按钮
+    [self creatPayTypeBtn:0];
+    
+
+    
+}
+
+#pragma 创建支付类型按钮
+-(void)creatPayTypeBtn:(NSInteger)payType{
+    
     payView = [[UIView alloc] initWithFrame:CGRectMake(10,20+buttonsView.frame.origin.y+ buttonsView.frame.size.height, PPMainViewWidth-20, 120)];
     payView.backgroundColor = [UIColor whiteColor];
     [mainScrollView addSubview:payView];
-    
-    //设置支付类型按钮
-    [self creatPayTypeBtn:0];
     
     //确定 button
     UIButton *quedingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -178,17 +198,11 @@
     [quedingBtn setTitle:@"确认" forState:UIControlStateNormal];
     [quedingBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [quedingBtn addTarget:self action:@selector(quedingPhone) forControlEvents:UIControlEventTouchUpInside];
-    //    @selector(login)
     [mainScrollView addSubview:quedingBtn];
     
-}
-
-#pragma 创建支付类型按钮
--(void)creatPayTypeBtn:(NSInteger)payType{
     NSArray *imageArray = [NSArray arrayWithObjects:@"zhifubao_PayType",@"weixin_PayType", nil];
     NSArray *titleArray = [NSArray arrayWithObjects:@"支付宝钱包充值",@"微信充值", nil];
     NSArray *subTitleArray = [NSArray arrayWithObjects:@"推荐支付宝用户使用",@"推荐有微信支付的账户的用户使用", nil];
-
 
     for (int i = 0; i<2; i++) {
         UIView *view  = [[UIView alloc] initWithFrame:CGRectMake(0, (60*i), PPMainViewWidth-20, 60)];
@@ -198,11 +212,13 @@
         
         UILabel *titleLable = [[UILabel alloc] initWithFrame:CGRectMake(58, 5, 200, 20)];
         titleLable.textColor = [UIColor grayColor];
+        titleLable.font = [UIFont systemFontOfSize:18];
         titleLable.text = titleArray[i];
         [view addSubview:titleLable];
         
-        UILabel *sublabel  = [[UILabel alloc] initWithFrame:CGRectMake(58, 25, 200, 20)];
+        UILabel *sublabel  = [[UILabel alloc] initWithFrame:CGRectMake(58, 30, PPMainViewWidth-20-58-40, 20)];
         sublabel.textColor = [UIColor grayColor];
+        sublabel.font = [UIFont systemFontOfSize:16];
         sublabel.text = subTitleArray[i];
         [view addSubview:sublabel];
         
@@ -226,26 +242,105 @@
     }
     
 }
-//支付类型
--(void)choosePayTypeBtnAction:(UIButton *)btn{
-    
-    [self creatPayTypeBtn:btn.tag];
-}
-
-//确定充值
--(void)quedingPhone{
-    
-}
-
-#pragma mark --- 充值金额类型按钮点击事件 -- 
+#pragma mark --- 充值金额类型按钮点击事件 --
 -(void)typeBtnAction:(UIButton *)btn{
     NSInteger btnTag = btn.tag;
     conf_recharge_id = [[dataArray objectAtIndex:btnTag] objectForKey:@"conf_recharge_id"];
+    conf_recharge_amount = [[dataArray objectAtIndex:btnTag] objectForKey:@"conf_recharge_amount"];
+    conf_recharge_gold = [[dataArray objectAtIndex:btnTag] objectForKey:@"conf_recharge_gold"];
+    
     [self creatButtons:btnTag];
 }
 
 
+//支付类型
+-(void)choosePayTypeBtnAction:(UIButton *)btn{
+    pay_type = btn.tag+1;
+    [self creatPayTypeBtn:btn.tag];
+}
 
+//确定充值 1.首先提交到服务器 申请充值
+-(void)quedingPhone{
+    
+    
+    NSString *recharge_number = nil;
+    
+    
+    NSString *dJson = nil;
+    @autoreleasepool {
+        
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"recharge_number\":\"%@\",\"conf_recharge_id\":\"%@\",\"recharge_amount\":\"%@\",\"recharge_gold\":\"%@\",\"pay_type\":\"%ld\"}",87,token,recharge_number,conf_recharge_id,conf_recharge_amount,conf_recharge_gold,pay_type];
+        //获取类型接
+        PPRDData *pprddata1 = [[PPRDData alloc] init];
+        [pprddata1 startAFRequest:@"/index.php/Api/UserRecharge/do_recharge/"
+                      requestdata:dJson
+                   timeOutSeconds:10
+                  completionBlock:^(NSDictionary *json) {
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      if (code == 1) {
+                          if (pay_type == 1) {
+                              [self payByAlipay];
+                          }else if(pay_type == 2){
+                              [self payByWeChat];
+                          }
+                          
+                      }else{
+                          //异常处理
+                      }
+                      
+                  } failedBlock:^(NSError *error) {
+                      
+                  }];
+    }
+}
+
+//调用支付宝支付
+-(void)payByAlipay{
+ 
+    [self payStatusChaXun];
+}
+
+//调用微信支付
+-(void)payByWeChat{
+    
+    [self payStatusChaXun];
+}
+
+#pragma mark ---- 充值状态查询 ----
+-(void)payStatusChaXun{
+    
+    
+    NSString *recharge_number = nil;
+    
+    
+    NSString *dJson = nil;
+    @autoreleasepool {
+        
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"recharge_number\":\"%@\"}",87,token,recharge_number];
+        //获取类型接
+        PPRDData *pprddata1 = [[PPRDData alloc] init];
+        [pprddata1 startAFRequest:@"/index.php/Api/UserRecharge/check_recharge/"
+                      requestdata:dJson
+                   timeOutSeconds:10
+                  completionBlock:^(NSDictionary *json) {
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      if (code == 1) {
+                          NSLog(@"充值成功");
+                      }else{
+                          //异常处理
+                          NSLog(@"充值失败");
+
+                      }
+                      
+                  } failedBlock:^(NSError *error) {
+                      
+                  }];
+    }
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
