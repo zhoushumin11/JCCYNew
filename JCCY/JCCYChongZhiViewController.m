@@ -8,6 +8,7 @@
 
 #import "JCCYChongZhiViewController.h"
 
+#import "JCCYPayStatusQueryViewController.h"
 
 #import "Order.h"
 #import "APAuthV2Info.h"
@@ -30,7 +31,7 @@
 @property(nonatomic,assign) NSString *conf_recharge_gold; //当前充值到账金币数
 
 
-@property(nonatomic,assign) NSString *recharge_number; //当前支付订单号
+@property(nonatomic,strong) NSString *recharge_number; //当前支付订单号
 
 
 @property(nonatomic,assign) NSInteger pay_type; //充值的方式  1支付宝 2微信支付
@@ -346,12 +347,13 @@
     //获得00 - 99 随机码
     int num2 = [self getRandomNumber:00 to:99];
     
+    recharge_number = @"";
+    
     NSString *recharge_numberStr = [NSString stringWithFormat:@"%@%d%d",nianyueriStr,num1,num2];
+    recharge_number = recharge_numberStr;
     
+        NSString *dJson = nil;
     
-    NSString *dJson = nil;
-    @autoreleasepool {
-        
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         
         dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"recharge_number\":\"%@\",\"conf_recharge_id\":\"%@\",\"recharge_amount\":\"%@\",\"recharge_gold\":\"%@\",\"pay_type\":\"%ld\"}",87,token,recharge_numberStr,conf_recharge_id,conf_recharge_amount,conf_recharge_gold,pay_type];
@@ -363,7 +365,6 @@
                   completionBlock:^(NSDictionary *json) {
                       NSInteger code = [[json objectForKey:@"code"] integerValue];
                       if (code == 1) {
-                          recharge_number = recharge_numberStr;
                           if (pay_type == 1) {
                               [self doAlipayPay];
                           }else if(pay_type == 2){
@@ -377,7 +378,7 @@
                   } failedBlock:^(NSError *error) {
                       
                   }];
-    }
+
 }
 
 //调用支付宝支付
@@ -488,15 +489,25 @@
     
     if ([resultStatus isEqualToString:@"9000"]) {
         NSLog(@"支付宝支付成功");
-        [self payStatusChaXun];
+        
+        JCCYPayStatusQueryViewController *jCCYPayStatusQueryViewController = [[JCCYPayStatusQueryViewController alloc] init];
+        jCCYPayStatusQueryViewController.hidesBottomBarWhenPushed = YES;
+        jCCYPayStatusQueryViewController.dingDangNumStr = recharge_number;
+        [self.navigationController pushViewController:jCCYPayStatusQueryViewController animated:YES];
+        
     }else{
         NSLog(@"支付宝支付失败");
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
-                                                        message:@"支付失败！"
-                                                       delegate:self
-                                              cancelButtonTitle:@"确定"
-                                              otherButtonTitles:nil];
-        [alert show];
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
+//                                                        message:@"支付失败！"
+//                                                       delegate:self
+//                                              cancelButtonTitle:@"确定"
+//                                              otherButtonTitles:nil];
+//        [alert show];
+        JCCYPayStatusQueryViewController *jCCYPayStatusQueryViewController = [[JCCYPayStatusQueryViewController alloc] init];
+        jCCYPayStatusQueryViewController.hidesBottomBarWhenPushed = YES;
+        jCCYPayStatusQueryViewController.dingDangNumStr = recharge_number;
+        jCCYPayStatusQueryViewController.payType = [NSString stringWithFormat:@"%ld",pay_type];
+        [self.navigationController pushViewController:jCCYPayStatusQueryViewController animated:YES];
     }
     
 }
@@ -504,37 +515,6 @@
 //调用微信支付
 -(void)payByWeChat{
     
-    [self payStatusChaXun];
-}
-
-#pragma mark ---- 充值状态查询 ----
--(void)payStatusChaXun{
-    
-    NSString *dJson = nil;
-    @autoreleasepool {
-        
-        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"recharge_number\":\"%@\"}",87,token,recharge_number];
-        //获取类型接
-        PPRDData *pprddata1 = [[PPRDData alloc] init];
-        [pprddata1 startAFRequest:@"/index.php/Api/UserRecharge/check_recharge/"
-                      requestdata:dJson
-                   timeOutSeconds:10
-                  completionBlock:^(NSDictionary *json) {
-                      NSInteger code = [[json objectForKey:@"code"] integerValue];
-                      if (code == 1) {
-                          NSLog(@"充值成功");
-                      }else{
-                          //异常处理
-                          NSLog(@"充值失败");
-
-                      }
-                      
-                  } failedBlock:^(NSError *error) {
-                      
-                  }];
-    }
 }
 
 - (void)didReceiveMemoryWarning {

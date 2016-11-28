@@ -217,6 +217,11 @@
                       NSInteger code = [[json objectForKey:@"code"] integerValue];
                       if (code == 1) {
                           NSDictionary *dataDic = [json objectForKey:@"data"];
+                          
+                          if ([dataDic isEqual:[NSArray array]]) {
+                              return;
+                          }
+                          
                           NSString *version_url = [dataDic objectForKey:@"version_url"];
                           self.updateUrl = @"http://www.baidu.com";
                           if ([version_url isEqual:[NSNull null]]) {

@@ -10,6 +10,9 @@
 
 @interface JCCYPayStatusQueryViewController : UIViewController
 
-@property(nonatomic,strong) NSString *
+@property(nonatomic,strong) NSString *dingDangNumStr;  //订单编码
+
+@property(nonatomic,strong) NSString *payType;  //订单编码
+
 
 @end
