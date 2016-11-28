@@ -37,26 +37,15 @@ typedef enum : NSUInteger {
 #define LOGINSUCCESSNOTIFACTION @"LOGINSUCCESSNOTIFACTION"
 #define LOGOUTNOTIFACTION @"LOGOUTNOTIFACTION"
 
-//即时通讯IM
-#define PPIMAPPKEY @"8a216da855dd248e0155e34069f30776"
-#define PPIMAPPTOKEN  @"36800e515eed42b61342e21c56fa5bbc"
-#define TXLSM @"TXLSM"
+
 //刷新消息数量
 #define UPDATEMSGCount @"UPDATEMSGCount"
 
-//隐藏显示工作角标
-#define SHOWHIDDENCORNER @"showHiddenCorner"
+//支付宝接口回调
+#define JCCYAliPayNotificationCenter @"JCCYAliPayNotificationCenter"
+//微信支付接口回调通知
+#define JCCYWeChatNotificationCenter @"JCCYWeChatNotificationCenter"
 
-//默认头像图片
-#define imgiconDefault @"wdusericon.png"
-
-//下载文件
-#define DOWNLOADFILE @"DOWNLOADFILE"
-
-//巡检相关
-#define PPPROUTE @"PPPROUTE"
-#define PPPONELOCATION @"PPPONELOCATION"
-#define PPPdistance 100
 
 //限制图片数量
 #define minimgCount 5

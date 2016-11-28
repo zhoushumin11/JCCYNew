@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface JCCYChongZhiViewController : UIViewController
+@interface JCCYChongZhiViewController : PPViewController
 
 @end
