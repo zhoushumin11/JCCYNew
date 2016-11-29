@@ -16,9 +16,18 @@
 #import <AlipaySDK/AlipaySDK.h>
 
 #import "WXApi.h"
+#import "WXApiRequestHandler.h"
+#import "payRequsestHandler.h"
+
+#import "CommonUtil.h"
+#import "GDataXMLNode.h"
 
 @interface JCCYChongZhiViewController ()<UIScrollViewDelegate,WXApiDelegate>
-
+{
+    enum WXScene _scene;
+    NSString *Token;
+    long token_time;
+}
 @property(nonatomic,strong) UIScrollView *mainScrollView;
 
 @property(nonatomic,strong) UIView *buttonsView; //金额选项view
@@ -175,9 +184,13 @@
         if (selectedIndex == i) {
             imageView.image = [UIImage imageNamed:@"JCCY_YiXuan"];
             [btn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+            [btn.layer setBorderWidth:1.0];
+            btn.layer.borderColor=[UIColor redColor].CGColor;
         }else{
             imageView.image = [UIImage imageNamed:@""];
             [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            [btn.layer setBorderWidth:0];
+            btn.layer.borderColor=[UIColor whiteColor].CGColor;
         }
         
         [btn addSubview:imageView];
@@ -338,6 +351,13 @@
 //确定充值 1.首先提交到服务器 申请充值
 -(void)quedingPhone{
     
+    if (pay_type == 1) {
+//        [self doAlipayPay];
+        return;
+    }else if(pay_type == 2){
+        [self payByWeChat];
+    }
+    
     // NOTE: 当前时间点
     NSDateFormatter* formatter = [NSDateFormatter new];
     [formatter setDateFormat:@"yyyyMMddHHmmss"];
@@ -446,7 +466,8 @@
     order.biz_content.subject = subjectString; // 显示在支付宝里面的订单信息
     order.biz_content.out_trade_no = recharge_number; //订单ID（由商家自行制定）
     order.biz_content.timeout_express = @"30m"; //超时时间设置
-    order.biz_content.total_amount = [NSString stringWithFormat:@"%.2f", 0.01]; //商品价格
+    float rmb = [conf_recharge_amount floatValue];
+    order.biz_content.total_amount = [NSString stringWithFormat:@"%.2f", rmb]; //商品价格
     
     //将商品信息拼接成字符串
     NSString *orderInfo = [order orderInfoEncoded:NO];
@@ -508,85 +529,283 @@
 
 //调用微信支付
 -(void)payByWeChat{
-    [WXApi registerApp:@"wxbc85f05c6861a34e" withDescription:@"梧桐证券"];
-    [self WXPay];
+    
+    [WXApi registerApp:[[NSUserDefaults standardUserDefaults] objectForKey:@"WX_APPID"] withDescription:@"梧桐证券"];
+
+    
+    [self wxpay];
 }
-- (void)WXPay{
-    
-
-//    {
-//        appid = wxb4ba3c02aa476ea1;
-//        noncestr = 031ee7db0b82e1afc225011b88dcfdaf;
-//        package = "Sign=WXPay";
-//        partnerid = 1305176001;
-//        prepayid = wx20161128234353ceba1557a90744559453;
-//        sign = A9216F276ABC3A72BFD12AA9D5400429;
-//        timestamp = 1480347833;
-//    }
-
-
-    NSString *WX_APPID = [[NSUserDefaults standardUserDefaults] objectForKey:@"WX_APPID"];
-    NSString *WX_APPSECRET = [[NSUserDefaults standardUserDefaults] objectForKey:@"WX_APPSECRET"];
-    NSString *WEIXIN_SWITCH = [[NSUserDefaults standardUserDefaults] objectForKey:@"WEIXIN_SWITCH"];
-    NSString *WX_PAY_KEY = [[NSUserDefaults standardUserDefaults] objectForKey:@"WX_PAY_KEY"];
-    NSString *WX_SHANGHUHAO = [[NSUserDefaults standardUserDefaults] objectForKey:@"WX_SHANGHUHAO"];
-    
-    //需要创建这个支付对象
-    PayReq *req   = [[PayReq alloc] init];
-    //由用户微信号和AppID组成的唯一标识，用于校验微信用户
-    req.openID = [NSString stringWithFormat:@"%@wxbc85f05c6861a34e",WX_APPID];
-    
-    // 商家id，在注册的时候给的
-    req.partnerId = WX_SHANGHUHAO;
-    
-    // 预支付订单这个是后台跟微信服务器交互后，微信服务器传给你们服务器的，你们服务器再传给你
-    req.prepayId  = @"";
-    
-    // 根据财付通文档填写的数据和签名
-    //这个比较特殊，是固定的，只能是即req.package = Sign=WXPay
-    req.package   = @"Sign=WXPay";
-    
-    // 随机编码，为了防止重复的，在后台生成
-    req.nonceStr  = recharge_number;
-    
-    // 这个是时间戳，也是在后台生成的，为了验证支付的
-    
-    NSDateFormatter* formatter = [NSDateFormatter new];
-    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSString * stamp = [formatter stringFromDate:[NSDate date]];
-    req.timeStamp = stamp.intValue;
-    
-    // 这个签名也是后台做的
-    req.sign = @"A9216F276ABC3A72BFD12AA9D5400429";
-    
-    //发送请求到微信，等待微信返回onResp
-    [WXApi sendReq:req];
-}
-
-//微信SDK自带的方法，处理从微信客户端完成操作后返回程序之后的回调方法,显示支付结果的
--(void)onResp:(BaseResp*)resp
+//微信支付
+- (void)wxpay
 {
-    //启动微信支付的response
-    NSString *payResoult = [NSString stringWithFormat:@"errcode:%d", resp.errCode];
-    if([resp isKindOfClass:[PayResp class]]){
-        //支付返回结果，实际支付结果需要去微信服务器端查询
-        switch (resp.errCode) {
-            case 0:
-                payResoult = @"支付结果：成功！";
-                break;
-            case -1:
-                payResoult = @"支付结果：失败！";
-                break;
-            case -2:
-                payResoult = @"用户已经退出支付！";
-                break;
-            default:
-                payResoult = [NSString stringWithFormat:@"支付结果：失败！retcode = %d, retstr = %@", resp.errCode,resp.errStr];
-                break;
-        }
+    [self weixin];
+}
+
+-(void)weixin{
+    
+    // NOTE: 当前时间点
+    NSDateFormatter* formatter = [NSDateFormatter new];
+    [formatter setDateFormat:@"yyyyMMddHHmmss"];
+    NSString *nianyueriStr = [formatter stringFromDate:[NSDate date]];
+    
+    //获得3 - 9 随机码
+    int num1 = [self getRandomNumber:3 to:9];
+    
+    //获得00 - 99 随机码
+    int num2 = [self getRandomNumber:00 to:99];
+    
+    recharge_number = @"";
+    
+    NSString *recharge_numberStr = [NSString stringWithFormat:@"%@%d%d",nianyueriStr,num1,num2];
+    recharge_number = recharge_numberStr;
+    
+    NSString *dJson = nil;
+    
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+    
+    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"recharge_number\":\"%@\",\"conf_recharge_id\":\"%@\",\"recharge_amount\":\"%@\",\"recharge_gold\":\"%@\",\"pay_type\":\"%ld\"}",87,token,recharge_numberStr,conf_recharge_id,conf_recharge_amount,conf_recharge_gold,pay_type];
+    //获取类型接
+    PPRDData *pprddata1 = [[PPRDData alloc] init];
+    [pprddata1 startAFRequest:@"/index.php/Api/UserRecharge/do_ios_wx_recharge/"
+                  requestdata:dJson
+               timeOutSeconds:10
+              completionBlock:^(NSDictionary *json) {
+                  NSInteger code = [[json objectForKey:@"code"] integerValue];
+                  if (code == 1) {
+                      if (pay_type == 1) {
+                          [self doAlipayPay];
+                      }else if(pay_type == 2){
+                          [self payByWeChat];
+                      }
+                      
+                  }else{
+                      //异常处理
+                  }
+                  
+              } failedBlock:^(NSError *error) {
+                  
+              }];
+}
+
+#pragma mark ---- 微信支付开始
+// 调起微信支付，传进来商品名称和价格
+- (void)getWeChatPayWithOrderName
+{
+    
+    //----------------------------获取prePayId配置------------------------------
+    // 订单标题，展示给用户
+    NSString *subjectString = [NSString stringWithFormat:@"梧桐证券%@RMB获得%@金币",conf_recharge_amount,conf_recharge_gold];
+
+    NSString* orderName = subjectString;
+    // 订单金额,单位（分）, 1是0.01元
+    float rmb = [conf_recharge_amount floatValue]*100;
+    NSString *rmbStr = [NSString stringWithFormat:@"%0.f",rmb];
+    NSString* orderPrice = rmbStr;
+    // 支付类型，固定为APP
+    NSString* orderType = @"APP";
+    // 随机数串
+    NSString *noncestr  = [self genNonceStr];
+    // 商户订单号
+    NSString *orderNO   = [self genOutTradNo];
+    
+    //================================
+    //预付单参数订单设置
+    //================================
+    NSMutableDictionary *packageParams = [NSMutableDictionary dictionary];
+    
+    [packageParams setObject: WXAppId      forKey:@"appid"];       //开放平台appid
+    [packageParams setObject: WXPartnerId  forKey:@"mch_id"];      //商户号
+    [packageParams setObject: recharge_number     forKey:@"nonce_str"];   //随机串
+    [packageParams setObject: orderType    forKey:@"trade_type"];  //支付类型，固定为APP
+    [packageParams setObject: orderName    forKey:@"body"];        //订单描述，展示给用户
+    [packageParams setObject: recharge_number      forKey:@"out_trade_no"];//商户订单号
+    [packageParams setObject: orderPrice   forKey:@"total_fee"];   //订单金额，单位为分
+    [packageParams setObject: [CommonUtil getIPAddress:YES] forKey:@"spbill_create_ip"];//发器支付的机器ip
+    [packageParams setObject: @"http://wutong.jingchengidea.com/Api/UserRechargeReturn/weixin_return/"  forKey:@"notify_url"];  //支付结果异步通知
+    NSString *prePayid;
+    
+    prePayid = [self sendPrepay:packageParams];
+    //---------------------------获取prePayId结束------------------------------
+    
+    
+    if(prePayid){
+        NSString *timeStamp = [self genTimeStamp];
+        // 调起微信支付
+        PayReq *request = [[PayReq alloc] init];
+        request.partnerId = WXPartnerId;
+        request.prepayId = prePayid;
+        request.package = @"Sign=WXPay";
+        request.nonceStr = noncestr;
+        request.timeStamp = [timeStamp intValue];
+        
+        // 这里要注意key里的值一定要填对， 微信官方给的参数名是错误的，不是第二个字母大写
+        NSMutableDictionary *signParams = [NSMutableDictionary dictionary];
+        [signParams setObject: WXAppId               forKey:@"appid"];
+        [signParams setObject: WXPartnerId           forKey:@"partnerid"];
+        [signParams setObject: request.nonceStr      forKey:@"noncestr"];
+        [signParams setObject: request.package       forKey:@"package"];
+        [signParams setObject: timeStamp             forKey:@"timestamp"];
+        [signParams setObject: request.prepayId      forKey:@"prepayid"];
+        
+        //生成签名
+        NSString *sign  = [self genSign:signParams];
+        
+        //添加签名
+        request.sign = sign;
+        
+        [WXApi sendReq:request];
+        
+        
+    } else{
+        NSLog(@"获取prePayId失败！");
+    }
+    
+    
+    
+}
+
+
+
+
+// 发送给微信的XML格式数据
+- (NSString *)genPackage:(NSMutableDictionary*)packageParams
+{
+    NSString *sign;
+    NSMutableString *reqPars = [NSMutableString string];
+    
+    // 生成签名
+    sign = [self genSign:packageParams];
+    
+    // 生成xml格式的数据, 作为post给微信的数据
+    NSArray *keys = [packageParams allKeys];
+    [reqPars appendString:@"<xml>"];
+    for (NSString *categoryId in keys) {
+        [reqPars appendFormat:@"<%@>%@</%@>"
+         , categoryId, [packageParams objectForKey:categoryId],categoryId];
+    }
+    [reqPars appendFormat:@"<sign>%@</sign></xml>", sign];
+    
+    return [NSString stringWithString:reqPars];
+}
+
+
+
+
+// 获取prePayId
+- (NSString *)sendPrepay:(NSMutableDictionary *)prePayParams
+{
+    
+    // 获取提交预支付的xml格式数据
+    NSString *send = [self genPackage:prePayParams];
+    // 打印检查， 格式应该是xml格式的字符串
+    NSLog(@"%@", send);
+    
+    // 转换成NSData
+    /** 获取prePayId的url, 这是官方给的接口 */
+    NSString * const getPrePayIdUrl = @"https://api.mch.weixin.qq.com/pay/unifiedorder";
+    NSData *data_send = [send dataUsingEncoding:NSUTF8StringEncoding];
+    NSURL *url = [NSURL URLWithString:getPrePayIdUrl];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:data_send];
+    
+    NSError *error = nil;
+    // 拿到data后, 用xml解析， 这里随便用什么方法解析
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&error];
+    if (!error) {
+        // 1.根据data初始化一个GDataXMLDocument对象
+        GDataXMLDocument *document = [[GDataXMLDocument alloc] initWithData:data options:0 error:nil];
+        // 2.拿出根节点
+        GDataXMLElement *rootElement = [document rootElement];
+        GDataXMLElement *return_code = [[rootElement elementsForName:@"return_code"] lastObject];
+        GDataXMLElement *return_msg = [[rootElement elementsForName:@"return_msg"] lastObject];
+        GDataXMLElement *result_code = [[rootElement elementsForName:@"result_code"] lastObject];
+        GDataXMLElement *prepay_id = [[rootElement elementsForName:@"prepay_id"] lastObject];
+        // 如果return_code和result_code都为SUCCESS, 则说明成功
+        NSLog(@"return_code---%@", [return_code stringValue]);
+        // 返回信息，通常返回一些错误信息
+        NSLog(@"return_msg---%@", [return_msg stringValue]);
+        NSLog(@"result_code---%@", [result_code stringValue]);
+        // 拿到这个就成功一大半啦
+        NSLog(@"prepay_id---%@", [prepay_id stringValue]);
+        
+        return [prepay_id stringValue];
+    } else {
+        return nil;
     }
 }
 
+#pragma mark - 生成各种参数
+
+- (NSString *)genTimeStamp
+{
+    return [NSString stringWithFormat:@"%.0f", [[NSDate date] timeIntervalSince1970]];
+}
+
+/**
+ * 注意：商户系统内部的订单号,32个字符内、可包含字母,确保在商户系统唯一
+ */
+- (NSString *)genNonceStr
+{
+    return [CommonUtil md5:[NSString stringWithFormat:@"%d", arc4random() % 10000]];
+}
+
+/**
+ * 建议 traceid 字段包含用户信息及订单信息，方便后续对订单状态的查询和跟踪
+ */
+- (NSString *)genTraceId
+{
+    return [NSString stringWithFormat:@"myt_%@", [self genTimeStamp]];
+}
+
+- (NSString *)genOutTradNo
+{
+    return [CommonUtil md5:[NSString stringWithFormat:@"%d", arc4random() % 10000]];
+}
+
+
+#pragma mark - 签名
+/** 签名 */
+- (NSString *)genSign:(NSDictionary *)signParams
+{
+    // 排序, 因为微信规定 ---> 参数名ASCII码从小到大排序
+    NSArray *keys = [signParams allKeys];
+    NSArray *sortedKeys = [keys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return [obj1 compare:obj2 options:NSNumericSearch];
+    }];
+    
+    //生成 ---> 微信规定的签名格式
+    NSMutableString *sign = [NSMutableString string];
+    for (NSString *key in sortedKeys) {
+        [sign appendString:key];
+        [sign appendString:@"="];
+        [sign appendString:[signParams objectForKey:key]];
+        [sign appendString:@"&"];
+    }
+    NSString *signString = [[sign copy] substringWithRange:NSMakeRange(0, sign.length - 1)];
+    
+    // 拼接API密钥
+    NSString *result = [NSString stringWithFormat:@"%@&key=%@", signString, WXAppId];
+    // 打印检查
+    NSLog(@"result = %@", result);
+    // md5加密
+    NSString *signMD5 = [CommonUtil md5:result];
+    // 微信规定签名英文大写
+    signMD5 = signMD5.uppercaseString;
+    // 打印检查
+    NSLog(@"signMD5 = %@", signMD5);
+    return signMD5;
+}
+
+
+#pragma mark ---- 微信支付 end
+//客户端提示信息
+- (void)alert:(NSString *)title msg:(NSString *)msg
+{
+    UIAlertView *alter = [[UIAlertView alloc] initWithTitle:title message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    
+    [alter show];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

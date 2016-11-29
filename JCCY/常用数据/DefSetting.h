@@ -37,6 +37,10 @@ typedef enum : NSUInteger {
 #define LOGINSUCCESSNOTIFACTION @"LOGINSUCCESSNOTIFACTION"
 #define LOGOUTNOTIFACTION @"LOGOUTNOTIFACTION"
 
+//微信支付id
+#define WXAppId @"wxbc85f05c6861a34e"
+//微信支付商户号
+#define WXPartnerId @"1406952902"
 
 //刷新消息数量
 #define UPDATEMSGCount @"UPDATEMSGCount"

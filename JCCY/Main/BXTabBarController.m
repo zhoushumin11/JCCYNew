@@ -11,7 +11,7 @@
 //五个控制器
 #import "HomeViewController.h"
 #import "FirmViewController.h"
-#import "ThreeViewController.h"
+#import "RedPacketViewController.h"
 #import "FourViewController.h"
 #import "FiveViewController.h"
 
@@ -122,7 +122,7 @@
 //    customer.tabBarItem.badgeValue = @"100";
     [self addOneChildVC:customer title:@"实盘" imageName:@"tabBar_icon_shipan_normal" selectedImageName:@"tabBar_icon_shipan_selected"];
     
-    ThreeViewController *insurance = [[ThreeViewController alloc] init];
+    RedPacketViewController *insurance = [[RedPacketViewController alloc] init];
     [self addOneChildVC:insurance title:@"红包" imageName:@"tab_redparket" selectedImageName:@"tab_redparket"];
     
     FourViewController *compare = [[FourViewController alloc] init];

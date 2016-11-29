@@ -18,12 +18,11 @@
 
 #import <AlipaySDK/AlipaySDK.h>
 #import "WXApi.h"
-#import "WXApiManager.h"
 
 //五个控制器
 #import "HomeViewController.h"
 #import "FirmViewController.h"
-#import "ThreeViewController.h"
+#import "RedPacketViewController.h"
 #import "FourViewController.h"
 #import "FiveViewController.h"
 
@@ -141,7 +140,7 @@
     
     if (isLoginsucc) {
         //更新会员信息
-//        [self get_info];
+        [self get_info];
     }
     
     //网络判断注册
@@ -181,11 +180,17 @@
             dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"device\":\"%d\",\"device_type\":\"%@\",\"version\":\"%ld\"}",87,token,2,@"",version];
             //获取类型接口
             PPRDData *pprddata1 = [[PPRDData alloc] init];
-            [pprddata1 startAFRequest:@"/index.php/Api/Update/update_version/"
+            [pprddata1 startAFRequest:@"/index.php/Api/User/get_info/"
                           requestdata:dJson
                        timeOutSeconds:10
                       completionBlock:^(NSDictionary *json) {
+                        NSInteger code = [[json objectForKey:@"code"] integerValue];
                           
+                          if (code == 1) {
+                              
+                          }else{
+                              
+                          }
                           
                       
                       } failedBlock:^(NSError *error) {
@@ -442,6 +447,16 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
                       if (code == 1) {
                           NSDictionary *dataDic = [json objectForKey:@"data"];
                           
+                          //红包使用相关
+                          NSString *ZANSHANG_CONTENT = [dataDic objectForKey:@"ZANSHANG_CONTENT"];
+                          NSString *ZANSHANG_USE_CONTENT = [dataDic objectForKey:@"ZANSHANG_USE_CONTENT"];
+                          NSString *ZUANSHI_CONTENT = [dataDic objectForKey:@"ZUANSHI_CONTENT"];
+                          NSString *ZUANSHI_USE_CONTENT = [dataDic objectForKey:@"ZUANSHI_USE_CONTENT"];
+                          NSString *HUANGJIN_CONTENT = [dataDic objectForKey:@"HUANGJIN_CONTENT"];
+                          NSString *HUANGJIN_USE_CONTENT = [dataDic objectForKey:@"HUANGJIN_USE_CONTENT"];
+
+                          
+                          
                           NSString *KEFU_TELPHONE = [dataDic objectForKey:@"KEFU_TELPHONE"];
                           NSString *IOS_IS_PRODUCE = [dataDic objectForKey:@"IOS_IS_PRODUCE"];
                           //微信支付相关
@@ -465,6 +480,19 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
                           //默认刷新时间
                           NSString *LIVE_REFRESH_SECOND = [dataDic objectForKey:@"LIVE_REFRESH_SECOND"];
+                          
+                          
+                          
+                          //红包
+                          
+                          
+                          [[NSUserDefaults standardUserDefaults] setObject:ZANSHANG_CONTENT forKey:@"ZANSHANG_CONTENT"];
+                          [[NSUserDefaults standardUserDefaults] setObject:ZANSHANG_USE_CONTENT forKey:@"ZANSHANG_USE_CONTENT"];
+                          [[NSUserDefaults standardUserDefaults] setObject:ZUANSHI_CONTENT forKey:@"ZUANSHI_CONTENT"];
+                          [[NSUserDefaults standardUserDefaults] setObject:ZUANSHI_USE_CONTENT forKey:@"ZUANSHI_USE_CONTENT"];
+                          [[NSUserDefaults standardUserDefaults] setObject:HUANGJIN_CONTENT forKey:@"HUANGJIN_CONTENT"];
+                          [[NSUserDefaults standardUserDefaults] setObject:HUANGJIN_USE_CONTENT forKey:@"HUANGJIN_USE_CONTENT"];
+
                           
                           
                           [[NSUserDefaults standardUserDefaults] setObject:KEFU_TELPHONE forKey:@"KEFU_TELPHONE"];
@@ -522,7 +550,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
-    [WXApi handleOpenURL:url delegate:[WXApiManager sharedManager]];
+    [WXApi handleOpenURL:url delegate:self];
     
     BOOL result = [[UMSocialManager defaultManager] handleOpenURL:url];
     if (!result) {
@@ -667,7 +695,17 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     return YES;
 }
 
-
+//微信回调
+- (void)onResp:(BaseResp *)resp {
+    //errCode
+    switch (resp.errCode) {
+        case WXSuccess:
+            //成功回调
+            break;
+        default:
+            break;
+    }
+}
 
 
 #pragma mark - Core Data stack
@@ -681,17 +719,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
             _persistentContainer = [[NSPersistentContainer alloc] initWithName:@"JCCY"];
             [_persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription *storeDescription, NSError *error) {
                 if (error != nil) {
-                    // Replace this implementation with code to handle the error appropriately.
-                    // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                    
-                    /*
-                     Typical reasons for an error here include:
-                     * The parent directory does not exist, cannot be created, or disallows writing.
-                     * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                     * The device is out of space.
-                     * The store could not be migrated to the current model version.
-                     Check the error message to determine what the actual problem was.
-                    */
+
                     NSLog(@"Unresolved error %@, %@", error, error.userInfo);
                     abort();
                 }

@@ -22,6 +22,7 @@
 
 - (void)dealloc {
     self.delegate = nil;
+    [super dealloc];
 }
 
 #pragma mark - WXApiDelegate
@@ -61,6 +62,7 @@
         }
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:strTitle message:strMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];
+        [alert release];
     }
 
 }
