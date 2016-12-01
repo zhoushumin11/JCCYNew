@@ -31,8 +31,8 @@
 
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
 
-@property (nonatomic, strong) UIButton *user_info_btn; //用户信息button
-@property (nonatomic, strong) UIButton *user_info_Level; //用户等级
+//@property (nonatomic, strong) UIButton *user_info_btn; //用户信息button
+//@property (nonatomic, strong) UIButton *user_info_Level; //用户等级
 
 @property(nonatomic,strong) NSMutableArray *dataArray;//表数据
 @property(nonatomic,strong) NSMutableArray *scrollNewsArray;//滚动数据
@@ -53,7 +53,7 @@
 
 @implementation HomeViewController
 
-@synthesize user_info_btn,mainTableView,dataArray,scrollNewsArray,adBannerView,user_info_Level,mainTableViewHeaderView,pageDic;
+@synthesize mainTableView,dataArray,scrollNewsArray,adBannerView,mainTableViewHeaderView,pageDic;
 
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -71,6 +71,7 @@
     self.navigationController.navigationBar.barTintColor = [UIColor colorFromHexRGB:@"e60013"];
     self.title = @"首页";
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabbarIndex) name:@"changeTabbarIndex" object:nil];
     
     //检查是否绑定手机号了
     BOOL isBangding = [[NSUserDefaults standardUserDefaults] objectForKey:@"isBangding"];
@@ -85,35 +86,16 @@
     dataArray = [NSMutableArray array];
     scrollNewsArray = [NSMutableArray array];
     pageDic = [NSDictionary dictionary];
-
-    //初始化用户button
-    user_info_btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    user_info_btn.frame = CGRectMake(-10, 0, 80, 44);
-    user_info_btn.titleLabel.textAlignment = NSTextAlignmentLeft;
-    [user_info_btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
-    [user_info_btn setTitle:@"" forState:UIControlStateNormal];
-    [user_info_btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [user_info_btn addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
-    
-    //初始化用户等级button
-    user_info_Level = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    user_info_Level.frame = CGRectMake(38, 12, 40, 20);
-    user_info_Level.titleLabel.textAlignment = NSTextAlignmentLeft;
-    [user_info_Level setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
-    [user_info_Level addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
-
-    
-    UIView *userInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 120, 44)];
-    userInfoView.backgroundColor = [UIColor clearColor];
-    [userInfoView addSubview:user_info_btn];
-    [userInfoView addSubview:user_info_Level];
-    
-    UIBarButtonItem *leftbarbtn = [[UIBarButtonItem alloc] initWithCustomView:userInfoView];
-    self.navigationItem.leftBarButtonItem = leftbarbtn;
     
     //创建主视图
     [self creatMainView];
 }
+
+//跳入购买页
+-(void)changeTabbarIndex{
+    self.tabBarController.selectedIndex = 2;
+}
+
 #pragma mark - 创建没有广告的首页头视图
 -(void)creatOnlyBtnHeaderView{
     mainTableViewHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 134)];
@@ -305,7 +287,10 @@
 //首页button响应事假
 -(void)homeBtnAction:(UIButton *)btn{
     if (btn.tag == 2016) {//实盘
-        self.tabBarController.selectedIndex = 1;
+        FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+        fiemShowByTypeViewController.typeString = @"0";
+        fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
     }else if (btn.tag == 2017){//赞赏
         FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
         fiemShowByTypeViewController.typeString = @"1";
@@ -375,10 +360,39 @@
     
     NSString *nameStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_chinese_name"];
     if (nameStr.length > 4) {
-      nameStr = [nameStr substringToIndex:4];
+        nameStr = [nameStr substringToIndex:4];
     }
     
+    CGSize size = GetWTextSizeFont(nameStr, 44, 16);
+    
+    //初始化用户button
+    UIButton *user_info_btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    user_info_btn.frame = CGRectMake(-10, 0, size.width+10, 44);
+    user_info_btn.titleLabel.textAlignment = NSTextAlignmentLeft;
+    [user_info_btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    [user_info_btn setTitle:@"" forState:UIControlStateNormal];
+    [user_info_btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [user_info_btn addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    //初始化用户等级button
+    UIButton *user_info_Level = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    user_info_Level.frame = CGRectMake(size.width, 12, 40, 20);
+    user_info_Level.titleLabel.textAlignment = NSTextAlignmentLeft;
+    [user_info_Level setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    [user_info_Level addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIView *userInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 120, 44)];
+    userInfoView.backgroundColor = [UIColor clearColor];
+    [userInfoView addSubview:user_info_btn];
+    [userInfoView addSubview:user_info_Level];
+    
+    UIBarButtonItem *leftbarbtn = [[UIBarButtonItem alloc] initWithCustomView:userInfoView];
+    self.navigationItem.leftBarButtonItem = leftbarbtn;
+    
+    
+    
     [user_info_btn setTitle:nameStr forState:UIControlStateNormal];
+    
     
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"0"] || [[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] == nil) {
         [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level0"] forState:UIControlStateNormal];//给button添加image
@@ -414,7 +428,7 @@
     cmheader.lastUpdatedTimeLabel.hidden = YES;
     
     mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(refreshMoreTableView)];
-    mainTableView.mj_footer.hidden = YES;
+    mainTableView.mj_footer.hidden = NO;
     
     mainTableView.mj_header = cmheader;
     mainTableView.delegate = self;
@@ -466,6 +480,8 @@
                               
                           }else{
                               //异常处理
+                              [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+
                           }
                           
                       } failedBlock:^(NSError *error) {
@@ -490,7 +506,11 @@
                    timeOutSeconds:10
                   completionBlock:^(NSDictionary *json) {
                       NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      if ([mainTableView.mj_footer isRefreshing]) {
+                          [mainTableView.mj_footer endRefreshing];
+                      }
                       if (code == 1) {
+
                           NSDictionary *dataDic = [json objectForKey:@"data"];
                           NSArray *listArr = [dataDic objectForKey:@"list"];
                           
@@ -511,10 +531,14 @@
                           
                       }else{
                           //异常处理
+                          [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+
                       }
                       
                   } failedBlock:^(NSError *error) {
-                      
+                      if ([mainTableView.mj_footer isRefreshing]) {
+                          [mainTableView.mj_footer endRefreshing];
+                      }
                   }];
     }
 }
@@ -669,9 +693,8 @@
 
     }
     
-
-    
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

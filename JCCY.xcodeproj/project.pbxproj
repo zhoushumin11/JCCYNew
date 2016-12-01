@@ -51,7 +51,6 @@
 		280EF44D1DEB38FD0016A041 /* zhifubao_PayType.png in Resources */ = {isa = PBXBuildFile; fileRef = 280EF44B1DEB38FD0016A041 /* zhifubao_PayType.png */; };
 		280EF4511DEBD43C0016A041 /* AlipaySDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 280EF44F1DEBD43C0016A041 /* AlipaySDK.bundle */; };
 		280EF4521DEBD43C0016A041 /* AlipaySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280EF4501DEBD43C0016A041 /* AlipaySDK.framework */; };
-		280EF4561DEBD7620016A041 /* Order.m in Sources */ = {isa = PBXBuildFile; fileRef = 280EF4551DEBD7620016A041 /* Order.m */; };
 		280EF4591DEBD78C0016A041 /* APAuthV2Info.m in Sources */ = {isa = PBXBuildFile; fileRef = 280EF4581DEBD78C0016A041 /* APAuthV2Info.m */; };
 		280EF5211DEBDDE00016A041 /* base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 280EF5111DEBDDE00016A041 /* base64.m */; };
 		280EF5221DEBDDE00016A041 /* DataSigner.m in Sources */ = {isa = PBXBuildFile; fileRef = 280EF5141DEBDDE00016A041 /* DataSigner.m */; };
@@ -81,6 +80,12 @@
 		280EF5721DED7F170016A041 /* redPacket_zuanshi.png in Resources */ = {isa = PBXBuildFile; fileRef = 280EF5701DED7F170016A041 /* redPacket_zuanshi.png */; };
 		280EF5741DED7F240016A041 /* redPacket_zangshang in Resources */ = {isa = PBXBuildFile; fileRef = 280EF5731DED7F240016A041 /* redPacket_zangshang */; };
 		280EF5771DED89BE0016A041 /* JCCYBuyVipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 280EF5761DED89BE0016A041 /* JCCYBuyVipViewController.m */; };
+		281576D21DEE81DD00D2C706 /* UIAlertController+SimpleAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 281576CF1DEE81DD00D2C706 /* UIAlertController+SimpleAlert.m */; };
+		281576D31DEE81DD00D2C706 /* JCCYResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 281576D11DEE81DD00D2C706 /* JCCYResult.m */; };
+		281576DB1DEFB86500D2C706 /* AlipayRequestConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 281576DA1DEFB86500D2C706 /* AlipayRequestConfig.m */; };
+		281576DE1DEFBA0400D2C706 /* Order.m in Sources */ = {isa = PBXBuildFile; fileRef = 281576DD1DEFBA0400D2C706 /* Order.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		281576E01DEFBF7200D2C706 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 281576DF1DEFBF7200D2C706 /* Images.xcassets */; };
+		281576E21DEFC06D00D2C706 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 281576E11DEFC06D00D2C706 /* Launch Screen.storyboard */; };
 		282DF76E1DE42BCE00F9FAE9 /* NJBannerImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF76B1DE42BCE00F9FAE9 /* NJBannerImageView.m */; };
 		282DF76F1DE42BCE00F9FAE9 /* NJBannerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF76D1DE42BCE00F9FAE9 /* NJBannerView.m */; };
 		282DF77F1DE42D8800F9FAE9 /* dotActive.png in Resources */ = {isa = PBXBuildFile; fileRef = 282DF7711DE42D8800F9FAE9 /* dotActive.png */; };
@@ -112,7 +117,6 @@
 		284D0EF31DDED75800F20D92 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 284D0EF11DDED75800F20D92 /* Main.storyboard */; };
 		284D0EF61DDED75800F20D92 /* JCCY.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 284D0EF41DDED75800F20D92 /* JCCY.xcdatamodeld */; };
 		284D0EF81DDED75800F20D92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 284D0EF71DDED75800F20D92 /* Assets.xcassets */; };
-		284D0EFB1DDED75800F20D92 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 284D0EF91DDED75800F20D92 /* LaunchScreen.storyboard */; };
 		284D0F061DDED75800F20D92 /* JCCYTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 284D0F051DDED75800F20D92 /* JCCYTests.m */; };
 		284D0F111DDED75800F20D92 /* JCCYUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 284D0F101DDED75800F20D92 /* JCCYUITests.m */; };
 		284D0F2A1DDED8C700F20D92 /* CoreStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 284D0F211DDED8C700F20D92 /* CoreStatus.m */; };
@@ -350,7 +354,7 @@
 		28ECC7CF1DE1869900525BDB /* UMSocialUIManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 28ECC7A01DE1869800525BDB /* UMSocialUIManager.m */; };
 		28ECC7D31DE29DF300525BDB /* jpush-ios-2.2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 28ECC7D11DE29DF300525BDB /* jpush-ios-2.2.0.a */; };
 		28ECC7D51DE29E1C00525BDB /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28ECC7D41DE29E1C00525BDB /* UserNotifications.framework */; };
-		28ECC7D71DE29E2200525BDB /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28ECC7D61DE29E2200525BDB /* UserNotificationsUI.framework */; };
+		28ECC7D71DE29E2200525BDB /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28ECC7D61DE29E2200525BDB /* UserNotificationsUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -450,8 +454,6 @@
 		280EF44B1DEB38FD0016A041 /* zhifubao_PayType.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zhifubao_PayType.png; sourceTree = "<group>"; };
 		280EF44F1DEBD43C0016A041 /* AlipaySDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AlipaySDK.bundle; sourceTree = "<group>"; };
 		280EF4501DEBD43C0016A041 /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AlipaySDK.framework; sourceTree = "<group>"; };
-		280EF4541DEBD7620016A041 /* Order.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Order.h; sourceTree = "<group>"; };
-		280EF4551DEBD7620016A041 /* Order.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Order.m; sourceTree = "<group>"; };
 		280EF4571DEBD78C0016A041 /* APAuthV2Info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APAuthV2Info.h; sourceTree = "<group>"; };
 		280EF4581DEBD78C0016A041 /* APAuthV2Info.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APAuthV2Info.m; sourceTree = "<group>"; };
 		280EF4C41DEBDDE00016A041 /* aes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aes.h; sourceTree = "<group>"; };
@@ -580,6 +582,16 @@
 		280EF5731DED7F240016A041 /* redPacket_zangshang */ = {isa = PBXFileReference; lastKnownFileType = file; path = redPacket_zangshang; sourceTree = "<group>"; };
 		280EF5751DED89BE0016A041 /* JCCYBuyVipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYBuyVipViewController.h; sourceTree = "<group>"; };
 		280EF5761DED89BE0016A041 /* JCCYBuyVipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYBuyVipViewController.m; sourceTree = "<group>"; };
+		281576CE1DEE81DD00D2C706 /* UIAlertController+SimpleAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+SimpleAlert.h"; sourceTree = "<group>"; };
+		281576CF1DEE81DD00D2C706 /* UIAlertController+SimpleAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+SimpleAlert.m"; sourceTree = "<group>"; };
+		281576D01DEE81DD00D2C706 /* JCCYResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCCYResult.h; sourceTree = "<group>"; };
+		281576D11DEE81DD00D2C706 /* JCCYResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCCYResult.m; sourceTree = "<group>"; };
+		281576D91DEFB86500D2C706 /* AlipayRequestConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlipayRequestConfig.h; sourceTree = "<group>"; };
+		281576DA1DEFB86500D2C706 /* AlipayRequestConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlipayRequestConfig.m; sourceTree = "<group>"; };
+		281576DC1DEFBA0400D2C706 /* Order.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Order.h; sourceTree = "<group>"; };
+		281576DD1DEFBA0400D2C706 /* Order.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Order.m; sourceTree = "<group>"; };
+		281576DF1DEFBF7200D2C706 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		281576E11DEFC06D00D2C706 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		282DF76A1DE42BCE00F9FAE9 /* NJBannerImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJBannerImageView.h; sourceTree = "<group>"; };
 		282DF76B1DE42BCE00F9FAE9 /* NJBannerImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NJBannerImageView.m; sourceTree = "<group>"; };
 		282DF76C1DE42BCE00F9FAE9 /* NJBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJBannerView.h; sourceTree = "<group>"; };
@@ -631,7 +643,6 @@
 		284D0EF21DDED75800F20D92 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		284D0EF51DDED75800F20D92 /* JCCY.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = JCCY.xcdatamodel; sourceTree = "<group>"; };
 		284D0EF71DDED75800F20D92 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		284D0EFA1DDED75800F20D92 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		284D0EFC1DDED75800F20D92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		284D0F011DDED75800F20D92 /* JCCYTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JCCYTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		284D0F051DDED75800F20D92 /* JCCYTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JCCYTests.m; sourceTree = "<group>"; };
@@ -1296,10 +1307,6 @@
 		280EF4391DEB05570016A041 /* 充值 */ = {
 			isa = PBXGroup;
 			children = (
-				280EF5631DED62EF0016A041 /* CommonUtil.h */,
-				280EF5641DED62EF0016A041 /* CommonUtil.m */,
-				280EF5651DED62EF0016A041 /* GDataXMLNode.h */,
-				280EF5661DED62EF0016A041 /* GDataXMLNode.m */,
 				280EF5371DEC774B0016A041 /* 微信充值 */,
 				280EF4531DEBD5D30016A041 /* 支付宝充值 */,
 				280EF43A1DEB05C80016A041 /* JCCYChongZhiViewController.h */,
@@ -1322,12 +1329,14 @@
 		280EF4531DEBD5D30016A041 /* 支付宝充值 */ = {
 			isa = PBXGroup;
 			children = (
+				281576DC1DEFBA0400D2C706 /* Order.h */,
+				281576DD1DEFBA0400D2C706 /* Order.m */,
+				281576D91DEFB86500D2C706 /* AlipayRequestConfig.h */,
+				281576DA1DEFB86500D2C706 /* AlipayRequestConfig.m */,
 				280EF4C31DEBDDE00016A041 /* openssl */,
 				280EF50F1DEBDDE00016A041 /* Util */,
 				280EF4571DEBD78C0016A041 /* APAuthV2Info.h */,
 				280EF4581DEBD78C0016A041 /* APAuthV2Info.m */,
-				280EF4541DEBD7620016A041 /* Order.h */,
-				280EF4551DEBD7620016A041 /* Order.m */,
 			);
 			name = "支付宝充值";
 			sourceTree = "<group>";
@@ -1441,6 +1450,10 @@
 		280EF5371DEC774B0016A041 /* 微信充值 */ = {
 			isa = PBXGroup;
 			children = (
+				280EF5631DED62EF0016A041 /* CommonUtil.h */,
+				280EF5641DED62EF0016A041 /* CommonUtil.m */,
+				280EF5651DED62EF0016A041 /* GDataXMLNode.h */,
+				280EF5661DED62EF0016A041 /* GDataXMLNode.m */,
 				280EF55D1DED54A60016A041 /* payRequsestHandler.h */,
 				280EF55E1DED54A60016A041 /* payRequsestHandler.mm */,
 				280EF55F1DED54A60016A041 /* TenpayUtil.h */,
@@ -1485,6 +1498,17 @@
 				280EF56D1DED6F2B0016A041 /* RedPacketTableViewCell.m */,
 			);
 			name = "红包";
+			sourceTree = "<group>";
+		};
+		281576CD1DEE81BF00D2C706 /* 错误信息 */ = {
+			isa = PBXGroup;
+			children = (
+				281576CE1DEE81DD00D2C706 /* UIAlertController+SimpleAlert.h */,
+				281576CF1DEE81DD00D2C706 /* UIAlertController+SimpleAlert.m */,
+				281576D01DEE81DD00D2C706 /* JCCYResult.h */,
+				281576D11DEE81DD00D2C706 /* JCCYResult.m */,
+			);
+			name = "错误信息";
 			sourceTree = "<group>";
 		};
 		282DF7691DE42BCE00F9FAE9 /* NJBannerView */ = {
@@ -1593,9 +1617,9 @@
 				284D10A21DDEDA1F00F20D92 /* AppDelegate */,
 				284D0F1E1DDED7C200F20D92 /* ThirdLibrary */,
 				284D0EF71DDED75800F20D92 /* Assets.xcassets */,
-				284D0EF91DDED75800F20D92 /* LaunchScreen.storyboard */,
 				284D0EFC1DDED75800F20D92 /* Info.plist */,
 				284D0EF41DDED75800F20D92 /* JCCY.xcdatamodeld */,
+				281576DF1DEFBF7200D2C706 /* Images.xcassets */,
 				284D0EE81DDED75800F20D92 /* Supporting Files */,
 			);
 			path = JCCY;
@@ -2112,6 +2136,7 @@
 				284D0EEE1DDED75800F20D92 /* ViewController.h */,
 				284D0EEF1DDED75800F20D92 /* ViewController.m */,
 				284D0EF11DDED75800F20D92 /* Main.storyboard */,
+				281576E11DEFC06D00D2C706 /* Launch Screen.storyboard */,
 			);
 			name = AppDelegate;
 			sourceTree = "<group>";
@@ -2290,6 +2315,7 @@
 		284D111D1DDEE3E400F20D92 /* 通用 */ = {
 			isa = PBXGroup;
 			children = (
+				281576CD1DEE81BF00D2C706 /* 错误信息 */,
 				280EF3FF1DEADDB20016A041 /* Main */,
 				280EF3F21DEADDA30016A041 /* BXTabBar */,
 				284D111E1DDEE41000F20D92 /* PPNavigationController.h */,
@@ -2836,8 +2862,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				284D10151DDED93900F20D92 /* PlayButtonOverlayLargeTap@3x.png in Resources */,
-				284D0EFB1DDED75800F20D92 /* LaunchScreen.storyboard in Resources */,
 				284D101F1DDED93900F20D92 /* VideoOverlay.png in Resources */,
+				281576E21DEFC06D00D2C706 /* Launch Screen.storyboard in Resources */,
 				284D10181DDED93900F20D92 /* UIBarButtonItemArrowLeft@3x.png in Resources */,
 				284D10221DDED93900F20D92 /* .gitkeep in Resources */,
 				28ECC7CB1DE1869900525BDB /* UMSocialSDKResources.bundle in Resources */,
@@ -2883,6 +2909,7 @@
 				284D10211DDED93900F20D92 /* VideoOverlay@3x.png in Resources */,
 				284D101B1DDED93900F20D92 /* UIBarButtonItemArrowRight@3x.png in Resources */,
 				284D10041DDED93900F20D92 /* ImageSelectedOff.png in Resources */,
+				281576E01DEFBF7200D2C706 /* Images.xcassets in Resources */,
 				280EF4451DEB19690016A041 /* JCCY_YiXuan.png in Resources */,
 				282DF7821DE42D8800F9FAE9 /* dotInactive.png in Resources */,
 				284D10031DDED93900F20D92 /* ImageError@3x.png in Resources */,
@@ -2937,6 +2964,7 @@
 				280EF4381DEAE28B0016A041 /* UIView+Runtime.m in Sources */,
 				284D0FBD1DDED92900F20D92 /* MJRefreshNormalHeader.m in Sources */,
 				284D11391DDEE69800F20D92 /* EYPopupView.m in Sources */,
+				281576DE1DEFBA0400D2C706 /* Order.m in Sources */,
 				284D0EED1DDED75800F20D92 /* AppDelegate.m in Sources */,
 				284D0FBB1DDED92900F20D92 /* MJRefreshBackStateFooter.m in Sources */,
 				284D10941DDED96E00F20D92 /* AFURLRequestSerialization.m in Sources */,
@@ -3035,6 +3063,7 @@
 				284D0F7A1DDED91500F20D92 /* MLSelectPhotoPickerBrowserPhotoImageView.m in Sources */,
 				284D11241DDEE41000F20D92 /* PPNavigationController.m in Sources */,
 				284D0F2A1DDED8C700F20D92 /* CoreStatus.m in Sources */,
+				281576D21DEE81DD00D2C706 /* UIAlertController+SimpleAlert.m in Sources */,
 				284D10C81DDEDEE100F20D92 /* YXProgressHUD.m in Sources */,
 				280EF3FC1DEADDA30016A041 /* BXTabBar.m in Sources */,
 				284D10A11DDED9BF00F20D92 /* UIColor+YXColor.m in Sources */,
@@ -3064,8 +3093,8 @@
 				2835DAD01DE57BBF008D2BCB /* PPSXTitleLable.m in Sources */,
 				284D11501DDEE93700F20D92 /* RedPacketViewController.m in Sources */,
 				280EF4371DEAE28B0016A041 /* UIView+IBExtension.m in Sources */,
+				281576D31DEE81DD00D2C706 /* JCCYResult.m in Sources */,
 				284D10711DDED94C00F20D92 /* WSProgressHUD.m in Sources */,
-				280EF4561DEBD7620016A041 /* Order.m in Sources */,
 				284D105C1DDED94300F20D92 /* UIImageView+WebCache.m in Sources */,
 				284D0F691DDED91500F20D92 /* HCollectionViewCell.m in Sources */,
 				284D11421DDEE76000F20D92 /* EYTextField.m in Sources */,
@@ -3124,6 +3153,7 @@
 				284D0FB11DDED92900F20D92 /* MJRefreshAutoFooter.m in Sources */,
 				280EF4051DEADDB20016A041 /* BXTabBarController.m in Sources */,
 				284D106E1DDED94C00F20D92 /* MMMaterialDesignSpinner.m in Sources */,
+				281576DB1DEFB86500D2C706 /* AlipayRequestConfig.m in Sources */,
 				284D10511DDED94300F20D92 /* SDWebImageCompat.m in Sources */,
 				284D0F731DDED91500F20D92 /* MLSelectPhotoPickerGroup.m in Sources */,
 				280EF42A1DEAE28B0016A041 /* NSDictionary+Extension.m in Sources */,
@@ -3169,14 +3199,6 @@
 				284D0EF21DDED75800F20D92 /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		284D0EF91DDED75800F20D92 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				284D0EFA1DDED75800F20D92 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -3332,7 +3354,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jingchengkeji.wtband.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "0554a90e-abb8-451c-81ef-466772d87552";
+				PROVISIONING_PROFILE = "ebdc8101-5c2e-44c7-aec3-23ff10974dcb";
 				PROVISIONING_PROFILE_SPECIFIER = ceshiall;
 			};
 			name = Debug;
@@ -3395,7 +3417,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jingchengkeji.wtband.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "5b43817c-f0d1-4ccc-a788-b7ed2fb5a7f1";
+				PROVISIONING_PROFILE = "0554a90e-abb8-451c-81ef-466772d87552";
 				PROVISIONING_PROFILE_SPECIFIER = ceshiall;
 			};
 			name = Release;

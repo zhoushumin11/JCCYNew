@@ -20,15 +20,19 @@
 #define UMSUserInfoPlatformIconNameKey @"UMSUserInfoPlatformIconNameKey"
 
 
-@interface PPLoginViewController ()<UITextFieldDelegate>
+@interface PPLoginViewController ()<UITextFieldDelegate,UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *platformInfoArray;
 
 @property (nonatomic, strong) UIScrollView *mainView;
+
+@property(nonatomic,strong) NSString *userIdStr;
+@property(nonatomic,strong) NSString *accessTokenStr;
+
 @end
 
 @implementation PPLoginViewController
-@synthesize mainView;
+@synthesize mainView,userIdStr,accessTokenStr;
 
 
 - (void)viewWillAppear:(BOOL)animated
@@ -124,7 +128,11 @@
 //                    [[NSUserDefaults standardUserDefaults] synchronize];
 
                     
+                    userIdStr = unionid;
+                    accessTokenStr = accessToken;
                     [self checkPhoneBangdingSucc:unionid :accessToken];
+                    
+            
                     
                     
                 }else{
@@ -161,6 +169,9 @@
                           //保存token信息
                           NSDictionary *dataDic = [json objectForKey:@"data"];
                           NSString *token = [dataDic objectForKey:@"token"];
+                          NSLog(@"token is --- %@",token);
+                          token = [token stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
+                          NSLog(@"token is --- %@",token);
                           [[NSUserDefaults standardUserDefaults] setObject:token forKey:@"token"];
                           [[NSUserDefaults standardUserDefaults] synchronize];
 
@@ -168,6 +179,8 @@
                           [self getUserInfo];
                           
                       }else{
+                          
+                          [self checkPhoneBangdingSucc:userId :accessToken];
                           [WSProgressHUD showSuccessWithStatus:@"登录失败"];
                           [WSProgressHUD dismiss];
                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"微信授权失败,请稍后再试！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
@@ -181,9 +194,12 @@
 
 }
 
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+
+}
+
 -(void)getUserInfo{
     
-    [WSProgressHUD showWithStatus:@"正在初始化用户数据" maskType:WSProgressHUDMaskTypeDefault];
         NSString *dJson = nil;
         //得到自己当前的下属
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
@@ -197,8 +213,6 @@
                       NSInteger code = [[json objectForKey:@"code"] integerValue];
                       if (code == 1) {
                           
-                          [WSProgressHUD showSuccessWithStatus:@"获取成功"];
-                          [WSProgressHUD autoDismiss:2];
                           
                           NSDictionary *dataDic = [json objectForKey:@"data"];
                           
@@ -230,7 +244,7 @@
                           [userDefauls setObject:user_province forKey:@"user_province"];
                           [userDefauls synchronize];
                           //判断手机号是否绑定  如果没有 就绑定
-                          if (user_phone == nil || user_phone.length == 0) {
+                          if (user_phone == nil || user_phone.length == 0 ||[user_phone isEqualToString:@"0"]) {
                               [self bangdingPhone];
                           }else{
                               [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isBangding"];
@@ -239,15 +253,14 @@
                               AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
                               [appdel setupViewControllers];
                           }
-                          
                       
                       }else{
+//                          [self getUserInfo];
                           NSString *msg = [json objectForKey:@"info"];
                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:msg delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                          alert.tag = 201611;
                           [alert show];
-                          
-
-                      }
+                                                }
                   }
                       failedBlock:^(NSError *error) {
 
@@ -258,6 +271,7 @@
 
 -(void)bangdingPhone{
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:@"isBangding"];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isLogin"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [appdel setupViewControllers];

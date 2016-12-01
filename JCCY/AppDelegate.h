@@ -18,6 +18,10 @@
 @property (strong, nonatomic) UIWindow *window;
 @property (readonly, strong) NSPersistentContainer *persistentContainer;
 
+@property(nonatomic,assign) NSInteger oldSelectIndex; //上一次的位置
+@property(nonatomic,assign) NSInteger nowSelectIndex; //现在的位置
+
+
 @property (strong, nonatomic) UIViewController *viewController;
 //@property (strong, nonatomic) PPTabBarController *pptabBarController;
 @property (strong, nonatomic) PPNavigationController *ppLoginNavigationController;

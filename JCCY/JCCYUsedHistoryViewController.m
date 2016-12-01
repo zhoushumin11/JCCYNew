@@ -21,7 +21,7 @@
 @end
 
 @implementation JCCYUsedHistoryViewController
-@synthesize dataArray,mainTableView;
+@synthesize dataArray,mainTableView,pageDic;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -58,21 +58,71 @@
     
     
     //获取数据
-    [self getdata:1];
+    [self getdata];
     
 }
 
+-(void)getdata{
+    NSString *dJson = nil;
+    @autoreleasepool {
+        
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%d\"}",87,token,1];
+        //获取类型接
+        PPRDData *pprddata1 = [[PPRDData alloc] init];
+        [pprddata1 startAFRequest:@"/index.php/Api/UserCost/list_cost_service/"
+                      requestdata:dJson
+                   timeOutSeconds:10
+                  completionBlock:^(NSDictionary *json) {
+                      
+                      if ([mainTableView.mj_header isRefreshing]) {
+                          [mainTableView.mj_header endRefreshing];
+                      }
+                      if ([mainTableView.mj_footer isRefreshing]) {
+                          [mainTableView.mj_footer endRefreshing];
+                      }
+                      
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      if (code == 1) {
+                          NSDictionary *dataDic = [json objectForKey:@"data"];
+                          NSArray *listArray = [dataDic objectForKey:@"list"];
+                          
+                          if ([listArray isEqual:[NSNull null]]) {
+                              return;
+                          }
+                          
+                          dataArray = [NSMutableArray arrayWithArray:listArray];
+                          NSDictionary *pageDicNow = [dataDic objectForKey:@"page"];
+                          self.pageDic = pageDicNow;
+                          
+                          [mainTableView reloadData];
+                      }
+                  } failedBlock:^(NSError *error) {
+                      if ([mainTableView.mj_header isRefreshing]) {
+                          [mainTableView.mj_header endRefreshing];
+                      }
+                      if ([mainTableView.mj_footer isRefreshing]) {
+                          [mainTableView.mj_footer endRefreshing];
+                      }
+                  }];
+    }
+}
+
+
 -(void)refreshTableView{
-    [self getdata:1];
+    [self getdata];
     
 }
 
 -(void)refreshMoreTableView{
-    
+    NSString *pageNumsss = [[pageDic objectForKey:@"now_page"] stringValue];
+    if ([pageNumsss isEqual:[NSNull null]]) {
+        return;
+    }
+    [self getdata:[pageNumsss integerValue]];
     
 }
-
-
 
 -(void)getdata:(NSInteger)nowPage{
     NSString *dJson = nil;
@@ -91,7 +141,9 @@
                       if ([mainTableView.mj_header isRefreshing]) {
                           [mainTableView.mj_header endRefreshing];
                       }
-                      
+                      if ([mainTableView.mj_footer isRefreshing]) {
+                          [mainTableView.mj_footer endRefreshing];
+                      }
                       NSInteger code = [[json objectForKey:@"code"] integerValue];
                       if (code == 1) {
                           NSDictionary *dataDic = [json objectForKey:@"data"];
@@ -100,7 +152,7 @@
                           if ([listArray isEqual:[NSNull null]]) {
                               return;
                           }
-                          
+
                          dataArray = [NSMutableArray arrayWithArray:[dataArray arrayByAddingObjectsFromArray:listArray]];
                           NSDictionary *pageDicNow = [dataDic objectForKey:@"page"];
                           self.pageDic = pageDicNow;
@@ -111,6 +163,9 @@
                   } failedBlock:^(NSError *error) {
                       if ([mainTableView.mj_header isRefreshing]) {
                           [mainTableView.mj_header endRefreshing];
+                      }
+                      if ([mainTableView.mj_footer isRefreshing]) {
+                          [mainTableView.mj_footer endRefreshing];
                       }
                   }];
     }
@@ -152,7 +207,7 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 4;
+    return dataArray.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -164,28 +219,44 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
     }
     
+    [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+
+    
     UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/3, 44)];
     lable1.textAlignment = NSTextAlignmentCenter;
     lable1.textColor = [UIColor blackColor];
-    lable1.text = @"2016-11-10";
+    int num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] intValue];
+    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:MM"];
+    NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:num];
+    NSString *confromTimespStr = [formatter stringFromDate:confromTimesp];
+    lable1.text = confromTimespStr;
     lable1.backgroundColor = [UIColor clearColor];
-    lable1.font = [UIFont systemFontOfSize:14];
+    lable1.font = [UIFont systemFontOfSize:12];
     [cell.contentView addSubview:lable1];
     
     UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/3, 0, PPMainViewWidth/3, 44)];
     lable2.textAlignment = NSTextAlignmentCenter;
     lable2.textColor = [UIColor blackColor];
-    lable2.text = @"钻石";
+    NSInteger service_type = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"service_type"] integerValue];
+    if (service_type == 1) {
+        lable2.text = @"赞赏";
+    }else if (service_type == 2){
+        lable2.text = @"钻石";
+    }else if (service_type == 3){
+        lable2.text = @"黄金";
+    }
     lable2.backgroundColor = [UIColor clearColor];
-    lable2.font = [UIFont systemFontOfSize:14];
+    lable2.font = [UIFont systemFontOfSize:12];
     [cell.contentView addSubview:lable2];
     
     UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/3*2, 0, PPMainViewWidth/3, 44)];
     lable3.textAlignment = NSTextAlignmentCenter;
-    lable3.text = @"2000";
+    
+    lable3.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"cost_gold"];
     lable3.textColor = [UIColor redColor];
     lable3.backgroundColor = [UIColor clearColor];
-    lable3.font = [UIFont systemFontOfSize:14];
+    lable3.font = [UIFont systemFontOfSize:12];
     [cell.contentView addSubview:lable3];
     
     return cell;

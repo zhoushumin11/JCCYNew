@@ -27,6 +27,13 @@
 #import "PPViewController.h"
 #import "ALToastView.h"
 #import "BXExtensions.h"
+#import "JCCYResult.h"
 
+
+//支付宝相关
+#import <AlipaySDK/AlipaySDK.h>     // 导入AlipaySDK
+#import "AlipayRequestConfig.h"     // 导入支付类
+#import "Order.h"                   // 导入订单类
+#import "DataSigner.h"              // 生成signer的类：获取私钥并将商户信息签名,外部商户可以根据情况存放私钥和签名,只需要遵循 RSA 签名规范, 并将签名字符串 base64 编码和 UrlEncode
 
 #endif

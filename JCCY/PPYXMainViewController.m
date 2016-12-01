@@ -84,7 +84,8 @@
         titleAll = [titleAll stringByAppendingString:string];
     }
     
-    CGSize size1 =[titleAll sizeWithAttributes:@{NSFontAttributeName:SystemFont(16)}];
+//    CGSize size1 =[titleAll sizeWithAttributes:@{NSFontAttributeName:SystemFont(16)}];
+    CGSize size1 = GetWTextSizeFont(titleAll, 40, 18);
 
     titleWidth = titleWidth + size1.width;
     
@@ -114,12 +115,12 @@
         if (i == 0) {
             lblX = lblX + lbl1.frame.size.width+5;
         }else{
-            lblX = lblX + lbl1.frame.size.width;
+            lblX = lblX + lbl1.frame.size.width+5;
 
         }
         
         lbl1.text =vc.title;
-        lbl1.font = SystemFont(16);
+        lbl1.font = [UIFont systemFontOfSize:18];
         [self.smallScview addSubview:lbl1];
         lbl1.tag = i;
         lbl1.userInteractionEnabled = YES;

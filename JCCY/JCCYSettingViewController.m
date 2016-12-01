@@ -142,7 +142,7 @@
     [tuichuBtn.layer setMasksToBounds:YES];
     [tuichuBtn.layer setCornerRadius:5.0]; //设置矩形四个圆角半径
     tuichuBtn.backgroundColor = [UIColor colorFromHexRGB:@"e60013"];
-    [tuichuBtn setTitle:@"绑定" forState:UIControlStateNormal];
+    [tuichuBtn setTitle:@"退出" forState:UIControlStateNormal];
     [tuichuBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [tuichuBtn addTarget:self action:@selector(logout:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:tuichuBtn];
@@ -196,6 +196,8 @@
 
     [[NSUserDefaults standardUserDefaults] synchronize];
     [[NSNotificationCenter defaultCenter] postNotificationName:LOGOUTNOTIFACTION object:nil];
+    [self.navigationController popToRootViewControllerAnimated:NO];
+    
     
 }
 

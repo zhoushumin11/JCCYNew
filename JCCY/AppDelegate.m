@@ -63,7 +63,6 @@
 @synthesize tabbarbuttonArray;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-
     
     NSString *severurlstr = [[NSUserDefaults standardUserDefaults] objectForKey:SEVERURL];
     if (severurlstr == nil) {
@@ -163,6 +162,7 @@
     //检查更新
     [self versionUpdate];
 
+    [self refreshUpdataId];
     
     return YES;
 }
@@ -177,7 +177,7 @@
             NSUInteger version = [appVersion integerValue];
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
             
-            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"device\":\"%d\",\"device_type\":\"%@\",\"version\":\"%ld\"}",87,token,2,@"",version];
+            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"device\":\"%d\",\"device_type\":\"%@\",\"version\":\"%ld\"}",85,token,2,@"",version];
             //获取类型接口
             PPRDData *pprddata1 = [[PPRDData alloc] init];
             [pprddata1 startAFRequest:@"/index.php/Api/User/get_info/"
@@ -192,7 +192,6 @@
                               
                           }
                           
-                      
                       } failedBlock:^(NSError *error) {
                               
                           }];
@@ -200,11 +199,45 @@
     }
 }
 
+
+//获取公共信息更新接口(通知更新后).
+#pragma mark - 手机收到推送要更新Up_id的时候
+-(void)refreshUpdataId
+{
+    NSString *dJson = nil;
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+    
+    NSNumber *update_id = [[NSUserDefaults standardUserDefaults] objectForKey:@"update_id"];
+    
+    if (update_id == nil || update_id == 0) {
+        update_id = 0;
+    }
+    
+    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%@\",\"token\":\"%@\"}",update_id,token];
+    //获取类型接口
+    PPRDData *pprddata1 = [[PPRDData alloc] init];
+    [pprddata1 startAFRequest:@"/index.php/Api/Update/index/"
+                  requestdata:dJson
+               timeOutSeconds:10
+              completionBlock:^(NSDictionary *json) {
+                  NSInteger code = [[json objectForKey:@"code"] integerValue];
+                  if (code == 1) {
+                      NSDictionary *dataDic = [json objectForKey:@"data"];
+                      NSArray *updataArray = [dataDic objectForKey:@"update_data"];                      
+                      NSNumber *update_id = [dataDic objectForKey:@"update_id"];
+                      [[NSUserDefaults standardUserDefaults] setObject:update_id forKey:@"update_id"];
+                      [[NSUserDefaults standardUserDefaults] synchronize];
+                  }
+              }
+            failedBlock:^(NSError *error) {
+                      
+            }];
+    
+}
 #pragma mark - 版本更新
 - (void)versionUpdate
 {
 
-    
     NSString *dJson = nil;
     @autoreleasepool {
         //得到自己当前的下属
@@ -252,10 +285,9 @@
                   }
                       failedBlock:^(NSError *error) {
                           
-                      }];
+                }];
     }
     
-
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -339,12 +371,14 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 }
 - (void)loginNotifaction:(NSNotification *)object
 {
-    bXTabBarController = [[BXTabBarController alloc] init];
+    if (bXTabBarController == nil) {
+        bXTabBarController = [[BXTabBarController alloc] init];
+    }
+    
     self.viewController = bXTabBarController;
-    bXTabBarController.selectedIndex = 0;
     [self.window setRootViewController:self.viewController];
     [self.window makeKeyAndVisible];
-    
+    bXTabBarController.selectedIndex = 0;
     [WSProgressHUD showShimmeringString:@"登录成功" maskType:WSProgressHUDMaskTypeClear maskWithout:WSProgressHUDMaskWithoutDefault];
     [self autoDismiss];
     
@@ -406,10 +440,11 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
     ppLoginNavigationController = [[PPNavigationController alloc] initWithRootViewController:ppLoginViewController];
     
+    #pragma mark  -- 修改过后的tabbar ----
     
-#pragma mark  -- 修改过后的tabbar ---- 
-    
-    bXTabBarController = [[BXTabBarController alloc] init];
+    if (bXTabBarController == nil) {
+        bXTabBarController = [[BXTabBarController alloc] init];
+    }
     
     
     BOOL isLoginsucc = [[NSUserDefaults standardUserDefaults] objectForKey:@"isLogin"];
@@ -423,6 +458,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
         [self updataPublicInfo];
     }
     
+    self.bXTabBarController.selectedIndex = 0;
+
     
     [_window setRootViewController:self.viewController];
 
@@ -620,6 +657,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
          annotation:(id)annotation
 {
     
+    
     [[UMSocialManager defaultManager] handleOpenURL:url];
 
     //如果是微信的
@@ -661,6 +699,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options
 {
     
+    [[UMSocialManager defaultManager] handleOpenURL:url];
+
+    
     //如果是微信的
     if ([url.host isEqualToString:@"pay"]) {
         [WXApi handleOpenURL:url delegate:self];
@@ -700,9 +741,11 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     //errCode
     switch (resp.errCode) {
         case WXSuccess:
-            //成功回调
+        //成功回调
+            [[NSNotificationCenter defaultCenter] postNotificationName:JCCYWeiXinPaySucc object:nil];
             break;
         default:
+            [[NSNotificationCenter defaultCenter] postNotificationName:JCCYWeiXinPayFail object:nil];
             break;
     }
 }

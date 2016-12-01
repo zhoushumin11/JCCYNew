@@ -191,6 +191,7 @@
     dispatch_group_enter(group_request);
     NSString *urlString = [[NSString stringWithFormat:@"%@%@",[PPAPPDataClass sharedappData].severUrl,intefacePath] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSLog(@"%@",jsondata);
+    
     jsondata  =  [jsondata stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     AFHTTPSessionManager *manage = [PPRDData sharePPRDData].httpManager;

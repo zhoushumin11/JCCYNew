@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface JCCYBuyVipViewController : UIViewController
+@interface JCCYBuyVipViewController : PPViewController
 
 @property(nonatomic,assign) NSInteger buyType;   //购买种类 0 赞赏 1 钻石 2 黄金
 

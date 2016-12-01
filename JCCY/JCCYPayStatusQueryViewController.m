@@ -9,7 +9,9 @@
 #import "JCCYPayStatusQueryViewController.h"
 
 @interface JCCYPayStatusQueryViewController ()
-
+{
+    NSTimer *timer;
+}
 @property(nonatomic,strong) UIImageView *imageView;
 @property(nonatomic,strong) UILabel *tishiLabel;
 
@@ -22,17 +24,27 @@
 @implementation JCCYPayStatusQueryViewController
 @synthesize dingDangNumStr,imageView,tishiLabel,succ_View,refreshTime;
 
+
+-(void)dealloc{
+    [timer invalidate];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     self.view.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
     
-    [self payStatusChaXun];
-    
     self.title = @"充值查询";
     
     refreshTime = 0;
+    //等待界面
+    [self initWaitingView];
     
+    timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(payStatusChaXun) userInfo:nil repeats:NO];
+    
+}
+
+-(void)initWaitingView{
     imageView = [[UIImageView alloc] initWithFrame:CGRectMake(PPMainViewWidth/2 - 50, 100, 100, 100)];
     imageView.image = [UIImage imageNamed:@"pay_success"];
     [imageView setContentMode:UIViewContentModeScaleAspectFill];
@@ -46,13 +58,12 @@
     tishiLabel.text = @"正在充值，请耐心等待...";
     
     [self.view addSubview:tishiLabel];
-    
-    
 }
-
 
 #pragma mark ---- 充值状态查询 ----
 -(void)payStatusChaXun{
+    
+    [timer invalidate];
     
     NSString *dJson = nil;
     @autoreleasepool {
@@ -87,6 +98,8 @@
 
                       }else{
                           //异常处理
+                          [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+
                       }
                       
                   } failedBlock:^(NSError *error) {
@@ -129,14 +142,14 @@
     recharge_goldLa.textColor = [UIColor grayColor];
     recharge_goldLa.font = [UIFont systemFontOfSize:18];
     recharge_goldLa.textAlignment = NSTextAlignmentRight;
-    recharge_goldLa.text = [NSString stringWithFormat:@"¥%@",recharge_gold];
+    recharge_goldLa.text = [NSString stringWithFormat:@"¥%@",recharge_amount];
     [succ_View addSubview:recharge_goldLa];
     
     UILabel *recharge_amountLa = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth - 160, 100, 150, 50)];
     recharge_amountLa.textColor = [UIColor grayColor];
     recharge_amountLa.font = [UIFont systemFontOfSize:18];
     recharge_amountLa.textAlignment = NSTextAlignmentRight;
-    recharge_amountLa.text = [NSString stringWithFormat:@"%@",recharge_amount];
+    recharge_amountLa.text = [NSString stringWithFormat:@"%@",recharge_gold];
     [succ_View addSubview:recharge_amountLa];
     
     //完成 button

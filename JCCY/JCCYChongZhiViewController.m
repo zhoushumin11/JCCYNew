@@ -65,7 +65,13 @@
     self.view.backgroundColor = [UIColor whiteColor];
     dataArray = [NSMutableArray array];
 
+    //支付宝支付通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(aliPayResultAction:) name:JCCYAliPayNotificationCenter object:nil];
+    //微信支付成功通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(wechatPaySucc) name:JCCYWeiXinPaySucc object:nil];
+    //微信支付失败通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(wechatPayFail) name:JCCYWeiXinPayFail object:nil];
+
     
     //支付类型 默认支付宝
     pay_type = 1;
@@ -73,6 +79,23 @@
     [self getChongZhiStatus];
 
 }
+//微信支付通知
+-(void)wechatPaySucc{
+    JCCYPayStatusQueryViewController *jCCYPayStatusQueryViewController = [[JCCYPayStatusQueryViewController alloc] init];
+    jCCYPayStatusQueryViewController.hidesBottomBarWhenPushed = YES;
+    jCCYPayStatusQueryViewController.dingDangNumStr = recharge_number;
+    jCCYPayStatusQueryViewController.payType = @"2";
+    [self.navigationController pushViewController:jCCYPayStatusQueryViewController animated:YES];
+}
+-(void)wechatPayFail{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
+                                                    message:@"微信支付失败"
+                                                   delegate:self
+                                          cancelButtonTitle:@"确定"
+                                          otherButtonTitles:nil];
+    [alert show];
+}
+
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
@@ -117,6 +140,7 @@
                           
                       }else{
                           //异常处理
+                          [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
                       }
                       
                   } failedBlock:^(NSError *error) {
@@ -351,12 +375,7 @@
 //确定充值 1.首先提交到服务器 申请充值
 -(void)quedingPhone{
     
-    if (pay_type == 1) {
-//        [self doAlipayPay];
-        return;
-    }else if(pay_type == 2){
-        [self payByWeChat];
-    }
+
     
     // NOTE: 当前时间点
     NSDateFormatter* formatter = [NSDateFormatter new];
@@ -373,6 +392,7 @@
     
     NSString *recharge_numberStr = [NSString stringWithFormat:@"%@%d%d",nianyueriStr,num1,num2];
     recharge_number = recharge_numberStr;
+    
     
         NSString *dJson = nil;
     
@@ -388,6 +408,7 @@
                       NSInteger code = [[json objectForKey:@"code"] integerValue];
                       if (code == 1) {
                           if (pay_type == 1) {
+                              
                               [self doAlipayPay];
                           }else if(pay_type == 2){
                               [self payByWeChat];
@@ -395,6 +416,8 @@
                           
                       }else{
                           //异常处理
+                          [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+
                       }
                       
                   } failedBlock:^(NSError *error) {
@@ -404,97 +427,17 @@
 }
 
 
+#pragma mark --- 支付宝支付开始 ----
 //调用支付宝支付
 - (void)doAlipayPay
 {
-
-    //重要说明
-    //这里只是为了方便直接向商户展示支付宝的整个支付流程；所以Demo中加签过程直接放在客户端完成；
-    //真实App里，privateKey等数据严禁放在客户端，加签过程务必要放在服务端完成；
-    //防止商户私密数据泄露，造成不必要的资金损失，及面临各种安全风险；
-    /*============================================================================*/
-    /*=======================需要填写商户app申请的===================================*/
-    /*============================================================================*/
-    NSString *appID = [[NSUserDefaults standardUserDefaults] objectForKey:@"ALIPAY_APPID"];
-    NSString *privateKey = [[NSUserDefaults standardUserDefaults] objectForKey:@"ALIPAY_PRIVATE"];
-    /*============================================================================*/
-    /*============================================================================*/
-    /*============================================================================*/
-    //partner和seller获取失败,提示
-    if ([appID length] == 0 ||
-        [privateKey length] == 0)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
-                                                        message:@"缺少appId或者私钥。"
-                                                       delegate:self
-                                              cancelButtonTitle:@"确定"
-                                              otherButtonTitles:nil];
-        [alert show];
-        return;
-    }
     
-    /*
-     *生成订单信息及签名
-     */
-    //将商品信息赋予AlixPayOrder的成员变量
-    Order* order = [Order new];
-    
-    // NOTE: app_id设置
-    order.app_id = appID;
-    
-    // NOTE: 支付接口名称
-    order.method = @"alipay.trade.app.pay";
-    
-    // NOTE: 参数编码格式
-    order.charset = @"utf-8";
-    
-    // NOTE: 当前时间点
-    NSDateFormatter* formatter = [NSDateFormatter new];
-    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    order.timestamp = [formatter stringFromDate:[NSDate date]];
-    
-    // NOTE: 支付版本
-    order.version = @"1.0";
-    
-    // NOTE: sign_type设置
-    order.sign_type = @"RSA";
-    
-    // NOTE: 商品数据
-    order.biz_content = [BizContent new];
-    order.biz_content.body = recharge_number; //订单信息
-    NSString *subjectString = [NSString stringWithFormat:@"梧桐证券%@RMB获得%@金币",conf_recharge_amount,conf_recharge_gold];
-    order.biz_content.subject = subjectString; // 显示在支付宝里面的订单信息
-    order.biz_content.out_trade_no = recharge_number; //订单ID（由商家自行制定）
-    order.biz_content.timeout_express = @"30m"; //超时时间设置
     float rmb = [conf_recharge_amount floatValue];
-    order.biz_content.total_amount = [NSString stringWithFormat:@"%.2f", rmb]; //商品价格
+    NSString *rmbStr = [NSString stringWithFormat:@"%.2f", rmb]; //商品价格
+    NSString *subjectString = [NSString stringWithFormat:@"梧桐证券%@RMB获得%@金币",conf_recharge_amount,conf_recharge_gold];
     
-    //将商品信息拼接成字符串
-    NSString *orderInfo = [order orderInfoEncoded:NO];
-    NSString *orderInfoEncoded = [order orderInfoEncoded:YES];
-//    NSLog(@"orderSpec = %@",orderInfo);
+    [AlipayRequestConfig alipayWithPartner:kPartnerID seller:kSellerAccount tradeNO:recharge_number productName:subjectString  productDescription:recharge_number amount:rmbStr notifyURL:kNotifyURL itBPay:@"30m"];
     
-    // NOTE: 获取私钥并将商户信息签名，外部商户的加签过程请务必放在服务端，防止公私钥数据泄露；
-    //       需要遵循RSA签名规范，并将签名字符串base64编码和UrlEncode
-    id<DataSigner> signer = CreateRSADataSigner(privateKey);
-    NSString *signedString = [signer signString:orderInfo];
-    
-    // NOTE: 如果加签成功，则继续执行支付
-    if (signedString != nil) {
-        //应用注册scheme,在AliSDKDemo-Info.plist定义URL types
-        NSString *appScheme = @"com.jingchengkeji.wtband.ios";
-        
-        // NOTE: 将签名成功字符串格式化为订单字符串,请严格按照该格式
-        NSString *orderString = [NSString stringWithFormat:@"%@&sign=%@",
-                                 orderInfoEncoded, signedString];
-        
-        // NOTE: 调用支付结果开始支付
-        [[AlipaySDK defaultService] payOrder:orderString fromScheme:appScheme callback:^(NSDictionary *resultDic) {
-            NSLog(@"reslut = %@",resultDic);
-            NSDictionary *datadic = [NSDictionary dictionaryWithDictionary:resultDic];
-            NSLog(@"%@",datadic);
-        }];
-    }
 }
 
 -(void)aliPayResultAction:(NSNotification *)obj{
@@ -508,21 +451,18 @@
         JCCYPayStatusQueryViewController *jCCYPayStatusQueryViewController = [[JCCYPayStatusQueryViewController alloc] init];
         jCCYPayStatusQueryViewController.hidesBottomBarWhenPushed = YES;
         jCCYPayStatusQueryViewController.dingDangNumStr = recharge_number;
+        jCCYPayStatusQueryViewController.payType = @"1";
         [self.navigationController pushViewController:jCCYPayStatusQueryViewController animated:YES];
         
     }else{
         NSLog(@"支付宝支付失败");
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
-//                                                        message:@"支付失败！"
-//                                                       delegate:self
-//                                              cancelButtonTitle:@"确定"
-//                                              otherButtonTitles:nil];
-//        [alert show];
-        JCCYPayStatusQueryViewController *jCCYPayStatusQueryViewController = [[JCCYPayStatusQueryViewController alloc] init];
-        jCCYPayStatusQueryViewController.hidesBottomBarWhenPushed = YES;
-        jCCYPayStatusQueryViewController.dingDangNumStr = recharge_number;
-        jCCYPayStatusQueryViewController.payType = [NSString stringWithFormat:@"%ld",pay_type];
-        [self.navigationController pushViewController:jCCYPayStatusQueryViewController animated:YES];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
+                                                        message:@"支付失败！"
+                                                       delegate:self
+                                              cancelButtonTitle:@"确定"
+                                              otherButtonTitles:nil];
+        [alert show];
+
     }
     
 }
@@ -531,60 +471,8 @@
 -(void)payByWeChat{
     
     [WXApi registerApp:[[NSUserDefaults standardUserDefaults] objectForKey:@"WX_APPID"] withDescription:@"梧桐证券"];
-
     
-    [self wxpay];
-}
-//微信支付
-- (void)wxpay
-{
-    [self weixin];
-}
-
--(void)weixin{
-    
-    // NOTE: 当前时间点
-    NSDateFormatter* formatter = [NSDateFormatter new];
-    [formatter setDateFormat:@"yyyyMMddHHmmss"];
-    NSString *nianyueriStr = [formatter stringFromDate:[NSDate date]];
-    
-    //获得3 - 9 随机码
-    int num1 = [self getRandomNumber:3 to:9];
-    
-    //获得00 - 99 随机码
-    int num2 = [self getRandomNumber:00 to:99];
-    
-    recharge_number = @"";
-    
-    NSString *recharge_numberStr = [NSString stringWithFormat:@"%@%d%d",nianyueriStr,num1,num2];
-    recharge_number = recharge_numberStr;
-    
-    NSString *dJson = nil;
-    
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-    
-    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"recharge_number\":\"%@\",\"conf_recharge_id\":\"%@\",\"recharge_amount\":\"%@\",\"recharge_gold\":\"%@\",\"pay_type\":\"%ld\"}",87,token,recharge_numberStr,conf_recharge_id,conf_recharge_amount,conf_recharge_gold,pay_type];
-    //获取类型接
-    PPRDData *pprddata1 = [[PPRDData alloc] init];
-    [pprddata1 startAFRequest:@"/index.php/Api/UserRecharge/do_ios_wx_recharge/"
-                  requestdata:dJson
-               timeOutSeconds:10
-              completionBlock:^(NSDictionary *json) {
-                  NSInteger code = [[json objectForKey:@"code"] integerValue];
-                  if (code == 1) {
-                      if (pay_type == 1) {
-                          [self doAlipayPay];
-                      }else if(pay_type == 2){
-                          [self payByWeChat];
-                      }
-                      
-                  }else{
-                      //异常处理
-                  }
-                  
-              } failedBlock:^(NSError *error) {
-                  
-              }];
+    [self getWeChatPayWithOrderName];
 }
 
 #pragma mark ---- 微信支付开始
@@ -604,9 +492,9 @@
     // 支付类型，固定为APP
     NSString* orderType = @"APP";
     // 随机数串
-    NSString *noncestr  = [self genNonceStr];
+    NSString *noncestr  = recharge_number;
     // 商户订单号
-    NSString *orderNO   = [self genOutTradNo];
+    NSString *orderNO   = recharge_number;
     
     //================================
     //预付单参数订单设置
@@ -618,7 +506,7 @@
     [packageParams setObject: recharge_number     forKey:@"nonce_str"];   //随机串
     [packageParams setObject: orderType    forKey:@"trade_type"];  //支付类型，固定为APP
     [packageParams setObject: orderName    forKey:@"body"];        //订单描述，展示给用户
-    [packageParams setObject: recharge_number      forKey:@"out_trade_no"];//商户订单号
+    [packageParams setObject: orderNO      forKey:@"out_trade_no"];//商户订单号
     [packageParams setObject: orderPrice   forKey:@"total_fee"];   //订单金额，单位为分
     [packageParams setObject: [CommonUtil getIPAddress:YES] forKey:@"spbill_create_ip"];//发器支付的机器ip
     [packageParams setObject: @"http://wutong.jingchengidea.com/Api/UserRechargeReturn/weixin_return/"  forKey:@"notify_url"];  //支付结果异步通知
@@ -660,12 +548,7 @@
         NSLog(@"获取prePayId失败！");
     }
     
-    
-    
 }
-
-
-
 
 // 发送给微信的XML格式数据
 - (NSString *)genPackage:(NSMutableDictionary*)packageParams
@@ -785,7 +668,7 @@
     NSString *signString = [[sign copy] substringWithRange:NSMakeRange(0, sign.length - 1)];
     
     // 拼接API密钥
-    NSString *result = [NSString stringWithFormat:@"%@&key=%@", signString, WXAppId];
+    NSString *result = [NSString stringWithFormat:@"%@&key=%@", signString, WXPayKey];
     // 打印检查
     NSLog(@"result = %@", result);
     // md5加密
@@ -805,6 +688,10 @@
     UIAlertView *alter = [[UIAlertView alloc] initWithTitle:title message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     
     [alter show];
+}
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didReceiveMemoryWarning {

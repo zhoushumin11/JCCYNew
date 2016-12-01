@@ -288,14 +288,6 @@
 }
 
 
-- (void)logout:(UIButton *)btn
-{
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserDefaultsCookie];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    [[NSNotificationCenter defaultCenter] postNotificationName:LOGOUTNOTIFACTION object:nil];
-    
-}
-
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -441,7 +433,9 @@
 }
 //点击金币
 -(void)jinbiAction{
-
+    JCCYPayHistoryViewController *jCCYPayHistoryViewController = [[JCCYPayHistoryViewController alloc] init];
+    jCCYPayHistoryViewController.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:jCCYPayHistoryViewController animated:YES];
 }
 
 

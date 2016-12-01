@@ -103,7 +103,18 @@
                           if ([listArray isEqual:[NSNull null]]) {
                               return;
                           }
-                          dataArray = [NSMutableArray arrayWithArray:listArray];
+                          NSMutableArray *arraysss = [NSMutableArray array];
+                          
+                          for (int i = 0; i<listArray.count; i++) {
+                              NSDictionary *dic = [listArray objectAtIndex:i];
+                              BOOL isSucc = [[dic objectForKey:@"is_success"] boolValue];
+                              if (isSucc) {
+                                  [arraysss addObject:dic];
+                              }
+                          }
+                          
+                          
+                          dataArray = [NSMutableArray arrayWithArray:arraysss];
                           NSDictionary *pageDicNow = [dataDic objectForKey:@"page"];
                           self.pageDic = pageDicNow;
                           
@@ -135,6 +146,10 @@
                           [mainTableView.mj_header endRefreshing];
                       }
                       
+                      if ([mainTableView.mj_footer isRefreshing]) {
+                          [mainTableView.mj_footer endRefreshing];
+                      }
+                      
                       NSInteger code = [[json objectForKey:@"code"] integerValue];
                       if (code == 1) {
                           NSDictionary *dataDic = [json objectForKey:@"data"];
@@ -143,7 +158,18 @@
                           if ([listArray isEqual:[NSNull null]]) {
                               return;
                           }
-                          dataArray = [NSMutableArray arrayWithArray:listArray];
+                          
+                          NSMutableArray *arraysss = [NSMutableArray array];
+                          
+                          for (int i = 0; i<listArray.count; i++) {
+                              NSDictionary *dic = [listArray objectAtIndex:i];
+                              BOOL isSucc = [[dic objectForKey:@"is_success"] boolValue];
+                              if (isSucc) {
+                                  [arraysss addObject:dic];
+                              }
+                          }
+                          
+                          dataArray = [NSMutableArray arrayWithArray:[dataArray arrayByAddingObjectsFromArray:arraysss]];
                           NSDictionary *pageDicNow = [dataDic objectForKey:@"page"];
                           self.pageDic = [pageDicNow mutableCopy];
                           
@@ -152,6 +178,9 @@
                   } failedBlock:^(NSError *error) {
                       if ([mainTableView.mj_header isRefreshing]) {
                           [mainTableView.mj_header endRefreshing];
+                      }
+                      if ([mainTableView.mj_footer isRefreshing]) {
+                          [mainTableView.mj_footer endRefreshing];
                       }
             }];
     }
@@ -206,45 +235,61 @@
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *identify = @"cell";
-    
+
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
     
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
     }
     
-    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/4, 44)];
+    [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    
+    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/4+10, 44)];
     lable1.textAlignment = NSTextAlignmentCenter;
     lable1.textColor = [UIColor blackColor];
     int num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] intValue];
     NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-dd HH:MM:ss"];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:MM"];
     NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:num];
     NSString *confromTimespStr = [formatter stringFromDate:confromTimesp];
     lable1.text = confromTimespStr;
     lable1.backgroundColor = [UIColor clearColor];
-    lable1.font = [UIFont systemFontOfSize:14];
+    lable1.font = [UIFont systemFontOfSize:12];
     [cell.contentView addSubview:lable1];
     
     UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4, 0, PPMainViewWidth/4, 44)];
     lable2.textAlignment = NSTextAlignmentCenter;
     lable2.textColor = [UIColor redColor];
-    lable2.text = @"¥100.00";
+    NSString *sss1 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"recharge_amount"];
+    NSString *rmbString = [NSString stringWithFormat:@"¥%@",sss1];
+    lable2.text = rmbString;
     lable2.backgroundColor = [UIColor clearColor];
-    lable2.font = [UIFont systemFontOfSize:14];
+    lable2.font = [UIFont systemFontOfSize:12];
     [cell.contentView addSubview:lable2];
     
     UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*2, 0, PPMainViewWidth/4, 44)];
     lable3.textAlignment = NSTextAlignmentCenter;
-    lable3.text = @"1000";
+    NSString *sss2 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"recharge_gold"];
+    NSString *goldString = [NSString stringWithFormat:@"¥%@",sss2];
+    lable3.text = goldString;
     lable3.textColor = [UIColor blackColor];
     lable3.backgroundColor = [UIColor clearColor];
-    lable3.font = [UIFont systemFontOfSize:14];
+    lable3.font = [UIFont systemFontOfSize:12];
     [cell.contentView addSubview:lable3];
     
     UILabel *lable4 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*3, 0, PPMainViewWidth/4, 44)];
     lable4.textAlignment = NSTextAlignmentCenter;
-    lable4.text = @"系统";
+    NSString *sss3 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"pay_type"];
+    NSString *pay_type = @"";
+    if ([sss3 isEqualToString:@"1"]) {
+        pay_type = @"支付宝";
+    }else if ([sss3 isEqualToString:@"2"]){
+        pay_type = @"微信";
+    }else{
+        pay_type = @"系统";
+    }
+    
+    lable4.text = pay_type;
     lable4.textColor = [UIColor blackColor];
     lable4.backgroundColor = [UIColor clearColor];
     lable4.font = [UIFont systemFontOfSize:14];

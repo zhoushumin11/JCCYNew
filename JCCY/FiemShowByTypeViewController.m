@@ -17,7 +17,7 @@
 
 #import "SCAvatarBrowser.h"
 
-@interface FiemShowByTypeViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface FiemShowByTypeViewController ()<UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
 {
     NSTimer *timer;
 }
@@ -173,7 +173,7 @@
     
     //刷新label
     reFreshTimeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    reFreshTimeLabel.font = [UIFont systemFontOfSize:16];
+    reFreshTimeLabel.font = [UIFont systemFontOfSize:14];
     reFreshTimeLabel.textColor = [UIColor blackColor];
     [mainHeadView addSubview:reFreshTimeLabel];
     
@@ -203,9 +203,9 @@
 -(void)initZhiboDatas{
     
     NSString *nowDateStr = [[PPToolsClass sharedTools] getcurrentDate:[NSDate date]];
-    reFreshTimeString = [NSString stringWithFormat:@"%@ 还有%ld秒自动刷新 ",nowDateStr,refreshTimeNum];
+    reFreshTimeString = [NSString stringWithFormat:@"   %@ 还有%ld秒自动刷新 ",nowDateStr,refreshTimeNum];
     //先获取文字的大小
-    CGSize size  = GetWTextSizeFont(reFreshTimeString, 50, 16);//文字宽度
+    CGSize size  = GetWTextSizeFont(reFreshTimeString, 50, 14);//文字宽度
     reFreshTimeLabel.frame = CGRectMake(0, 0, size.width+30, 50);//Label位置
     reFreshBtn.frame = CGRectMake(size.width+20, 10, 70, 30);//按钮位置
     reFreshTimeLabel.text = reFreshTimeString;
@@ -218,7 +218,7 @@
     NSString *nowDateStr = [[PPToolsClass sharedTools] getcurrentDate:[NSDate date]];
     reFreshTimeString = [NSString stringWithFormat:@"%@  正在刷新...",nowDateStr];
     //先获取文字的大小
-    CGSize size  = GetWTextSizeFont(reFreshTimeString, 50, 16);//文字宽度
+    CGSize size  = GetWTextSizeFont(reFreshTimeString, 50, 14);//文字宽度
     reFreshTimeLabel.frame = CGRectMake(0, 0, size.width+30, 50);//Label位置
     reFreshBtn.frame = CGRectMake(size.width+20, 10, 70, 30);//按钮位置
     reFreshTimeLabel.text = reFreshTimeString;
@@ -309,7 +309,13 @@
                           dataArray  = [NSMutableArray arrayWithArray:dataArr];
                           [mainTableView reloadData];
                       }else{
-                          
+                          if ([[json objectForKey:@"code"] isEqualToString:@"-5"]) {
+                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"该栏目为收费栏目,请先购买" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                              alert.tag = 201611;
+                              [alert show];
+                          }else{
+                              [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+                          }
                       }
                       
                   } failedBlock:^(NSError *error) {
@@ -325,6 +331,16 @@
                       [self runTimer];
                       
                   }];
+    }
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.tag == 201611) {
+        if (buttonIndex == 0) {
+            //跳入购买页
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabbarIndex" object:nil];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
 }
 

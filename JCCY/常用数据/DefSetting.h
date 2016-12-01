@@ -41,6 +41,8 @@ typedef enum : NSUInteger {
 #define WXAppId @"wxbc85f05c6861a34e"
 //微信支付商户号
 #define WXPartnerId @"1406952902"
+//微信支付key
+#define WXPayKey @"bdyX1UY9WgwA0MoEFBEw3DXdFbsRIB3O"
 
 //刷新消息数量
 #define UPDATEMSGCount @"UPDATEMSGCount"
@@ -49,6 +51,43 @@ typedef enum : NSUInteger {
 #define JCCYAliPayNotificationCenter @"JCCYAliPayNotificationCenter"
 //微信支付接口回调通知
 #define JCCYWeChatNotificationCenter @"JCCYWeChatNotificationCenter"
+
+//微信支付成功
+#define JCCYWeiXinPaySucc @"WeiXinZhiFuSUCCESS"
+
+//微信支付失败
+#define JCCYWeiXinPayFail @"WeiXinZhiFuFail"
+
+//支付宝支付相关
+/**
+ *  partner:合作身份者ID,以 2088 开头由 16 位纯数字组成的字符串。
+ *
+ */
+#define kPartnerID @"2088021646202151"
+
+
+/**
+ *  seller:支付宝收款账号,手机号码或邮箱格式。
+ */
+#define kSellerAccount @"jingchengidea@qq.com"
+
+/**
+ *  支付宝服务器主动通知商户 网站里指定的页面 http 路径。
+ */
+#define kNotifyURL @"http://wutong.jingchengidea.com/Api/UserRechargeReturn/alipay_return/"
+
+
+/**
+ *  appSckeme:应用注册scheme,在Info.plist定义URLtypes，处理支付宝回调
+ */
+#define kAppScheme @"com.jingchengkeji.wtband.ios"
+
+
+/**
+ *  private_key:商户方的私钥,pkcs8 格式。
+ */
+#define kPrivateKey @"MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKsJGK7zeIBUOznkIR7xcOfczbLMkaPMK52bGPeA3koqFiRuWBEdz+poPQlnYlnFqrBjn5BVWglZXIIFup+PtCngpcPJLsHqzkOkummu5+1p40MYIrycZiKIAyH4ME2Nrhr7IcqZvaT9rtp37uB8p+I1y9J8HcJqN+RodrGJJOp3AgMBAAECgYAchk3Zj71/GY0vIH7tnDLKWKbttPRtLvXvORi23oU0NUSwGr8RS7mLTIsxcE6UzkSjWloYRkPX31FwVehECEFxnLWuSHNuRxC24BsC0Q9f+fOrpqnIlYX3pPos2AevTn1ymfSP8zVqMfVTeiKvQowsTLwPo7vwxwvyvIqvRL4JcQJBANbWvkpyAu4O7+lqocsgV7PaALO6X75DYuzkCXLGjvjE5lw9ByBX9xB4G4diU/GPcwGrFpOWNlqRy5DaZzMYoT0CQQDLzeu6YDaFOesEY+bmBgzBnWNQvyJ4VO/5JAS/lJMzUXQnjkrnfpE56G/JYk9uNM0+hMh3mXno2Gl+zwbBGg3DAkAsz+IlWR6vVUJJp8pTuk1Q4HohAxEReLDbxL0LycrsrPV36+renjqUntjvJl1oF4nfoTY2VrDDt4GEl2nLSKnpAkEAneHuZbm3Qso1iHckHro9E5iroZgQSgvyw5zlmMyupCjLxQD0ghWIx8WLJAVm50c8YNxYuF5LFNjiEPysjNd0JQJBALji0WS7ofc9HDI0JS/0LkqvSxh4zglwdrVcDhIvt91ZnkiqoKOOVSRHqh5HphTjtm6GoyB/FQFVYum6IwO3CpU="
+
 
 
 //限制图片数量

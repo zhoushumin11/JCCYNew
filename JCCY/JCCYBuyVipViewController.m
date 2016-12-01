@@ -43,6 +43,8 @@
     [self get_info];
 }
 
+
+
 #pragma mark --- 更新会员信息 ----
 -(void)get_info{
     @autoreleasepool {
@@ -100,19 +102,21 @@
 }
 
 -(void)creatUserInfoView{
-    mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewHeight)];
+    mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewHeight-64)];
     mainScrollView.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
     
     userInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 130)];
     userInfoView.backgroundColor = [UIColor whiteColor];
     
-    CGSize size = GetWTextSizeFoldFont(@"94200", 70, 28);
+    NSString *golds = [[[NSUserDefaults standardUserDefaults] objectForKey:@"golds"] stringValue];
+    
+    CGSize size = GetWTextSizeFoldFont(golds, 70, 28);
     
     
     UILabel *goldNumlabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, size.width+20, 70)];
     goldNumlabel.textColor = [UIColor blackColor];
     goldNumlabel.font = [UIFont boldSystemFontOfSize:28];
-    goldNumlabel.text = @"94200";
+    goldNumlabel.text = golds;
     [userInfoView addSubview:goldNumlabel];
     
     UILabel *goldslabel = [[UILabel alloc] initWithFrame:CGRectMake(size.width+25, 20,40, 40)];
@@ -200,7 +204,8 @@
                       [self creatTableView:0];
                       
                   }else{
-                      
+                      [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+
                   }
                   
               } failedBlock:^(NSError *error) {
@@ -225,7 +230,7 @@
     [quedingBtn.layer setMasksToBounds:YES];
     [quedingBtn.layer setCornerRadius:5.0]; //设置矩形四个圆角半径
     quedingBtn.backgroundColor = [UIColor colorFromHexRGB:@"e60013"];
-    [quedingBtn setTitle:@"确认" forState:UIControlStateNormal];
+    [quedingBtn setTitle:@"购买" forState:UIControlStateNormal];
     [quedingBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [quedingBtn addTarget:self action:@selector(quedingPay) forControlEvents:UIControlEventTouchUpInside];
     [mainScrollView addSubview:quedingBtn];

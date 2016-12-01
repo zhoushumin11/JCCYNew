@@ -17,6 +17,8 @@
 
 #import "BXTabBar.h"
 
+#import "AppDelegate.h"
+
 #define kTabbarHeight 49
 
 @interface BXTabBarController ()<UITabBarControllerDelegate, UINavigationControllerDelegate, BXTabBarDelegate>
@@ -131,101 +133,6 @@
     FiveViewController *profile = [[FiveViewController alloc]init];
     [self addOneChildVC:profile title:@"开户" imageName:@"tabBar_icon_kaihu_normal" selectedImageName:@"tabBar_icon_kaihu_normal"];
     
-    
-    //    //2.初始化tabBar视图控制器
-//        pptabBarController = [[PPTabBarController alloc]init];
-//        pptabBarController.tabBar.tintColor = [UIColor colorFromHexRGB:@"e60013"];
-//        pptabBarController.delegate = self;
-//        //    pptabBarController.tabBar.barTintColor = [UIColor colorFromHexRGB:@"fafafa"];
-//    
-//        HomeViewController *oneVC = [[HomeViewController alloc]init];
-//        oneVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"首页" image:[UIImage imageNamed:@"home_bar1@2x.png"] selectedImage:[UIImage imageNamed:@"home_bar@2x.png"]];
-//        [oneVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-//                                                  [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
-//                                                  [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-//                                        forState:UIControlStateNormal];
-//        [oneVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-//                                                  [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
-//                                                  [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-//                                        forState:UIControlStateSelected];
-//    
-//        PPNavigationController *oneNav = [[PPNavigationController alloc]initWithRootViewController:oneVC];
-//        curNavController = oneNav;
-//    
-//        FirmViewController *twoVC = [[FirmViewController alloc]init];
-//        twoVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"实盘" image:[UIImage imageNamed:@"firm_bar1@2x.png"] selectedImage:[UIImage imageNamed:@"firm_bar@2x.png"]];
-//        [twoVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-//                                                  [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
-//                                                  [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-//                                        forState:UIControlStateNormal];
-//        [twoVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-//                                                  [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
-//                                                  [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-//                                        forState:UIControlStateSelected];
-//    
-//        PPNavigationController *twoNav = [[PPNavigationController alloc]initWithRootViewController:twoVC];
-//    
-//        ThreeViewController *threeVC = [[ThreeViewController alloc]init];
-//        threeVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"红包" image:[UIImage imageNamed:@"redPack_bar1@2x.png"] selectedImage:[UIImage imageNamed:@"redPack_bar@2x.png"]];
-//        [threeVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-//                                                    [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
-//                                                    [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-//                                          forState:UIControlStateNormal];
-//        [threeVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-//                                                    [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
-//                                                    [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-//                                          forState:UIControlStateSelected];
-//    
-//        PPNavigationController *threeNav = [[PPNavigationController alloc]initWithRootViewController:threeVC];
-//    
-//        FourViewController *fourVC = [[FourViewController alloc]init];
-//        fourVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"秘籍" image:[UIImage imageNamed:@"miji_bar@2x.png"] selectedImage:[UIImage imageNamed:@"miji_bar@2x.png"]];
-//        [fourVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-//                                                     [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
-//                                                     [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-//                                           forState:UIControlStateNormal];
-//        [fourVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-//                                                     [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
-//                                                     [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-//                                           forState:UIControlStateSelected];
-//    
-//        PPNavigationController *fourNav = [[PPNavigationController alloc]initWithRootViewController:fourVC];
-//    
-//    
-//        FiveViewController *fiveVC = [[FiveViewController alloc]init];
-//        fiveVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"开户" image:[UIImage imageNamed:@"kaihu_bar@2x.png"] selectedImage:[UIImage imageNamed:@"kaihu_bar@2x.png"]];
-//        [fiveVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-//                                                     [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
-//                                                     [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-//                                           forState:UIControlStateNormal];
-//        [fiveVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-//                                                     [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
-//                                                     [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-//                                           forState:UIControlStateSelected];
-//    
-//        PPNavigationController *fiveNav = [[PPNavigationController alloc]initWithRootViewController:fiveVC];
-//    
-//    
-//        //    SecondNav
-//        pptabBarController.viewControllers = @[oneNav, twoNav, threeNav,fourNav,fiveNav];
-//    
-//    
-//        CGFloat ww = pptabBarController.tabBar.bounds.size.width/5*0.63;
-//    
-//        self.cornerLabel = [[UILabel alloc] initWithFrame:CGRectMake(ww, 2, 8, 8)];
-//        cornerLabel.layer.cornerRadius = 4;
-//        cornerLabel.clipsToBounds = YES;
-//        cornerLabel.backgroundColor = [UIColor colorFromHexRGB:@"f74c31"];
-//        cornerLabel.hidden = YES;
-//    
-//        [pptabBarController.tabBar addSubview:cornerLabel];
-//        
-//        tabbarbuttonArray = [NSMutableArray array];
-//        for (UIView *tabBarButton in self.pptabBarController.tabBar.subviews) {
-//            if ([tabBarButton isKindOfClass:NSClassFromString(@"UITabBarButton")]) {
-//                [tabbarbuttonArray addObject:tabBarButton];
-//            }
-//        }
 }
 
 
@@ -266,6 +173,20 @@
 - (void)tabBar:(BXTabBar *)tabBar didClickBtn:(NSInteger)index
 {
     [super setSelectedIndex:index];
+    AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+
+    if (index == 3 || index == 4) {
+        self.mytabbar.seletedIndex = appdelegate.nowSelectIndex;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"此功能尚未完善" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+    }else{
+        if (index == appdelegate.nowSelectIndex) {
+            appdelegate.nowSelectIndex = index;
+        }else{
+            appdelegate.oldSelectIndex = appdelegate.oldSelectIndex;
+            appdelegate.nowSelectIndex = index;
+        }
+    }
 }
 
 /**
@@ -274,6 +195,7 @@
 - (void)setSelectedIndex:(NSUInteger)selectedIndex {
     // 通过mytabbar的通知处理页面切换
     self.mytabbar.seletedIndex = selectedIndex;
+    
 }
 
 

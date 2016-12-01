@@ -104,9 +104,16 @@
 }
 -(void)initMyView{
     
+    NSString *nameStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_chinese_name"];
+    if (nameStr.length > 4) {
+        nameStr = [nameStr substringToIndex:4];
+    }
+        
+    CGSize size = GetWTextSizeFont(nameStr, 44, 16);
+    
     //初始化用户button
     UIButton *user_info_btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    user_info_btn.frame = CGRectMake(-10, 0, 80, 44);
+    user_info_btn.frame = CGRectMake(-10, 0, size.width+10, 44);
     user_info_btn.titleLabel.textAlignment = NSTextAlignmentLeft;
     [user_info_btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [user_info_btn setTitle:@"" forState:UIControlStateNormal];
@@ -115,7 +122,7 @@
     
     //初始化用户等级button
     UIButton *user_info_Level = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    user_info_Level.frame = CGRectMake(38, 12, 40, 20);
+    user_info_Level.frame = CGRectMake(size.width, 12, 40, 20);
     user_info_Level.titleLabel.textAlignment = NSTextAlignmentLeft;
     [user_info_Level setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [user_info_Level addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
@@ -128,12 +135,10 @@
     UIBarButtonItem *leftbarbtn = [[UIBarButtonItem alloc] initWithCustomView:userInfoView];
     self.navigationItem.leftBarButtonItem = leftbarbtn;
     
-    NSString *nameStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_chinese_name"];
-    if (nameStr.length > 4) {
-        nameStr = [nameStr substringToIndex:4];
-    }
+
     
     [user_info_btn setTitle:nameStr forState:UIControlStateNormal];
+    
     
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"0"] || [[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] == nil) {
         [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level0"] forState:UIControlStateNormal];//给button添加image
@@ -171,7 +176,7 @@
     
     //刷新label
     reFreshTimeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    reFreshTimeLabel.font = [UIFont systemFontOfSize:16];
+    reFreshTimeLabel.font = [UIFont systemFontOfSize:14];
     reFreshTimeLabel.textColor = [UIColor blackColor];
     [mainHeadView addSubview:reFreshTimeLabel];
     
@@ -201,9 +206,9 @@
 -(void)initZhiboDatas{
     
     NSString *nowDateStr = [[PPToolsClass sharedTools] getcurrentDate:[NSDate date]];
-    reFreshTimeString = [NSString stringWithFormat:@"%@ 还有%ld秒自动刷新 ",nowDateStr,refreshTimeNum];
+    reFreshTimeString = [NSString stringWithFormat:@"   %@ 还有%ld秒自动刷新 ",nowDateStr,refreshTimeNum];
     //先获取文字的大小
-    CGSize size  = GetWTextSizeFont(reFreshTimeString, 50, 16);//文字宽度
+    CGSize size  = GetWTextSizeFont(reFreshTimeString, 50, 14);//文字宽度
     reFreshTimeLabel.frame = CGRectMake(0, 0, size.width+30, 50);//Label位置
     reFreshBtn.frame = CGRectMake(size.width+20, 10, 70, 30);//按钮位置
     reFreshTimeLabel.text = reFreshTimeString;
@@ -216,7 +221,7 @@
     NSString *nowDateStr = [[PPToolsClass sharedTools] getcurrentDate:[NSDate date]];
     reFreshTimeString = [NSString stringWithFormat:@"%@  正在刷新...",nowDateStr];
     //先获取文字的大小
-    CGSize size  = GetWTextSizeFont(reFreshTimeString, 50, 16);//文字宽度
+    CGSize size  = GetWTextSizeFont(reFreshTimeString, 50, 14);//文字宽度
     reFreshTimeLabel.frame = CGRectMake(0, 0, size.width+30, 50);//Label位置
     reFreshBtn.frame = CGRectMake(size.width+20, 10, 70, 30);//按钮位置
     reFreshTimeLabel.text = reFreshTimeString;
@@ -247,8 +252,6 @@
         [self initZhiboDatas11];
         //停止计时
         [self timerInvalidate];
-        
-        
         
     }
 }
@@ -305,7 +308,8 @@
                           dataArray  = [NSMutableArray arrayWithArray:dataArr];
                           [mainTableView reloadData];
                       }else{
-                          
+                          [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+ 
                     }
                       
                   } failedBlock:^(NSError *error) {
@@ -360,7 +364,7 @@
         cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
         
         NSInteger num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] integerValue];
-        double i = [[NSNumber numberWithInteger:num] doubleValue]/1000;
+        double i = [[NSNumber numberWithInteger:num] doubleValue];
         NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
         [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm"];
@@ -399,7 +403,7 @@
         cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
         
         NSInteger num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] integerValue];
-        double i = [[NSNumber numberWithInteger:num] doubleValue]/1000;
+        double i = [[NSNumber numberWithInteger:num] doubleValue];
         NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
         [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm"];
