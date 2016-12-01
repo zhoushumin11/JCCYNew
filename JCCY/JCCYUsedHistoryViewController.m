@@ -67,8 +67,9 @@
     @autoreleasepool {
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%d\"}",87,token,1];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%d\"}",updata_id,token,1];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/UserCost/list_cost_service/"
@@ -97,6 +98,10 @@
                           self.pageDic = pageDicNow;
                           
                           [mainTableView reloadData];
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }
                   } failedBlock:^(NSError *error) {
                       if ([mainTableView.mj_header isRefreshing]) {
@@ -129,8 +134,10 @@
     @autoreleasepool {
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
         
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%ld\"}",87,token,nowPage];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%ld\"}",updata_id,token,nowPage];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/UserCost/list_cost_service/"
@@ -158,6 +165,10 @@
                           self.pageDic = pageDicNow;
                           
                           [mainTableView reloadData];
+                          
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                           
                       }
                   } failedBlock:^(NSError *error) {
@@ -239,6 +250,8 @@
     lable2.textAlignment = NSTextAlignmentCenter;
     lable2.textColor = [UIColor blackColor];
     NSInteger service_type = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"service_type"] integerValue];
+    
+    
     if (service_type == 1) {
         lable2.text = @"赞赏";
     }else if (service_type == 2){

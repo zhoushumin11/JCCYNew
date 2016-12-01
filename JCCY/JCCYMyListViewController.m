@@ -95,7 +95,9 @@
     NSString *dJson = nil;
     //得到自己当前的下属
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+    NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
     //获取类型接口
     PPRDData *pprddata1 = [[PPRDData alloc] init];
     [pprddata1 startAFRequest:@"/index.php/Api/User/get_info/"
@@ -136,6 +138,10 @@
                       [userDefauls synchronize];
 
                       [settingTableView reloadData];
+                  }else if (code == -2){
+                      //检查信息更新
+                      [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                      
                   }else{
                       
                   }
@@ -159,8 +165,9 @@
     @autoreleasepool {
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Update/update_conf/"
@@ -180,6 +187,10 @@
                           NSData *levelData = [levelDataStr dataUsingEncoding:NSASCIIStringEncoding];
                           NSArray *levelArr = [self toArrayOrNSDictionary:levelData];
                           self.levelArray = [NSMutableArray arrayWithArray:levelArr];
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }
                   } failedBlock:^(NSError *error) {
                       
@@ -456,7 +467,8 @@
     if (indexPath.row == 0||indexPath.row == 1 || indexPath.row == 2) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }else{
-        cell.settingTitleLabel.text = [NSString stringWithFormat:@"客服电话：%@",self.KEFU_TELPHONE];
+        NSString *kefuTelephone = [[NSUserDefaults standardUserDefaults] objectForKey:@"KEFU_TELPHONE"];
+        cell.settingTitleLabel.text = [NSString stringWithFormat:@"客服电话：%@",kefuTelephone];
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
 

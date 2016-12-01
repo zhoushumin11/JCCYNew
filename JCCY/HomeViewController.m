@@ -29,6 +29,8 @@
 
 #import "FiemShowByTypeViewController.h"
 
+#import "BangDingViewController.h"
+
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
 
 //@property (nonatomic, strong) UIButton *user_info_btn; //用户信息button
@@ -59,7 +61,16 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
     //刷新我的信息
+    self.hidesBottomBarWhenPushed = NO;
     [self initMyView];
+    
+    //检查是否绑定手机号了
+    NSString *mobileStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_phone"];
+    if (mobileStr == nil || mobileStr.length == 0 || [mobileStr isEqualToString:@"0"]) {
+        BangDingViewController *pPRegistViewController = [[BangDingViewController alloc] init];
+        [self presentViewController:pPRegistViewController animated:YES completion:nil];
+    }
+    
 }
 
 
@@ -72,15 +83,8 @@
     self.title = @"首页";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabbarIndex) name:@"changeTabbarIndex" object:nil];
-    
-    //检查是否绑定手机号了
-    BOOL isBangding = [[NSUserDefaults standardUserDefaults] objectForKey:@"isBangding"];
-    if (!isBangding) {
-        PPRegistViewController *pPRegistViewController = [[PPRegistViewController alloc] init];
-        pPRegistViewController.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:pPRegistViewController animated:YES];
-        
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:UPDATAUPIDDATA object:nil];
+
     
     //初始化tableView的数据
     dataArray = [NSMutableArray array];
@@ -428,7 +432,7 @@
     cmheader.lastUpdatedTimeLabel.hidden = YES;
     
     mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(refreshMoreTableView)];
-    mainTableView.mj_footer.hidden = NO;
+    mainTableView.mj_footer.hidden = YES;
     
     mainTableView.mj_header = cmheader;
     mainTableView.delegate = self;
@@ -451,8 +455,9 @@
         @autoreleasepool {
             
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-            
-            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%d\"}",87,token,0,1];
+            NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%d\"}",updata_id,token,0,1];
             //获取类型接
             PPRDData *pprddata1 = [[PPRDData alloc] init];
             [pprddata1 startAFRequest:@"/index.php/Api/Archives/index/"
@@ -478,9 +483,13 @@
                               }
                               
                               
+                          }else if (code == -2){
+                              //检查信息更新
+                              [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                              
                           }else{
                               //异常处理
-                              [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+                              [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];
 
                           }
                           
@@ -497,8 +506,8 @@
     @autoreleasepool {
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%ld\"}",87,token,0,page];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%ld\"}",updata_id,token,0,page];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Archives/index/"
@@ -529,9 +538,13 @@
                           }
                           
                           
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }else{
                           //异常处理
-                          [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+                          [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];
 
                       }
                       
@@ -549,8 +562,9 @@
         @autoreleasepool {
             
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-            
-            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"ad_category\":\"%d\"}",87,token,1];
+            NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"ad_category\":\"%d\"}",updata_id,token,1];
             //获取类型接口
             PPRDData *pprddata1 = [[PPRDData alloc] init];
             [pprddata1 startAFRequest:@"/index.php/Api/AdImages/index/"
@@ -570,6 +584,10 @@
                                   [self creatOnlyBtnHeaderView];
                               }
 
+                              
+                          }else if (code == -2){
+                              //检查信息更新
+                              [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                               
                           }else{
                               //异常处理
@@ -689,7 +707,7 @@
         pPBulletinDetailViewController.titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
         [self.navigationController pushViewController:pPBulletinDetailViewController animated:YES];
     }else{
-        [ALToastView toastInView:self.view withText:@"权限不足"];
+        [ALToastView toastInView:self.view withText:@"您的权限不足无法阅读"];
 
     }
     

@@ -14,7 +14,7 @@
     NSMutableString *message = [NSMutableString stringWithFormat:@""];
     if ([result isEqualToString:@"-1"]) {
         [message appendString:@"系统错误,参数无法解析"];
-    }else if ([result isEqualToString:@"-20"]) {
+    }else if ([result isEqualToString:@"-2"]) {
         [message appendString:@"设置信息有更新,需要执行信息检查接口"];
     }else if ([result isEqualToString:@"-3"]){
         [message appendString:@"服务器程序异常"];

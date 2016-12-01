@@ -69,8 +69,9 @@
     @autoreleasepool {
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"recharge_number\":\"%@\"}",87,token,dingDangNumStr];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"recharge_number\":\"%@\"}",updata_id,token,dingDangNumStr];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/UserRecharge/check_recharge/"
@@ -96,9 +97,13 @@
                               }
                           }
 
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }else{
                           //异常处理
-                          [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+                          [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];
 
                       }
                       

@@ -99,8 +99,9 @@
     @autoreleasepool {
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"ad_category\":\"%d\"}",87,token,1];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"ad_category\":\"%d\"}",updata_id,token,1];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/AdImages/index/"
@@ -112,6 +113,10 @@
                       if (code == 1) {
                           NSArray *dataArr = [json objectForKey:@"data"];
                           scrollNewsArray = [NSMutableArray arrayWithArray:dataArr];
+                          
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                           
                       }else{
                           //异常处理
@@ -175,15 +180,23 @@
     @autoreleasepool {
         [WSProgressHUD showWithStatus:nil maskType:WSProgressHUDMaskTypeDefault];
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%d\"}",87,token,0,1];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%d\"}",updata_id,token,0,1];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Update/update_arctype/"
                       requestdata:dJson
                    timeOutSeconds:10
                   completionBlock:^(NSDictionary *json) {
-             
+                      
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
+                      }
+                      
                       NSMutableArray *vcArray = [NSMutableArray array];
 
                       NSArray *dateArray = [json objectForKey:@"data"];
@@ -261,8 +274,9 @@
     @autoreleasepool {
         [WSProgressHUD showWithStatus:nil maskType:WSProgressHUDMaskTypeDefault];
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%d\"}",87,token,[columnIDStr intValue],1];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%d\"}",updata_id,token,[columnIDStr intValue],1];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Archives/index/"
@@ -301,6 +315,10 @@
                           [WSProgressHUD dismiss];
                           ui.view.frame = CGRectMake(PPMainViewWidth*vcindex, 0, self.view.bounds.size.width, self.view.bounds.size.height-44);
 
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }else{
                           [WSProgressHUD dismiss];
                       }
@@ -322,9 +340,10 @@
     NSString *columnIDStr = [[columnArray objectAtIndex:vcindex] objectForKey:@"typeid"];
     @autoreleasepool {
         NSString *dJson = nil;
-        
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%ld\"}",87,token,[columnIDStr intValue],nowPageNum];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%ld\"}",updata_id,token,[columnIDStr intValue],nowPageNum];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Archives/index/"
@@ -353,6 +372,10 @@
                           if ([ui.bulletinlistTableView.mj_footer isRefreshing]) {
                               [ui.bulletinlistTableView.mj_footer endRefreshing];
                           }
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }else{//接口返回错误
                           if ([ui.bulletinlistTableView.mj_footer isRefreshing]) {
                               [ui.bulletinlistTableView.mj_footer endRefreshing];

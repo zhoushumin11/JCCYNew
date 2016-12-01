@@ -111,8 +111,9 @@
     @autoreleasepool {
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Update/update_recharge/"
@@ -138,9 +139,13 @@
                               [self creatViews];
                           }
                           
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }else{
                           //异常处理
-                          [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+                          [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];
                       }
                       
                   } failedBlock:^(NSError *error) {
@@ -190,9 +195,8 @@
         [btn setBackgroundColor:[UIColor whiteColor]];
         
         //设置标题
-        btn.titleLabel.font = [UIFont systemFontOfSize:22];
+
         btn.titleEdgeInsets = UIEdgeInsetsMake( buttonH/4,0.0 , buttonH/4*3, 0.0);
-        
 
         [btn setTitle:[NSString stringWithFormat:@"¥%@",[titleDic objectForKey:@"conf_recharge_amount"]] forState:UIControlStateNormal];
         
@@ -202,6 +206,13 @@
         rmbLabel.textAlignment = NSTextAlignmentCenter;
         rmbLabel.text = [NSString stringWithFormat:@"(%@金币)",[titleDic objectForKey:@"conf_recharge_gold"]];
         [btn addSubview:rmbLabel];
+        if (PPMainViewWidth < 350) {
+            btn.titleLabel.font = [UIFont systemFontOfSize:16];
+            rmbLabel.font = [UIFont systemFontOfSize:16];
+        }else{
+            btn.titleLabel.font = [UIFont systemFontOfSize:22];
+            rmbLabel.font = [UIFont systemFontOfSize:12];
+        }
         
         //设置选中背景imageView
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(buttonW - 20, buttonH - 20, 20, 20)];
@@ -247,7 +258,7 @@
 #pragma 创建支付类型按钮
 -(void)creatPayTypeBtn:(NSInteger)payType{
     
-    payView = [[UIView alloc] initWithFrame:CGRectMake(10,buttonsView.frame.origin.y+ buttonsView.frame.size.height, PPMainViewWidth-20, 120)];
+    payView = [[UIView alloc] initWithFrame:CGRectMake(10,buttonsView.frame.origin.y+ buttonsView.frame.size.height, PPMainViewWidth-20, 130)];
     payView.backgroundColor = [UIColor whiteColor];
     [mainScrollView addSubview:payView];
     
@@ -269,22 +280,28 @@
     NSArray *subTitleArray = [NSArray arrayWithObjects:@"推荐支付宝用户使用",@"推荐有微信支付的账户的用户使用", nil];
 
     for (int i = 0; i<2; i++) {
-        UIView *view  = [[UIView alloc] initWithFrame:CGRectMake(0, (60*i), PPMainViewWidth-20, 60)];
+        UIView *view  = [[UIView alloc] initWithFrame:CGRectMake(0, (60*i)+(10*i), PPMainViewWidth-20, 60)];
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 50, 50)];
         imageView.image = [UIImage imageNamed:[imageArray objectAtIndex:i]];
         [view addSubview:imageView];
         
         UILabel *titleLable = [[UILabel alloc] initWithFrame:CGRectMake(58, 5, 200, 20)];
         titleLable.textColor = [UIColor grayColor];
-        titleLable.font = [UIFont systemFontOfSize:18];
         titleLable.text = titleArray[i];
         [view addSubview:titleLable];
         
         UILabel *sublabel  = [[UILabel alloc] initWithFrame:CGRectMake(58, 30, PPMainViewWidth-20-58-40, 20)];
         sublabel.textColor = [UIColor grayColor];
-        sublabel.font = [UIFont systemFontOfSize:16];
         sublabel.text = subTitleArray[i];
         [view addSubview:sublabel];
+        
+        if (PPMainViewWidth < 350) {
+            titleLable.font = [UIFont systemFontOfSize:16];
+            sublabel.font = [UIFont systemFontOfSize:14];
+        }else{
+            titleLable.font = [UIFont systemFontOfSize:18];
+            sublabel.font = [UIFont systemFontOfSize:16];
+        }
         
         UIButton *chooseeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         chooseeBtn.frame = CGRectMake(PPMainViewWidth - 20 - 40, 10, 40, 40);
@@ -397,8 +414,9 @@
         NSString *dJson = nil;
     
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"recharge_number\":\"%@\",\"conf_recharge_id\":\"%@\",\"recharge_amount\":\"%@\",\"recharge_gold\":\"%@\",\"pay_type\":\"%ld\"}",87,token,recharge_numberStr,conf_recharge_id,conf_recharge_amount,conf_recharge_gold,pay_type];
+    NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"recharge_number\":\"%@\",\"conf_recharge_id\":\"%@\",\"recharge_amount\":\"%@\",\"recharge_gold\":\"%@\",\"pay_type\":\"%ld\"}",updata_id,token,recharge_numberStr,conf_recharge_id,conf_recharge_amount,conf_recharge_gold,pay_type];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/UserRecharge/do_recharge/"
@@ -414,9 +432,13 @@
                               [self payByWeChat];
                           }
                           
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }else{
                           //异常处理
-                          [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+                          [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];
 
                       }
                       

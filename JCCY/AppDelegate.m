@@ -177,7 +177,9 @@
             NSUInteger version = [appVersion integerValue];
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
             
-            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"device\":\"%d\",\"device_type\":\"%@\",\"version\":\"%ld\"}",85,token,2,@"",version];
+            NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"device\":\"%d\",\"device_type\":\"%@\",\"version\":\"%ld\"}",updata_id,token,2,@"",version];
             //获取类型接口
             PPRDData *pprddata1 = [[PPRDData alloc] init];
             [pprddata1 startAFRequest:@"/index.php/Api/User/get_info/"
@@ -188,9 +190,14 @@
                           
                           if (code == 1) {
                               
+                          }else if (code == -2){
+                              //检查信息更新
+                              [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                              
                           }else{
                               
                           }
+                          
                           
                       } failedBlock:^(NSError *error) {
                               
@@ -207,13 +214,10 @@
     NSString *dJson = nil;
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
     
-    NSNumber *update_id = [[NSUserDefaults standardUserDefaults] objectForKey:@"update_id"];
+    NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
     
-    if (update_id == nil || update_id == 0) {
-        update_id = 0;
-    }
     
-    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%@\",\"token\":\"%@\"}",update_id,token];
+    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
     //获取类型接口
     PPRDData *pprddata1 = [[PPRDData alloc] init];
     [pprddata1 startAFRequest:@"/index.php/Api/Update/index/"
@@ -227,6 +231,10 @@
                       NSNumber *update_id = [dataDic objectForKey:@"update_id"];
                       [[NSUserDefaults standardUserDefaults] setObject:update_id forKey:@"update_id"];
                       [[NSUserDefaults standardUserDefaults] synchronize];
+                  }else if (code == -2){
+                      //检查信息更新
+                      [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                      
                   }
               }
             failedBlock:^(NSError *error) {
@@ -246,7 +254,10 @@
         NSUInteger version = [appVersion integerValue];
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
 
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"device\":\"%d\",\"device_type\":\"%@\",\"version\":\"%ld\"}",87,token,2,@"",version];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+        
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"device\":\"%d\",\"device_type\":\"%@\",\"version\":\"%ld\"}",updata_id,token,2,@"",version];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Update/update_version/"
@@ -281,6 +292,10 @@
                               alertView.tag = 11111;
                               [alertView show];
                           }
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }
                   }
                       failedBlock:^(NSError *error) {
@@ -351,6 +366,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotifaction:) name:LOGINSUCCESSNOTIFACTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logoutNotifaction:) name:LOGOUTNOTIFACTION object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUpDataId) name:UPDATAUPIDDATA object:nil];
 }
 
 - (void)logoutNotifaction:(NSNotification *)object
@@ -465,14 +482,50 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
 }
 
+-(void)getUpDataId{
+    NSString *dJson = nil;
+    @autoreleasepool {
+        
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+        
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
+        //获取类型接
+        PPRDData *pprddata1 = [[PPRDData alloc] init];
+        [pprddata1 startAFRequest:@"/index.php/Api/Update/index/"
+                      requestdata:dJson
+                   timeOutSeconds:10
+                  completionBlock:^(NSDictionary *json) {
+                      
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      if (code == 1) {
+                          NSString *update_ids = [[json objectForKey:@"data"] objectForKey:@"update_id"];
+                        
+                          [[NSUserDefaults standardUserDefaults] setObject:update_ids forKey:@"updata_id"];
+                          [[NSUserDefaults standardUserDefaults] synchronize];
+                          
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATA_MYViews object:nil];
+
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
+                      }
+                  } failedBlock:^(NSError *error) {
+                      
+                  }];
+    }
+}
 #pragma  mark ---- 当服务器提示要做公共信息更新时 ----
 -(void)updataPublicInfo{
     NSString *dJson = nil;
     @autoreleasepool {
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
         
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+        
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Update/update_conf/"
@@ -556,6 +609,10 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
 
                           [[NSUserDefaults standardUserDefaults] synchronize];
+                          
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                           
                       }
                   } failedBlock:^(NSError *error) {

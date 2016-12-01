@@ -52,7 +52,9 @@
         @autoreleasepool {
             
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+            NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
             //获取类型接口
             PPRDData *pprddata1 = [[PPRDData alloc] init];
             [pprddata1 startAFRequest:@"/index.php/Api/User/get_info/"
@@ -93,6 +95,10 @@
                               [userDefauls synchronize];
                               //创建userInfoView
                               [self creatUserInfoView];
+                          }else if (code == -2){
+                              //检查信息更新
+                              [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                              
                           }
                       } failedBlock:^(NSError *error) {
                           
@@ -178,7 +184,9 @@
 -(void)getBuyListInfo{
     NSString *dJson = nil;
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+    NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
     //获取类型接口
     PPRDData *pprddata1 = [[PPRDData alloc] init];
     [pprddata1 startAFRequest:@"/index.php/Api/Update/update_cost_service/"
@@ -203,8 +211,12 @@
                       //创建列表
                       [self creatTableView:0];
                       
+                  }else if (code == -2){
+                      //检查信息更新
+                      [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                      
                   }else{
-                      [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+                      [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];
 
                   }
                   
@@ -346,9 +358,10 @@
     NSString *conf_cost_service_id = [[dataArray objectAtIndex:pay_typeIndex] objectForKey:@"conf_cost_service_id"];
     NSString *gold_cost = [[dataArray objectAtIndex:pay_typeIndex] objectForKey:@"gold_cost"];
     NSString *service_days = [[dataArray objectAtIndex:pay_typeIndex] objectForKey:@"service_days"];
+    NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
 
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"conf_cost_service_id\":\"%@\",\"service_type\":\"%ld\",\"cost_gold\":\"%@\",\"days\":\"%@\"}",87,token,conf_cost_service_id,self.buyType+1,gold_cost,service_days];
+    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"conf_cost_service_id\":\"%@\",\"service_type\":\"%ld\",\"cost_gold\":\"%@\",\"days\":\"%@\"}",updata_id,token,conf_cost_service_id,self.buyType+1,gold_cost,service_days];
     //获取类型接口
     PPRDData *pprddata1 = [[PPRDData alloc] init];
     [pprddata1 startAFRequest:@"/index.php/Api/UserCost/do_cost_service/"
@@ -364,6 +377,10 @@
                   }else if(code == -107){
                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"抱歉,您的余额不足,购买该服务失败." delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
                       [alert show];
+                  }else if (code == -2){
+                      //检查信息更新
+                      [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                      
                   }
                   
               } failedBlock:^(NSError *error) {

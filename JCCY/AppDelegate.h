@@ -30,6 +30,8 @@
 
 - (void)saveContext;
 
+-(void)updataPublicInfo;
+
 - (void)setupViewControllers;
 //更新用户信息
 -(void)get_info;

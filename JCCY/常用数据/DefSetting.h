@@ -37,6 +37,11 @@ typedef enum : NSUInteger {
 #define LOGINSUCCESSNOTIFACTION @"LOGINSUCCESSNOTIFACTION"
 #define LOGOUTNOTIFACTION @"LOGOUTNOTIFACTION"
 
+//通知服务器有更新之后通知
+#define UPDATAUPIDDATA @"UPDATAUPIDDATA"
+//刷新我的视图
+#define UPDATA_MYViews @"UPDATA_MYViews"
+
 //微信支付id
 #define WXAppId @"wxbc85f05c6861a34e"
 //微信支付商户号

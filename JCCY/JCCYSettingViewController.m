@@ -29,12 +29,10 @@
     [super viewWillAppear:YES];
     
     NSString *mobileStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_phone"];
-    if (mobileStr == nil || mobileStr.length == 0) {
+    if (mobileStr == nil || mobileStr.length == 0 || [mobileStr isEqualToString:@"0"]) {
         mobileLabel.text = @"未绑定";
-        [bangdingBtn setHidden:NO];
     }else{
         mobileLabel.text = mobileStr;
-        [bangdingBtn setHidden:YES];
     }
     
 }
@@ -74,16 +72,13 @@
     [settingView addSubview:bangdingBtn];
 
     
-    if (mobileStr == nil || mobileStr.length == 0) {
+    if (mobileStr == nil || mobileStr.length == 0 || [mobileStr isEqualToString:@"0"]) {
         mobileLabel.text = @"未绑定";
-        [bangdingBtn setHidden:NO];
     }else{
         mobileLabel.text = mobileStr;
-        [bangdingBtn setHidden:YES];
     }
     
     
-
     
     //缓存
     UILabel *huancunTLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 71,80, 70)];

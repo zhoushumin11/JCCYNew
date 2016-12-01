@@ -152,7 +152,9 @@
 
     
     NSString *dJson = nil;
-    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"access_token\":\"%@\",\"openid\":\"%@\"}",87,@"",accessToken,userId];
+    NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"access_token\":\"%@\",\"openid\":\"%@\"}",updata_id,@"",accessToken,userId];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Login/do_login/"
@@ -178,6 +180,10 @@
                           //再获取用户信息
                           [self getUserInfo];
                           
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }else{
                           
                           [self checkPhoneBangdingSucc:userId :accessToken];
@@ -202,8 +208,10 @@
     
         NSString *dJson = nil;
         //得到自己当前的下属
+    NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/User/get_info/"
@@ -254,6 +262,10 @@
                               [appdel setupViewControllers];
                           }
                       
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }else{
 //                          [self getUserInfo];
                           NSString *msg = [json objectForKey:@"info"];

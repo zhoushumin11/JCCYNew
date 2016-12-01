@@ -82,8 +82,9 @@
     @autoreleasepool {
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%d\"}",87,token,1];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%d\"}",updata_id,token,1];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/UserRecharge/list_recharge/"
@@ -119,6 +120,10 @@
                           self.pageDic = pageDicNow;
                           
                           [mainTableView reloadData];
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }
                   } failedBlock:^(NSError *error) {
                       if ([mainTableView.mj_header isRefreshing]) {
@@ -133,8 +138,9 @@
     @autoreleasepool {
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%ld\"}",87,token,nowPage];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%ld\"}",updata_id,token,nowPage];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/UserRecharge/list_recharge/"
@@ -174,6 +180,10 @@
                           self.pageDic = [pageDicNow mutableCopy];
                           
                           [mainTableView reloadData];
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }
                   } failedBlock:^(NSError *error) {
                       if ([mainTableView.mj_header isRefreshing]) {
@@ -281,12 +291,15 @@
     lable4.textAlignment = NSTextAlignmentCenter;
     NSString *sss3 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"pay_type"];
     NSString *pay_type = @"";
-    if ([sss3 isEqualToString:@"1"]) {
-        pay_type = @"支付宝";
-    }else if ([sss3 isEqualToString:@"2"]){
-        pay_type = @"微信";
-    }else{
-        pay_type = @"系统";
+    
+    if (![sss3 isEqual:[NSNull null]]) {
+        if ([sss3 isEqualToString:@"1"]) {
+            pay_type = @"支付宝";
+        }else if ([sss3 isEqualToString:@"2"]){
+            pay_type = @"微信";
+        }else{
+            pay_type = @"系统";
+        }
     }
     
     lable4.text = pay_type;

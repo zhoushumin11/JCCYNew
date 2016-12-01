@@ -28,15 +28,16 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
     [self get_info];
+    [self initMyView];
 }
 #pragma mark --- 更新会员信息 ----
 -(void)get_info{
     @autoreleasepool {
         NSString *dJson = nil;
-        @autoreleasepool {
-            
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",87,token];
+            NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+            dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
             //获取类型接口
             PPRDData *pprddata1 = [[PPRDData alloc] init];
             [pprddata1 startAFRequest:@"/index.php/Api/User/get_info/"
@@ -78,12 +79,15 @@
                               //
                               
                               [mainTableView reloadData];
+                          }else if (code == -2){
+                              //检查信息更新
+                              [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                              
                           }
                       } failedBlock:^(NSError *error) {
                           
                       }];
         }
-    }
 }
 
 
@@ -138,6 +142,61 @@
     
     [mainTableView  reloadData];
     
+}
+
+-(void)initMyView{
+    
+    NSString *nameStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_chinese_name"];
+    if (nameStr.length > 4) {
+        nameStr = [nameStr substringToIndex:4];
+    }
+    
+    CGSize size = GetWTextSizeFont(nameStr, 44, 16);
+    
+    //初始化用户button
+    UIButton *user_info_btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    user_info_btn.frame = CGRectMake(-10, 0, size.width+10, 44);
+    user_info_btn.titleLabel.textAlignment = NSTextAlignmentLeft;
+    [user_info_btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    [user_info_btn setTitle:@"" forState:UIControlStateNormal];
+    [user_info_btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [user_info_btn addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    //初始化用户等级button
+    UIButton *user_info_Level = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    user_info_Level.frame = CGRectMake(size.width, 12, 40, 20);
+    user_info_Level.titleLabel.textAlignment = NSTextAlignmentLeft;
+    [user_info_Level setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    [user_info_Level addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIView *userInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 120, 44)];
+    userInfoView.backgroundColor = [UIColor clearColor];
+    [userInfoView addSubview:user_info_btn];
+    [userInfoView addSubview:user_info_Level];
+    
+    UIBarButtonItem *leftbarbtn = [[UIBarButtonItem alloc] initWithCustomView:userInfoView];
+    self.navigationItem.leftBarButtonItem = leftbarbtn;
+    
+    
+    
+    [user_info_btn setTitle:nameStr forState:UIControlStateNormal];
+    
+    
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"0"] || [[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] == nil) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level0"] forState:UIControlStateNormal];//给button添加image
+    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"1"]) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level1"] forState:UIControlStateNormal];//给button添加image
+    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"2"]) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level2"] forState:UIControlStateNormal];//给button添加image
+    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"3"]) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level3"] forState:UIControlStateNormal];//给button添加image
+    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"4"]) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level4"] forState:UIControlStateNormal];//给button添加image
+    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"5"]) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level5"] forState:UIControlStateNormal];//给button添加image
+    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"6"]) {
+        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level6"] forState:UIControlStateNormal];//给button添加image
+    }
 }
 
 -(void)refreshTableView{

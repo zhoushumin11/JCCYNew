@@ -282,8 +282,9 @@
     @autoreleasepool {
         
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"platform\":\"%d\"}",87,token,0];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"platform\":\"%d\"}",updata_id,token,0];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Live/index/"
@@ -307,8 +308,12 @@
                           
                           dataArray  = [NSMutableArray arrayWithArray:dataArr];
                           [mainTableView reloadData];
+                      }else if (code == -2){
+                          //检查信息更新
+                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
                       }else{
-                          [JCCYResult showResultWithResult:[json objectForKey:@"code"] controller:self];
+                          [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];
  
                     }
                       

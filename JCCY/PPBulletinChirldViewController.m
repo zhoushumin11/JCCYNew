@@ -288,7 +288,7 @@
         pPBulletinDetailViewController.titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
         [self.navigationController pushViewController:pPBulletinDetailViewController animated:YES];
     }else{
-        [ALToastView toastInView:self.view withText:@"权限不足"];
+        [ALToastView toastInView:self.view withText:@"您的权限不足无法阅读"];
     }
     
 }

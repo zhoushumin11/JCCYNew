@@ -99,6 +99,7 @@
 		282DF7871DE42D8800F9FAE9 /* TADotView.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF77C1DE42D8800F9FAE9 /* TADotView.m */; };
 		282DF7881DE42D8800F9FAE9 /* TAPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF77E1DE42D8800F9FAE9 /* TAPageControl.m */; };
 		282DF78B1DE43FBC00F9FAE9 /* UserInfoData.m in Sources */ = {isa = PBXBuildFile; fileRef = 282DF78A1DE43FBC00F9FAE9 /* UserInfoData.m */; };
+		28353AA11DF002A700E95D49 /* BangDingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28353AA01DF002A700E95D49 /* BangDingViewController.m */; };
 		2835DABE1DE567B8008D2BCB /* HomeFirstCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835DABD1DE567B8008D2BCB /* HomeFirstCell.m */; };
 		2835DAC11DE567E6008D2BCB /* HomeNormalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835DAC01DE567E6008D2BCB /* HomeNormalCell.m */; };
 		2835DAD01DE57BBF008D2BCB /* PPSXTitleLable.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835DACF1DE57BBF008D2BCB /* PPSXTitleLable.m */; };
@@ -612,6 +613,8 @@
 		282DF77E1DE42D8800F9FAE9 /* TAPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAPageControl.m; sourceTree = "<group>"; };
 		282DF7891DE43FBC00F9FAE9 /* UserInfoData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoData.h; sourceTree = "<group>"; };
 		282DF78A1DE43FBC00F9FAE9 /* UserInfoData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoData.m; sourceTree = "<group>"; };
+		28353A9F1DF002A700E95D49 /* BangDingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BangDingViewController.h; sourceTree = "<group>"; };
+		28353AA01DF002A700E95D49 /* BangDingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BangDingViewController.m; sourceTree = "<group>"; };
 		2835DABC1DE567B8008D2BCB /* HomeFirstCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeFirstCell.h; sourceTree = "<group>"; };
 		2835DABD1DE567B8008D2BCB /* HomeFirstCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeFirstCell.m; sourceTree = "<group>"; };
 		2835DABF1DE567E6008D2BCB /* HomeNormalCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeNormalCell.h; sourceTree = "<group>"; };
@@ -2335,6 +2338,8 @@
 				284D11291DDEE60B00F20D92 /* PPLoginViewController.m */,
 				28ECC7201DE1784E00525BDB /* PPRegistViewController.h */,
 				28ECC7211DE1784E00525BDB /* PPRegistViewController.m */,
+				28353A9F1DF002A700E95D49 /* BangDingViewController.h */,
+				28353AA01DF002A700E95D49 /* BangDingViewController.m */,
 			);
 			name = "登录";
 			sourceTree = "<group>";
@@ -3011,6 +3016,7 @@
 				284D0F721DDED91500F20D92 /* MLSelectPhotoPickerDatas.m in Sources */,
 				284D111B1DDEE28F00F20D92 /* PPRDData.m in Sources */,
 				284D0FB41DDED92900F20D92 /* MJRefreshFooter.m in Sources */,
+				28353AA11DF002A700E95D49 /* BangDingViewController.m in Sources */,
 				280EF5681DED62EF0016A041 /* GDataXMLNode.m in Sources */,
 				280EF4591DEBD78C0016A041 /* APAuthV2Info.m in Sources */,
 				284D0F751DDED91500F20D92 /* MLSelectPhotoNavigationViewController.m in Sources */,

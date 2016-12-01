@@ -1,18 +1,19 @@
 //
-//  PPRegistViewController.m
+//  BangDingViewController.m
 //  JCCY
 //
-//  Created by 周书敏 on 2016/11/20.
+//  Created by 周书敏 on 2016/12/1.
 //
 //
 
-#import "PPRegistViewController.h"
+#import "BangDingViewController.h"
+
 #import "EYInputPopupView.h"
 #import "EYTextPopupView.h"
 
 #import "AppDelegate.h"
 
-@interface PPRegistViewController ()<UITextFieldDelegate,UIAlertViewDelegate>
+@interface BangDingViewController ()<UITextFieldDelegate,UIAlertViewDelegate>
 
 {
     NSTimer *timer;
@@ -26,21 +27,27 @@
 
 @end
 
-@implementation PPRegistViewController
+@implementation BangDingViewController
 @synthesize mainView,tapbackView,phoneNumberField,passwordField,getYanZhengBtn;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.title = @"会员设置";
+    self.title = @"手机绑定";
     
-    mainView = [[UIScrollView alloc] initWithFrame:PPMainFrame];
+    UILabel *titleLabels = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 64)];
+    titleLabels.backgroundColor = [UIColor colorFromHexRGB:@"e60013"];
+    titleLabels.textAlignment = NSTextAlignmentCenter;
+    titleLabels.text = @"手机绑定";
+    titleLabels.textColor = [UIColor whiteColor];
+    titleLabels.font = [UIFont systemFontOfSize:18];
+    [self.view addSubview:titleLabels];
+    
+    mainView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, PPMainViewWidth, PPMainViewHeight -64)];
     mainView.backgroundColor = [UIColor colorFromHexRGB:@"f4f4f4"];
     mainView.scrollEnabled = NO;
     [self.view addSubview:mainView];
-    
-
     
     //输入手机号
     phoneNumberField = [[UITextField alloc] initWithFrame:CGRectMake(0, 40, PPMainViewWidth, 50)];
@@ -72,7 +79,7 @@
     //输入密码框
     passwordField = [[UITextField alloc] initWithFrame:CGRectMake(0, 91, PPMainViewWidth, 50)];
     passwordField.center = CGPointMake(PPMainViewWidth/2, 90);
-//    passwordField.secureTextEntry = YES;
+    //    passwordField.secureTextEntry = YES;
     passwordField.placeholder = @"请输入您收到的验证码";
     passwordField.tag = 123456;
     passwordField.delegate = self;
@@ -124,9 +131,9 @@
     //    @selector(login)
     [mainView addSubview:bangdingBtn];
     
-
-
-
+    
+    
+    
 }
 
 -(void)sendSMS{
@@ -142,9 +149,9 @@
     NSString *dJson = nil;
     @autoreleasepool {
         //得到自己当前的下属
-        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
 
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"phone\":\"%@\"}",updata_id,token,phoneNumberField.text];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
@@ -209,8 +216,10 @@
     @autoreleasepool {
         //得到自己当前的下属
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
         NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
 
+        
         dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"phone\":\"%@\",\"code\":\"%@\"}",updata_id,token,phoneNumberField.text,passwordField.text];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
@@ -226,7 +235,8 @@
                           [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isBangding"];
                           [[NSUserDefaults standardUserDefaults] setObject:phoneNumberField.text forKey:@"user_phone"];
                           [[NSUserDefaults standardUserDefaults] synchronize];
-                          [self.navigationController popViewControllerAnimated:YES];
+                          [self dismissViewControllerAnimated:YES completion:nil];
+                          
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
@@ -239,9 +249,9 @@
                   }
                       failedBlock:^(NSError *error) {
                           
-                    }];
+                      }];
     }
-
+    
     
 }
 
@@ -302,16 +312,23 @@
 
 - (void) animateTextField: (UITextField*) textField up: (BOOL) up
 {
-
+    
     
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+/*
+#pragma mark - Navigation
 
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
 
 @end
