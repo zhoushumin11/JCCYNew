@@ -59,7 +59,11 @@
     UILabel *thirdLoginLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,iconimgView.frame.origin.y + 250, PPMainViewWidth, 30)];
     thirdLoginLabel.textColor = [UIColor colorFromHexRGB:@"999999"];
     thirdLoginLabel.textAlignment = NSTextAlignmentCenter;
-    thirdLoginLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:18];
+    if (PPMainViewWidth<350) {
+        thirdLoginLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:14];
+    }else{
+        thirdLoginLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:18];
+    }
     thirdLoginLabel.text = @"————— 请您使用微信登录 —————";
     [mainView addSubview:thirdLoginLabel];
     

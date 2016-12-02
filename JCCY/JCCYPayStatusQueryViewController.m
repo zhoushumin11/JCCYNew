@@ -101,6 +101,10 @@
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                           
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                          
                       }else{
                           //异常处理
                           [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];

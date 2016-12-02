@@ -120,6 +120,10 @@
                           self.pageDic = pageDicNow;
                           
                           [mainTableView reloadData];
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                          
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
@@ -180,6 +184,10 @@
                           self.pageDic = [pageDicNow mutableCopy];
                           
                           [mainTableView reloadData];
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                          
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
@@ -198,14 +206,13 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0,0, PPMainViewWidth, 44)];
-    view.backgroundColor = [UIColor grayColor];
+    view.backgroundColor = [UIColor colorFromHexRGB:@"c9c7c7"];
     
     UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/4, 44)];
     lable1.textAlignment = NSTextAlignmentCenter;
     lable1.textColor = [UIColor whiteColor];
     lable1.text = @"充值时间";
     lable1.backgroundColor = [UIColor clearColor];
-    lable1.font = [UIFont boldSystemFontOfSize:18];
     [view addSubview:lable1];
     
     UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4, 0, PPMainViewWidth/4, 44)];
@@ -213,7 +220,6 @@
     lable2.textColor = [UIColor whiteColor];
     lable2.text = @"充值金额";
     lable2.backgroundColor = [UIColor clearColor];
-    lable2.font = [UIFont boldSystemFontOfSize:18];
     [view addSubview:lable2];
     
     UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*2, 0, PPMainViewWidth/4, 44)];
@@ -221,7 +227,6 @@
     lable3.textColor = [UIColor whiteColor];
     lable3.text = @"兑换金币";
     lable3.backgroundColor = [UIColor clearColor];
-    lable3.font = [UIFont boldSystemFontOfSize:18];
     [view addSubview:lable3];
     
     UILabel *lable4 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*3, 0, PPMainViewWidth/4, 44)];
@@ -229,8 +234,21 @@
     lable4.textColor = [UIColor whiteColor];
     lable4.text = @"充值方式";
     lable4.backgroundColor = [UIColor clearColor];
-    lable4.font = [UIFont boldSystemFontOfSize:18];
     [view addSubview:lable4];
+    
+    if (PPMainViewWidth < 350) {
+        lable1.font = [UIFont boldSystemFontOfSize:14];
+        lable2.font = [UIFont boldSystemFontOfSize:14];
+        lable3.font = [UIFont boldSystemFontOfSize:14];
+        lable4.font = [UIFont boldSystemFontOfSize:14];
+    }else{
+        lable1.font = [UIFont boldSystemFontOfSize:18];
+        lable2.font = [UIFont boldSystemFontOfSize:18];
+        lable3.font = [UIFont boldSystemFontOfSize:18];
+        lable4.font = [UIFont boldSystemFontOfSize:18];
+    }
+
+
     
     return view;
 }
@@ -240,75 +258,96 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return dataArray.count;
+    if (dataArray.count > 0) {
+        return dataArray.count;
+    }
+    return 1;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    static NSString *identify = @"cell";
-
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
     
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
-    }
-    
-    [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/4+10, 44)];
-    lable1.textAlignment = NSTextAlignmentCenter;
-    lable1.textColor = [UIColor blackColor];
-    int num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] intValue];
-    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-dd HH:MM"];
-    NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:num];
-    NSString *confromTimespStr = [formatter stringFromDate:confromTimesp];
-    lable1.text = confromTimespStr;
-    lable1.backgroundColor = [UIColor clearColor];
-    lable1.font = [UIFont systemFontOfSize:12];
-    [cell.contentView addSubview:lable1];
-    
-    UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4, 0, PPMainViewWidth/4, 44)];
-    lable2.textAlignment = NSTextAlignmentCenter;
-    lable2.textColor = [UIColor redColor];
-    NSString *sss1 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"recharge_amount"];
-    NSString *rmbString = [NSString stringWithFormat:@"¥%@",sss1];
-    lable2.text = rmbString;
-    lable2.backgroundColor = [UIColor clearColor];
-    lable2.font = [UIFont systemFontOfSize:12];
-    [cell.contentView addSubview:lable2];
-    
-    UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*2, 0, PPMainViewWidth/4, 44)];
-    lable3.textAlignment = NSTextAlignmentCenter;
-    NSString *sss2 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"recharge_gold"];
-    NSString *goldString = [NSString stringWithFormat:@"¥%@",sss2];
-    lable3.text = goldString;
-    lable3.textColor = [UIColor blackColor];
-    lable3.backgroundColor = [UIColor clearColor];
-    lable3.font = [UIFont systemFontOfSize:12];
-    [cell.contentView addSubview:lable3];
-    
-    UILabel *lable4 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*3, 0, PPMainViewWidth/4, 44)];
-    lable4.textAlignment = NSTextAlignmentCenter;
-    NSString *sss3 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"pay_type"];
-    NSString *pay_type = @"";
-    
-    if (![sss3 isEqual:[NSNull null]]) {
-        if ([sss3 isEqualToString:@"1"]) {
-            pay_type = @"支付宝";
-        }else if ([sss3 isEqualToString:@"2"]){
-            pay_type = @"微信";
-        }else{
-            pay_type = @"系统";
+    if (dataArray.count > 0) {
+        static NSString *identify = @"cell";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+        
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
         }
+        
+        [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        
+        UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/4+10, 44)];
+        lable1.textAlignment = NSTextAlignmentCenter;
+        lable1.textColor = [UIColor blackColor];
+        int num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] intValue];
+        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"yyyy-MM-dd HH:MM"];
+        NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:num];
+        NSString *confromTimespStr = [formatter stringFromDate:confromTimesp];
+        lable1.text = confromTimespStr;
+        lable1.backgroundColor = [UIColor clearColor];
+        lable1.font = [UIFont systemFontOfSize:12];
+        [cell.contentView addSubview:lable1];
+        
+        UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4, 0, PPMainViewWidth/4, 44)];
+        lable2.textAlignment = NSTextAlignmentCenter;
+        lable2.textColor = [UIColor redColor];
+        NSString *sss1 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"recharge_amount"];
+        NSString *rmbString = [NSString stringWithFormat:@"¥%@",sss1];
+        lable2.text = rmbString;
+        lable2.backgroundColor = [UIColor clearColor];
+        lable2.font = [UIFont systemFontOfSize:12];
+        [cell.contentView addSubview:lable2];
+        
+        UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*2, 0, PPMainViewWidth/4, 44)];
+        lable3.textAlignment = NSTextAlignmentCenter;
+        NSString *sss2 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"recharge_gold"];
+        NSString *goldString = [NSString stringWithFormat:@"¥%@",sss2];
+        lable3.text = goldString;
+        lable3.textColor = [UIColor blackColor];
+        lable3.backgroundColor = [UIColor clearColor];
+        lable3.font = [UIFont systemFontOfSize:12];
+        [cell.contentView addSubview:lable3];
+        
+        UILabel *lable4 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*3, 0, PPMainViewWidth/4, 44)];
+        lable4.textAlignment = NSTextAlignmentCenter;
+        NSString *sss3 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"pay_type"];
+        NSString *pay_type = @"";
+        
+        if (![sss3 isEqual:[NSNull null]]) {
+            if ([sss3 isEqualToString:@"1"]) {
+                pay_type = @"支付宝";
+            }else if ([sss3 isEqualToString:@"2"]){
+                pay_type = @"微信";
+            }else{
+                pay_type = @"系统";
+            }
+        }
+        
+        lable4.text = pay_type;
+        lable4.textColor = [UIColor blackColor];
+        lable4.backgroundColor = [UIColor clearColor];
+        lable4.font = [UIFont systemFontOfSize:14];
+        [cell.contentView addSubview:lable4];
+        
+        return cell;
+    }else{
+        static NSString *identify = @"cell1";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
+        }
+        [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        UILabel *nodatalabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 44)];
+        nodatalabel.textAlignment = NSTextAlignmentCenter;
+        nodatalabel.font = [UIFont systemFontOfSize:14];
+        nodatalabel.text = @"暂无数据";
+        nodatalabel.textColor = [UIColor grayColor];
+        [cell.contentView addSubview:nodatalabel];
+        return  cell;
     }
-    
-    lable4.text = pay_type;
-    lable4.textColor = [UIColor blackColor];
-    lable4.backgroundColor = [UIColor clearColor];
-    lable4.font = [UIFont systemFontOfSize:14];
-    [cell.contentView addSubview:lable4];
-    
-    return cell;
+
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

@@ -114,6 +114,10 @@
                           NSArray *dataArr = [json objectForKey:@"data"];
                           scrollNewsArray = [NSMutableArray arrayWithArray:dataArr];
                           
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                          
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
@@ -194,6 +198,10 @@
                       if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
                           
                       }
                       
@@ -315,6 +323,10 @@
                           [WSProgressHUD dismiss];
                           ui.view.frame = CGRectMake(PPMainViewWidth*vcindex, 0, self.view.bounds.size.width, self.view.bounds.size.height-44);
 
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                          
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
@@ -375,6 +387,10 @@
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
                           
                       }else{//接口返回错误
                           if ([ui.bulletinlistTableView.mj_footer isRefreshing]) {

@@ -13,6 +13,8 @@
 #import "JCCYBuyVipViewController.h"
 #import "FiemShowByTypeViewController.h"
 
+#import "JCCYMyListViewController.h"
+
 @interface RedPacketViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property(nonatomic,strong) UITableView *mainTableView;
@@ -32,7 +34,6 @@
 }
 #pragma mark --- 更新会员信息 ----
 -(void)get_info{
-    @autoreleasepool {
         NSString *dJson = nil;
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
             NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
@@ -76,9 +77,12 @@
                               [userDefauls setObject:user_pic forKey:@"user_pic"];
                               [userDefauls setObject:user_province forKey:@"user_province"];
                               [userDefauls synchronize];
-                              //
                               
                               [mainTableView reloadData];
+                          }else if (code == -110){
+                              //退出登录
+                              [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                              
                           }else if (code == -2){
                               //检查信息更新
                               [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
@@ -86,8 +90,7 @@
                           }
                       } failedBlock:^(NSError *error) {
                           
-                      }];
-        }
+                    }];
 }
 
 
@@ -197,6 +200,12 @@
     }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"6"]) {
         [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level6"] forState:UIControlStateNormal];//给button添加image
     }
+}
+#pragma mark ---跳入用户详情页 -----
+-(void)userInfoBtnAction{
+    JCCYMyListViewController  *jCCYMyListViewController = [[JCCYMyListViewController alloc] init];
+    jCCYMyListViewController.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:jCCYMyListViewController animated:YES];
 }
 
 -(void)refreshTableView{

@@ -280,8 +280,7 @@
     //显示刷新视图
     [self initZhiboDatas11];
     NSString *dJson = nil;
-    @autoreleasepool {
-        
+    
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
 
@@ -313,6 +312,10 @@
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                           
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LOGOUTNOTIFACTION object:nil];
+                          
                       }else{
                           if ([[json objectForKey:@"code"] isEqualToString:@"-5"]) {
                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"该栏目为收费栏目,请先购买" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
@@ -336,7 +339,6 @@
                       [self runTimer];
                       
                   }];
-    }
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -424,7 +426,7 @@
         cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
         
         NSInteger num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] integerValue];
-        double i = [[NSNumber numberWithInteger:num] doubleValue]/1000;
+        double i = [[NSNumber numberWithInteger:num] doubleValue];
         NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
         [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm"];

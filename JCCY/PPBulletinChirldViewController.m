@@ -276,11 +276,8 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
     int level = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"level"] intValue];
-    
     NSInteger user_level = [[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] intValue];
-    
     if (user_level > level || user_level == level ) {
         PPBulletinDetailViewController *pPBulletinDetailViewController = [[PPBulletinDetailViewController alloc] init];
         pPBulletinDetailViewController.hidesBottomBarWhenPushed = YES;

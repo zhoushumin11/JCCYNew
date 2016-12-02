@@ -61,7 +61,7 @@
     [settingView addSubview:mobileLabel];
     
     bangdingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    bangdingBtn.frame = CGRectMake(PPMainViewWidth - 110, 15, 100, 35);
+    bangdingBtn.frame = CGRectMake(PPMainViewWidth - 80, 15, 70, 35);
     [bangdingBtn setTitle:@"绑定" forState:UIControlStateNormal];
     [bangdingBtn setTitleColor:[UIColor colorFromHexRGB:@"e56357"] forState:UIControlStateNormal];
     bangdingBtn.layer.masksToBounds = YES;
@@ -77,7 +77,6 @@
     }else{
         mobileLabel.text = mobileStr;
     }
-    
     
     
     //缓存
@@ -146,50 +145,6 @@
 
 - (void)logout:(UIButton *)btn
 {
-
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserDefaultsCookie];
-    //清除用户信息
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"golds"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"scores"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"present_time"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"time_service_1"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"time_service_2"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"time_service_3"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_chinese_name"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_city"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_level"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_phone"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_pic"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_province"];
-    
-    //清除公共数据
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"KEFU_TELPHONE"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"IOS_IS_PRODUCE"];
-    //支付宝
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_PRIVATE"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_APPID"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_PID"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_PUBLIC"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_SWITCH"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_ACCOUNT"];
-
-    
-    //微信
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_APPID"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_APPSECRET"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WEIXIN_SWITCH"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_PAY_KEY"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_SHANGHUHAO"];
-    //服务器刷新时间
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LIVE_REFRESH_SECOND"];
-
-    
-    //清除登录信息
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"isLogin"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"token"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"isBangding"];
-
-    [[NSUserDefaults standardUserDefaults] synchronize];
     [[NSNotificationCenter defaultCenter] postNotificationName:LOGOUTNOTIFACTION object:nil];
     [self.navigationController popToRootViewControllerAnimated:NO];
     

@@ -17,6 +17,10 @@
 
 #import "SCAvatarBrowser.h"
 
+#import "JCCYNoDataView.h"
+
+
+
 @interface FirmViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
     NSTimer *timer;
@@ -33,15 +37,18 @@
 @property(nonatomic,strong) NSMutableArray *dataArray; //列表数据
 @property(nonatomic,strong) UITableView *mainTableView;
 
+@property(nonatomic,strong) JCCYNoDataView *noDataView;
+
 
 @end
 
 @implementation FirmViewController
 
-@synthesize reFreshTimeLabel,reFreshBtn,reFreshTimeString,refreshTimeNum,mainHeadView,dataArray,mainTableView;
+@synthesize reFreshTimeLabel,reFreshBtn,reFreshTimeString,refreshTimeNum,mainHeadView,dataArray,mainTableView,noDataView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.title = @"实盘";
     
     if( ([[[UIDevice currentDevice] systemVersion] doubleValue]>=7.0)) {
@@ -94,7 +101,15 @@
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:YES];
     [self timerInvalidate];
+    NSString *LIVE_REFRESH_SECOND = [[NSUserDefaults standardUserDefaults] objectForKey:@"LIVE_REFRESH_SECOND"];
+    if ([LIVE_REFRESH_SECOND isEqual:[NSNull null]] || LIVE_REFRESH_SECOND == nil) {
+        refreshTimeNum = 60;
+    }else{
+        refreshTimeNum = [LIVE_REFRESH_SECOND integerValue];
+    }
 }
+
+
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
@@ -163,7 +178,6 @@
     jCCYMyListViewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:jCCYMyListViewController animated:YES];
 }
-
 
 -(void)creatHeadViews{
     //刷新视图
@@ -279,8 +293,7 @@
     //显示刷新视图
     [self initZhiboDatas11];
     NSString *dJson = nil;
-    @autoreleasepool {
-        
+
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
 
@@ -291,7 +304,10 @@
                       requestdata:dJson
                    timeOutSeconds:10
                   completionBlock:^(NSDictionary *json) {
-                      
+                      if (noDataView) {
+                          [noDataView removeFromSuperview];
+                          mainTableView.hidden = NO;
+                      }
                       if ([mainTableView.mj_header isRefreshing]) {
                           [mainTableView.mj_header endRefreshing];
                       }
@@ -299,6 +315,14 @@
                       if (code == 1) {
                           NSArray *dataArr = [json objectForKey:@"data"];
                           if ([dataArr isEqual:[NSNull null]]) {
+                              if (!noDataView) {
+                                  noDataView = [[JCCYNoDataView alloc] initWithFrame:CGRectMake(PPMainViewWidth/2-100, 200, 200, 200)];
+                                  [self.view addSubview:noDataView];
+                                  mainTableView.hidden = YES;
+                              }else{
+                                  [self.view addSubview:noDataView];
+                                  mainTableView.hidden = YES;
+                              }
                               return;
                           }
                           //重置服务器更新时间倒计时
@@ -312,25 +336,36 @@
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                           
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                          
                       }else{
                           [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];
  
                     }
                       
                   } failedBlock:^(NSError *error) {
-                      
+                      if (!noDataView) {
+                          noDataView = [[JCCYNoDataView alloc] initWithFrame:CGRectMake(PPMainViewWidth/2-100, 200, 200, 200)];
+                          [self.view addSubview:noDataView];
+                          mainTableView.hidden = YES;
+                      }else{
+                          [self.view addSubview:noDataView];
+                          mainTableView.hidden = YES;
+                      }
                       if ([mainTableView.mj_header isRefreshing]) {
                           [mainTableView.mj_header endRefreshing];
                       }
                       //设置服务器访问的最大时间
-                      if (refreshTimeNum < 360) {
+                      if (refreshTimeNum < 300) {
                           refreshTimeNum+=60;
                       }
                       //重新开始获取数据
                       [self runTimer];
                       
                   }];
-    }
+
 }
 
 #pragma mark ----- UITableViewDelegate ----
@@ -351,6 +386,10 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return dataArray.count;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    return mainHeadView;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{

@@ -31,6 +31,8 @@
 
 #import "BangDingViewController.h"
 
+#import "JHUD.h"
+
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
 
 //@property (nonatomic, strong) UIButton *user_info_btn; //用户信息button
@@ -48,7 +50,7 @@
 
 @property (nonatomic,strong) UIView *mainTableViewHeaderView; //表头视图
 
-
+@property (nonatomic,strong) UIAlertView *alert;
 
 
 @end
@@ -61,7 +63,6 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
     //刷新我的信息
-    self.hidesBottomBarWhenPushed = NO;
     [self initMyView];
     
     //检查是否绑定手机号了
@@ -73,6 +74,11 @@
     
 }
 
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NETWORKNOTIFACTION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeTabbarIndex" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UPDATAUPIDDATA object:nil];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -85,16 +91,25 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabbarIndex) name:@"changeTabbarIndex" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:UPDATAUPIDDATA object:nil];
 
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(netWorkChangedAction) name:NETWORKNOTIFACTION object:nil];
+
     //初始化tableView的数据
     dataArray = [NSMutableArray array];
     scrollNewsArray = [NSMutableArray array];
     pageDic = [NSDictionary dictionary];
     
+    [JHUD showAtView:self.view message:@"正在初始化首页数据..."];
+
     //创建主视图
     [self creatMainView];
 }
-
+//网络改变通知
+-(void)netWorkChangedAction{
+    
+    if (![CoreStatus isNetworkEnable]) {
+        
+    }
+}
 //跳入购买页
 -(void)changeTabbarIndex{
     self.tabBarController.selectedIndex = 2;
@@ -102,9 +117,14 @@
 
 #pragma mark - 创建没有广告的首页头视图
 -(void)creatOnlyBtnHeaderView{
+    
+    if (self.adBannerView) {
+        [self.adBannerView removeFromSuperview];
+        self.adBannerView = nil;
+    }
     mainTableViewHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 134)];
     
-    UIView *btnsView = [[UIView alloc] initWithFrame:CGRectMake(0, PPMainViewWidth*0.52, PPMainViewWidth, 80)];
+    UIView *btnsView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 80)];
     NSArray *buttonTitleArr = [NSArray arrayWithObjects:@"实盘",@"赞赏",@"钻石",@"黄金", nil];
     NSArray *buttonImgArr = [NSArray arrayWithObjects:@"shipan_home_btn",@"zanshang_home_btn",@"zuanshi_home_btn",@"huangjin_home_btn", nil];
     
@@ -115,6 +135,7 @@
         btn.frame = CGRectMake(i*ww, 0, ww, ww);
         //        [btn setBackgroundImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateHighlighted];
         btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
         
         [btn setBackgroundColor:[UIColor whiteColor]];
@@ -160,7 +181,7 @@
     [mainTableViewHeaderView addSubview:zixunMsgView];
     mainTableView.tableHeaderView = mainTableViewHeaderView;
     
-    
+    [self getTableListData];
     
 }
 #pragma mark - 首页新闻滚动图
@@ -216,6 +237,7 @@
         btn.frame = CGRectMake(i*ww, 0, ww, ww);
 //        [btn setBackgroundImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateHighlighted];
         btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
         [btn setBackgroundColor:[UIColor whiteColor]];
         btn.tag = 2016+i;
@@ -278,6 +300,9 @@
         [mainTableView.mj_header endRefreshing];
     }
     
+    //获取列表数据
+    [self getTableListData];
+
 }
 
 #pragma mark --资讯消息栏点击事件
@@ -441,11 +466,8 @@
     [self.view addSubview:mainTableView];
     
     
-    
     //获取首页广告数据
     [self getAdData];
-    //获取列表数据
-    [self getTableListData];
 
 }
 
@@ -465,6 +487,11 @@
                        timeOutSeconds:10
                       completionBlock:^(NSDictionary *json) {
                           NSInteger code = [[json objectForKey:@"code"] integerValue];
+                          
+                          dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                              [JHUD hideForView:self.view];
+                          });
+                          
                           if (code == 1) {
                               NSDictionary *dataDic = [json objectForKey:@"data"];
                               NSArray *listArr = [dataDic objectForKey:@"list"];
@@ -479,6 +506,7 @@
                                   [mainTableView reloadData];
                                   
                               }else{
+                                  [mainTableView reloadData];
 
                               }
                               
@@ -487,6 +515,10 @@
                               //检查信息更新
                               [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                               
+                          }else if (code == -110){
+                              //退出登录
+                              [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                              
                           }else{
                               //异常处理
                               [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];
@@ -494,6 +526,7 @@
                           }
                           
                       } failedBlock:^(NSError *error) {
+
                           
                       }];
         }
@@ -542,6 +575,10 @@
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                           
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                          
                       }else{
                           //异常处理
                           [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];
@@ -558,9 +595,10 @@
 
 //获取首页广告数据
 -(void)getAdData{
+    
         NSString *dJson = nil;
         @autoreleasepool {
-            
+
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
             NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
 
@@ -571,6 +609,8 @@
                           requestdata:dJson
                        timeOutSeconds:10
                       completionBlock:^(NSDictionary *json) {
+                          
+                          [WSProgressHUD dismiss];
                           
                           NSInteger code = [[json objectForKey:@"code"] integerValue];
                           if (code == 1) {
@@ -585,6 +625,10 @@
                               }
 
                               
+                          }else if (code == -110){
+                              //退出登录
+                              [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                              
                           }else if (code == -2){
                               //检查信息更新
                               [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
@@ -594,7 +638,7 @@
                           }
                           
                       } failedBlock:^(NSError *error) {
-                          
+                          [self creatOnlyBtnHeaderView];
                       }];
         }
 }
@@ -604,6 +648,7 @@
 
 #pragma mark ---跳入用户详情页 -----
 -(void)userInfoBtnAction{
+    
     JCCYMyListViewController  *jCCYMyListViewController = [[JCCYMyListViewController alloc] init];
     jCCYMyListViewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:jCCYMyListViewController animated:YES];
@@ -615,6 +660,8 @@
     [self getAdData];
     //获取列表数据
     [self getTableListData];
+    
+    
     if ([mainTableView.mj_header isRefreshing]) {
         [mainTableView.mj_header endRefreshing];
     }

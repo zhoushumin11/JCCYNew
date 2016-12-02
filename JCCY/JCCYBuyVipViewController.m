@@ -37,19 +37,22 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(get_info) name:UPDATAUPIDDATA object:nil];
+
+    
     dataArray = [NSMutableArray array];
     pay_typeIndex = 0;
     //获取公共信息
     [self get_info];
 }
 
-
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UPDATAUPIDDATA object:nil];
+}
 
 #pragma mark --- 更新会员信息 ----
 -(void)get_info{
-    @autoreleasepool {
         NSString *dJson = nil;
-        @autoreleasepool {
             
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
             NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
@@ -99,12 +102,17 @@
                               //检查信息更新
                               [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                               
+                          }else if (code == -110){
+                              //退出登录
+                              [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                              
+                          }else{
+                              [self creatUserInfoView];
                           }
                       } failedBlock:^(NSError *error) {
                           
                       }];
-        }
-    }
+
 }
 
 -(void)creatUserInfoView{
@@ -177,7 +185,28 @@
     [label setAttributedText:noteStr];
     [self.view addSubview:mainScrollView];
     
-    [self getBuyListInfo];
+    
+    
+    NSArray *dataArr = [[NSUserDefaults standardUserDefaults] objectForKey:@"getBuyListInfoArray"];
+    if (dataArr == nil || dataArr.count == 0) {
+        //获取充值数据
+        [self getBuyListInfo];
+        
+    }else{//读取本地数据
+        for (int i = 0; i<dataArr.count; i++) {
+            NSDictionary *dic = [dataArr objectAtIndex:i];
+            NSInteger service_type = [[dic objectForKey:@"service_type"] integerValue];
+            if (service_type == self.buyType+1) {
+                [dataArray addObject:dic];
+            }
+        }
+        //创建列表
+        [self creatTableView:0];
+        
+        
+    }
+    
+    
 }
 
 #pragma mark --- 获取购买列表 ----
@@ -185,7 +214,6 @@
     NSString *dJson = nil;
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
     NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
-
     dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
     //获取类型接口
     PPRDData *pprddata1 = [[PPRDData alloc] init];
@@ -201,6 +229,9 @@
                           return;
                       }
                       
+                      [[NSUserDefaults standardUserDefaults] setObject:dataArr forKey:@"getBuyListInfoArray"];
+                      [[NSUserDefaults standardUserDefaults] synchronize];
+                      
                       for (int i = 0; i<dataArr.count; i++) {
                           NSDictionary *dic = [dataArr objectAtIndex:i];
                           NSInteger service_type = [[dic objectForKey:@"service_type"] integerValue];
@@ -215,6 +246,10 @@
                       //检查信息更新
                       [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                       
+                  }else if (code == -110){
+                      //退出登录
+                      [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                      
                   }else{
                       [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];
 
@@ -223,7 +258,6 @@
               } failedBlock:^(NSError *error) {
                   
               }];
-    
 }
 
 
@@ -278,6 +312,12 @@
         
         [chooseeBtn addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:chooseeBtn];
+        
+        UIButton *chooseeBtn1 = [UIButton buttonWithType:UIButtonTypeCustom];
+        chooseeBtn1.frame = CGRectMake(0,0,PPMainViewWidth, 60);
+        chooseeBtn1.tag = i;
+        [chooseeBtn1 addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:chooseeBtn1];
         
         [payView addSubview:view];
     }
@@ -377,6 +417,10 @@
                   }else if(code == -107){
                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"抱歉,您的余额不足,购买该服务失败." delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
                       [alert show];
+                  }else if (code == -110){
+                      //退出登录
+                      [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                      
                   }else if (code == -2){
                       //检查信息更新
                       [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];

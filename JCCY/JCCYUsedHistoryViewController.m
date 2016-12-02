@@ -98,6 +98,10 @@
                           self.pageDic = pageDicNow;
                           
                           [mainTableView reloadData];
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                          
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
@@ -166,6 +170,10 @@
                           
                           [mainTableView reloadData];
                           
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                          
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
@@ -184,14 +192,13 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0,0, PPMainViewWidth, 44)];
-    view.backgroundColor = [UIColor grayColor];
+    view.backgroundColor = [UIColor colorFromHexRGB:@"c9c7c7"];
     
     UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/3, 44)];
     lable1.textAlignment = NSTextAlignmentCenter;
     lable1.textColor = [UIColor whiteColor];
     lable1.text = @"消费时间";
     lable1.backgroundColor = [UIColor clearColor];
-    lable1.font = [UIFont boldSystemFontOfSize:18];
     [view addSubview:lable1];
     
     UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/3, 0, PPMainViewWidth/3, 44)];
@@ -199,7 +206,6 @@
     lable2.textColor = [UIColor whiteColor];
     lable2.text = @"消费的项目";
     lable2.backgroundColor = [UIColor clearColor];
-    lable2.font = [UIFont boldSystemFontOfSize:18];
     [view addSubview:lable2];
     
     UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/3*2, 0, PPMainViewWidth/3, 44)];
@@ -207,8 +213,19 @@
     lable3.textColor = [UIColor whiteColor];
     lable3.text = @"消费金币";
     lable3.backgroundColor = [UIColor clearColor];
-    lable3.font = [UIFont boldSystemFontOfSize:18];
     [view addSubview:lable3];
+    
+    if (PPMainViewWidth < 350) {
+        lable1.font = [UIFont boldSystemFontOfSize:14];
+        lable2.font = [UIFont boldSystemFontOfSize:14];
+        lable3.font = [UIFont boldSystemFontOfSize:14];
+    }else{
+        lable1.font = [UIFont boldSystemFontOfSize:18];
+        lable2.font = [UIFont boldSystemFontOfSize:18];
+        lable3.font = [UIFont boldSystemFontOfSize:18];
+    }
+
+
     
     return view;
 }
@@ -218,10 +235,15 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return dataArray.count;
+    if (dataArray.count > 0) {
+        return dataArray.count;
+    }
+    return 1;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (dataArray.count > 0) {
     static NSString *identify = @"cell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
@@ -273,6 +295,22 @@
     [cell.contentView addSubview:lable3];
     
     return cell;
+}else{
+        static NSString *identify = @"cell1";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
+        }
+        [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        UILabel *nodatalabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 44)];
+        nodatalabel.textAlignment = NSTextAlignmentCenter;
+        nodatalabel.font = [UIFont systemFontOfSize:14];
+        nodatalabel.text = @"暂无数据";
+        nodatalabel.textColor = [UIColor grayColor];
+        [cell.contentView addSubview:nodatalabel];
+        return  cell;
+    }
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

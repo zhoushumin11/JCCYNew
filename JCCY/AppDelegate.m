@@ -77,18 +77,10 @@
     [[UMSocialManager defaultManager] openLog:YES];
     //设置友盟appkey
     [[UMSocialManager defaultManager] setUmSocialAppkey:@"5832b24ac62dca51f500018e"];
-    
     // 获取友盟social版本号
     NSLog(@"UMeng social version: %@", [UMSocialGlobal umSocialSDKVersion]);
-    
-    //各平台的详细配置
     //设置微信的appId和appKey
-    
-//    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:@"wxbc85f05c6861a34e" appSecret:@"8568c44b8010dd430890f5037608a861" redirectURL:@"http://mobile.umeng.com/social"];
-
-    
     [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:@"wxbc85f05c6861a34e" appSecret:@"48bb173f1e200ea671123dc229ac3f54" redirectURL:@"http://www.jc2006.com/index.html"];
-    
     //设置分享到QQ互联的appId和appKey
     [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_QQ appKey:@"100424468"  appSecret:nil redirectURL:@"http://mobile.umeng.com/social"];
     
@@ -125,9 +117,9 @@
     // init Push
     // notice: 2.1.5版本的SDK新增的注册方法，改成可上报IDFA，如果没有使用IDFA直接传nil
     // 如需继续使用pushConfig.plist文件声明appKey等配置内容，请依旧使用[JPUSHService setupWithOption:launchOptions]方式初始化。
-    [JPUSHService setupWithOption:launchOptions appKey:@""
+    [JPUSHService setupWithOption:launchOptions appKey:@"6a144b9c73248579a7c9d95e"
                           channel:@"App Store"
-                 apsForProduction:0    //0 开发  1生产
+                 apsForProduction:1    //0 开发  1生产
             advertisingIdentifier:advertisingId];
 #pragma mark ---- 初始化极光推送End
     
@@ -227,7 +219,25 @@
                   NSInteger code = [[json objectForKey:@"code"] integerValue];
                   if (code == 1) {
                       NSDictionary *dataDic = [json objectForKey:@"data"];
-                      NSArray *updataArray = [dataDic objectForKey:@"update_data"];                      
+                      NSArray *updataArray = [dataDic objectForKey:@"update_data"];
+                      //根据服务器返回的更新要求 更新界面
+                      if (![updataArray isEqual:[NSNull null]] || updataArray.count > 0) {
+                          
+                          for (int j = 0; j<updataArray.count; j++) {
+                              NSInteger updataId = [[updataArray objectAtIndex:j] integerValue];
+                              
+                              if (updataId == 1) {//公共信息更新
+                                  [self updataPublicInfo];
+                              }else if(updataId == 3){//充值设置更新
+                                  [self getChongZhiStatus];
+                              }else if (updataId == 4){//购买设置更新
+                                  [self getBuyListInfo];
+                              }
+                          }
+                          
+                      }
+                      
+                      
                       NSNumber *update_id = [dataDic objectForKey:@"update_id"];
                       [[NSUserDefaults standardUserDefaults] setObject:update_id forKey:@"update_id"];
                       [[NSUserDefaults standardUserDefaults] synchronize];
@@ -240,14 +250,70 @@
             failedBlock:^(NSError *error) {
                       
             }];
-    
+}
+
+#pragma mark ---购买更新 
+-(void)getBuyListInfo{
+    NSString *dJson = nil;
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+    NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+    dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
+    //获取类型接口
+    PPRDData *pprddata1 = [[PPRDData alloc] init];
+    [pprddata1 startAFRequest:@"/index.php/Api/Update/update_cost_service/"
+                  requestdata:dJson
+               timeOutSeconds:10
+              completionBlock:^(NSDictionary *json) {
+                  NSInteger code = [[json objectForKey:@"code"] integerValue];
+                  
+                  if (code == 1) {
+                      NSArray *dataArr = [json objectForKey:@"data"];
+                      if ([dataArr isEqual:[NSNull null]] || dataArr.count == 0) {
+                          return;
+                      }
+                      
+                      [[NSUserDefaults standardUserDefaults] setObject:dataArr forKey:@"getBuyListInfoArray"];
+                      [[NSUserDefaults standardUserDefaults] synchronize];
+                      
+                  }
+              } failedBlock:^(NSError *error) {
+                  
+        }];
+}
+
+#pragma mark ---充值更新
+//获取充值详情页数据
+-(void)getChongZhiStatus{
+    NSString *dJson = nil;
+    @autoreleasepool {
+        
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+        
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
+        //获取类型接
+        PPRDData *pprddata1 = [[PPRDData alloc] init];
+        [pprddata1 startAFRequest:@"/index.php/Api/Update/update_recharge/"
+                      requestdata:dJson
+                   timeOutSeconds:10
+                  completionBlock:^(NSDictionary *json) {
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      if (code == 1) {
+                          NSArray *dataArr = [json objectForKey:@"data"];
+                          [[NSUserDefaults standardUserDefaults] setObject:dataArr forKey:@"getChongZhiStatusArray"];
+                          [[NSUserDefaults standardUserDefaults] synchronize];
+                      }
+                      
+                  } failedBlock:^(NSError *error) {
+                      
+                  }];
+    }
 }
 #pragma mark - 版本更新
 - (void)versionUpdate
 {
 
     NSString *dJson = nil;
-    @autoreleasepool {
         //得到自己当前的下属
         NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
         NSString *appVersion = [infoDic objectForKey:@"CFBundleVersion"];
@@ -275,19 +341,19 @@
                           
                           NSString *version_url = [dataDic objectForKey:@"version_url"];
                           self.updateUrl = @"http://www.baidu.com";
+                          
                           if ([version_url isEqual:[NSNull null]]) {
                               
                           }else{
                               self.updateUrl = version_url;
                           }
-                          NSInteger version_service = 0;
                           
-                          if (![version_url isEqual:[NSNull null]]) {
-                              version_service = [[dataDic objectForKey:@"version_service"] integerValue];
-                          }
+                          NSInteger versionNum = [[dataDic objectForKey:@"version"] integerValue];
                           
-                          if (version_service > version) {
-                              NSString *msg = [NSString stringWithFormat:@"更新日志:\n%ld",version_service];
+                          NSString *version_update_type = [dataDic objectForKey:@"version_update_type"];
+                          
+                          if (versionNum > version && [version_update_type isEqualToString:@"1"]) {
+                              NSString *msg = [NSString stringWithFormat:@"更新日志:\n%ld",versionNum];
                               UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"发现新版本!" message:msg delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"去更新", nil];
                               alertView.tag = 11111;
                               [alertView show];
@@ -301,7 +367,6 @@
                       failedBlock:^(NSError *error) {
                           
                 }];
-    }
     
 }
 
@@ -368,10 +433,66 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logoutNotifaction:) name:LOGOUTNOTIFACTION object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUpDataId) name:UPDATAUPIDDATA object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginOutByService) name:LoginOutByService object:nil];
+
 }
+
+//服务器返回其他设备登录
+-(void)loginOutByService{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您的账号在其他设备登录，请重新登录！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    [self loginNotifaction:nil];
+    [alert show];
+}
+
 
 - (void)logoutNotifaction:(NSNotification *)object
 {
+    
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserDefaultsCookie];
+    //清除用户信息
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"golds"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"scores"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"present_time"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"time_service_1"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"time_service_2"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"time_service_3"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_chinese_name"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_city"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_level"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_phone"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_pic"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user_province"];
+    
+    //清除公共数据
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"KEFU_TELPHONE"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"IOS_IS_PRODUCE"];
+    //支付宝
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_PRIVATE"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_APPID"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_PID"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_PUBLIC"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_SWITCH"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ALIPAY_ACCOUNT"];
+    
+    
+    //微信
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_APPID"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_APPSECRET"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WEIXIN_SWITCH"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_PAY_KEY"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_SHANGHUHAO"];
+    //服务器刷新时间
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LIVE_REFRESH_SECOND"];
+    
+    
+    //清除登录信息
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"isLogin"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"token"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"isBangding"];
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
     self.viewController = ppLoginNavigationController;
     [self.window setRootViewController:self.viewController];
     [self.window makeKeyAndVisible];
@@ -484,8 +605,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
 -(void)getUpDataId{
     NSString *dJson = nil;
-    @autoreleasepool {
-        
+    
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
         
@@ -513,14 +633,11 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
                       }
                   } failedBlock:^(NSError *error) {
                       
-                  }];
-    }
+            }];
 }
 #pragma  mark ---- 当服务器提示要做公共信息更新时 ----
 -(void)updataPublicInfo{
     NSString *dJson = nil;
-    @autoreleasepool {
-        
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
         
@@ -618,7 +735,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
                   } failedBlock:^(NSError *error) {
                       
                   }];
-    }
 }
 
 #pragma mark - 网络判断
@@ -632,6 +748,28 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [CoreStatus beginNotiNetwork:self];
 }
 
+-(void)coreNetworkChangeNoti:(NSNotification *)noti{
+    //因为这些是实时，所以每次的静态状态就是当前实时状态，你也可以从noti中取
+    CoreNetWorkStatus currentNetStatus = [CoreStatus currentNetWorkStatus];
+    
+    switch (currentNetStatus) {
+        case CoreNetWorkStatusNone:
+        {
+            [PPAPPDataClass sharedappData].isNet = NO;
+            [[NSNotificationCenter defaultCenter] postNotificationName:NETWORKNOTIFACTION object:nil];
+        }
+            break;
+            
+        default:
+        {
+            [PPAPPDataClass sharedappData].isNet = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:NETWORKNOTIFACTION object:nil];
+            
+        }
+            break;
+    }
+    
+}
 
 //- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 //{
@@ -826,7 +964,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
             }];
         }
     }
-    
     return _persistentContainer;
 }
 

@@ -177,8 +177,9 @@
 
     if (index == 3 || index == 4) {
         self.mytabbar.seletedIndex = appdelegate.nowSelectIndex;
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"此功能尚未完善" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alert show];
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"此功能尚未完善" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alert show];
+        [ALToastView toastInView:self.view withText:@"敬请期待"];
     }else{
         if (index == appdelegate.nowSelectIndex) {
             appdelegate.nowSelectIndex = index;
@@ -227,13 +228,13 @@
     if (viewController == root) {
         // 更改导航控制器view的frame
 //        navigationController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - kTabbarHeight);
-        
         navigationController.interactivePopGestureRecognizer.delegate = nav.popDelegate;
         // 让Dock从root上移除
         [_mytabbar removeFromSuperview];
  
         //_mytabbar添加dock到HomeViewController
         _mytabbar.frame = self.tabBar.frame;
+        
         [self.view addSubview:_mytabbar];
     }
 }

@@ -178,7 +178,7 @@ HMSingletonM(CoreStatus)
     
     NSDictionary *userInfo = @{@"currentStatusEnum":@([CoreStatus currentNetWorkStatus]),@"currentStatusString":[CoreStatus currentNetWorkStatusString]};
     
-//    [[NSNotificationCenter defaultCenter] postNotificationName:CoreStatusChangedNoti object:self userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:CoreStatusChangedNoti object:self userInfo:userInfo];
 }
 
 

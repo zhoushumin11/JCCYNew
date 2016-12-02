@@ -75,8 +75,26 @@
     
     //支付类型 默认支付宝
     pay_type = 1;
-    //获取充值数据
-    [self getChongZhiStatus];
+    
+    NSArray *dataArr = [[NSUserDefaults standardUserDefaults] objectForKey:@"getChongZhiStatusArray"];
+    if (dataArr == nil || dataArr.count == 0) {
+        //获取充值数据
+        [self getChongZhiStatus];
+ 
+    }else{//读取本地数据
+        dataArray = [NSMutableArray arrayWithArray:dataArr];
+        if (dataArray.count > 0) {
+            
+            conf_recharge_id = [[dataArray objectAtIndex:0] objectForKey:@"conf_recharge_id"];
+            conf_recharge_amount = [[dataArray objectAtIndex:0] objectForKey:@"conf_recharge_amount"];
+            conf_recharge_gold = [[dataArray objectAtIndex:0] objectForKey:@"conf_recharge_gold"];
+            
+            [self creatViews];
+        }
+   
+    }
+    
+
 
 }
 //微信支付通知
@@ -129,6 +147,8 @@
 //                              sort = 3;
 //                          }
                           NSArray *dataArr = [json objectForKey:@"data"];
+                          [[NSUserDefaults standardUserDefaults] setObject:dataArr forKey:@"getChongZhiStatusArray"];
+                          [[NSUserDefaults standardUserDefaults] synchronize];
                           dataArray = [NSMutableArray arrayWithArray:dataArr];
                           if (dataArray.count > 0) {
                               
@@ -142,6 +162,10 @@
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
                           
                       }else{
                           //异常处理
@@ -305,7 +329,6 @@
         
         UIButton *chooseeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         chooseeBtn.frame = CGRectMake(PPMainViewWidth - 20 - 40, 10, 40, 40);
-        
         chooseeBtn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
         
         if (payType == i) {
@@ -318,7 +341,13 @@
         
         [chooseeBtn addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:chooseeBtn];
-        
+
+        UIButton *chooseeBtn1 = [UIButton buttonWithType:UIButtonTypeCustom];
+        chooseeBtn1.frame = CGRectMake(0,0,PPMainViewWidth, 60);
+        chooseeBtn1.tag = i;
+        [chooseeBtn1 addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:chooseeBtn1];
+
         [payView addSubview:view];
     }
     
@@ -435,6 +464,10 @@
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+                          
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
                           
                       }else{
                           //异常处理

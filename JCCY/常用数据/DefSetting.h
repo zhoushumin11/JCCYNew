@@ -39,6 +39,11 @@ typedef enum : NSUInteger {
 
 //通知服务器有更新之后通知
 #define UPDATAUPIDDATA @"UPDATAUPIDDATA"
+
+
+//服务器返回其他设备登录
+#define  LoginOutByService @"LoginOutByService"
+
 //刷新我的视图
 #define UPDATA_MYViews @"UPDATA_MYViews"
 
@@ -95,26 +100,7 @@ typedef enum : NSUInteger {
 
 
 
-//限制图片数量
-#define minimgCount 5
 
-#pragma mark - 工作
-
-#pragma mark - 工作任务
-#define TASKUPTATE @"TASKUPTATE"
-
-#pragma mark - 审批
-#define EAAUPTATE @"EAAUPTATE"
-
-#pragma mark - 日志
-#define LOGUPTATE @"LOGUPTATE"
-
-#pragma mark - 通讯录
-#define FIRSTSYNCONTACT @"FIRSTSYNCONTACT"
-#define CONTACTSUPDATE @"CONTACTSUPDATE"
-
-#pragma mark - 我的
-#define UPDATEMYINFO @"UPDATEMYINFO"
 
 //设置字体
 #define SystemFont(s) [UIFont fontWithName:@"Avenir-Light" size:s] //Avenir-Roman

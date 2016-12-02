@@ -21,7 +21,7 @@
 
 #define HEADHEIGHT (PPMainViewWidth*0.5)
 
-@interface JCCYMyListViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface JCCYMyListViewController ()<UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
 {
     UIImageView *navBarHairlineImageView;
 }
@@ -48,8 +48,13 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorFromHexRGB:@"f8f8f8"];
     //添加一个通知 来修改重新登录的人的资料图
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIMGinfo) name:UPDATEMYINFO object:nil];
     
+    if( ([[[UIDevice currentDevice] systemVersion] doubleValue]>=7.0)) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.extendedLayoutIncludesOpaqueBars = NO;
+        self.modalPresentationCapturesStatusBarAppearance = NO;
+    }
+
     self.title = @"个人中心";
     
     
@@ -142,6 +147,10 @@
                       //检查信息更新
                       [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                       
+                  }else if (code == -110){
+                      //退出登录
+                      [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                      
                   }else{
                       
                   }
@@ -187,6 +196,10 @@
                           NSData *levelData = [levelDataStr dataUsingEncoding:NSASCIIStringEncoding];
                           NSArray *levelArr = [self toArrayOrNSDictionary:levelData];
                           self.levelArray = [NSMutableArray arrayWithArray:levelArr];
+                      }else if (code == -110){
+                          //退出登录
+                          [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
+                          
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
@@ -299,6 +312,16 @@
 }
 
 
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.tag == 101010) {
+        if (buttonIndex == 0) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@",self.KEFU_TELPHONE]]];
+        }else{
+            return;
+        }
+    }
+}
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -326,7 +349,9 @@
         sCCYUsedHistoryViewController.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:sCCYUsedHistoryViewController animated:YES];
     }else if (indexPath.row == 3){ //客服电话
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@",self.KEFU_TELPHONE]]];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"是否拨打客服电话？" delegate:self cancelButtonTitle:@"拨打" otherButtonTitles:@"取消", nil];
+        alertView.tag = 101010;
+        [alertView show];
     }else if (indexPath.row == 0){//在线充值
         JCCYChongZhiViewController *jCCYChongZhiViewController = [[JCCYChongZhiViewController alloc] init];
         jCCYChongZhiViewController.hidesBottomBarWhenPushed = YES;
