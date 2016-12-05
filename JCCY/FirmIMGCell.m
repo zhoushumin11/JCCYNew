@@ -37,7 +37,7 @@
         
         //内容图片
         self.contenImageView.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
-        self.contenImageView.clipsToBounds = YES;
+        self.contenImageView.clipsToBounds  = YES;
         self.contenImageView.layer.cornerRadius = 8;
         [self.allcontentView addSubview:self.contenImageView];
         
@@ -55,7 +55,7 @@
         [self.allcontentView addSubview:self.timeLabel];
         
         self.lineLabel.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
-        [self.allcontentView addSubview:lineLabel];
+        [self.allcontentView addSubview:self.lineLabel];
         
     }
     return self;

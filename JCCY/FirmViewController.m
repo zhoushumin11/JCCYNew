@@ -407,7 +407,8 @@
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
-        
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+
         cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
         
         NSInteger num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] integerValue];
@@ -434,8 +435,12 @@
                 [cell.contenImageView setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
             }
         }];
-        cell.contenImageView.clipsToBounds = YES;
-        cell.contenImageView.layer.cornerRadius = 8;
+        
+        UILabel *linelabels = [[UILabel alloc] initWithFrame:CGRectMake(10, 179.5, PPMainViewWidth - 20, 0.5)];
+        linelabels.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
+        [cell addSubview:linelabels];
+        
+
         cell.contenImageView.tag = indexPath.row;
         [cell.contenImageView addTarget:self action:@selector(contenImageViewAction:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -449,7 +454,8 @@
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
-        
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+
         NSInteger num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] integerValue];
         double i = [[NSNumber numberWithInteger:num] doubleValue];
         NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];

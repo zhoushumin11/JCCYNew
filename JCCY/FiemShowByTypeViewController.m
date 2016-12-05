@@ -356,7 +356,7 @@
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSString *live_picStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_pic"];
     if (![live_picStr isEqual:[NSNull null]]) { //图片内容
-        return 180;
+        return 185;
     }else{
         CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
         float wh = strSize.height + 60+20;
@@ -382,7 +382,8 @@
             cell = [[FirmIMGCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+
         
         cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
         
@@ -411,6 +412,10 @@
             }
         }];
         
+        UILabel *linelabels = [[UILabel alloc] initWithFrame:CGRectMake(10, 179.5, PPMainViewWidth - 20, 0.5)];
+        linelabels.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
+        [cell addSubview:linelabels];
+        
         cell.contenImageView.tag = indexPath.row;
         [cell.contenImageView addTarget:self action:@selector(contenImageViewAction:) forControlEvents:UIControlEventTouchUpInside];
         
@@ -423,6 +428,9 @@
             cell = [[FirmStringCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+
+        
         cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
         
         NSInteger num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] integerValue];

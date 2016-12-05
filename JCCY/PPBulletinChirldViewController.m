@@ -235,6 +235,10 @@
         cell.selectedBackgroundView.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
         
     }
+    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    UILabel *linelabels = [[UILabel alloc] initWithFrame:CGRectMake(10, 69.5, PPMainViewWidth - 20, 0.5)];
+    linelabels.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
+    [cell addSubview:linelabels];
     
     waitLabel.hidden = YES;
     

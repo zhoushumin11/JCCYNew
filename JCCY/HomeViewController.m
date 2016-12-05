@@ -42,6 +42,8 @@
 
 @property(nonatomic,strong) NSMutableArray *dataArray;//表数据
 @property(nonatomic,strong) NSMutableArray *scrollNewsArray;//滚动数据
+@property(nonatomic,strong) NSMutableArray *columnArray;//栏目
+
 
 @property(nonatomic,strong) NSDictionary *pageDic; //分页字典
 
@@ -99,6 +101,7 @@
     //初始化tableView的数据
     dataArray = [NSMutableArray array];
     scrollNewsArray = [NSMutableArray array];
+    self.columnArray = [NSMutableArray array];
     pageDic = [NSDictionary dictionary];
     
     [JHUD showAtView:self.view message:@"正在初始化首页数据..."];
@@ -509,10 +512,6 @@
                       completionBlock:^(NSDictionary *json) {
                           NSInteger code = [[json objectForKey:@"code"] integerValue];
                           
-                          dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                              [JHUD hideForView:self.view];
-                          });
-                          
                           if (code == 1) {
                               NSDictionary *dataDic = [json objectForKey:@"data"];
                               NSArray *listArr = [dataDic objectForKey:@"list"];
@@ -522,14 +521,8 @@
                               dataArray = [NSMutableArray arrayWithArray:listArr];
                               pageDic = [dataDic objectForKey:@"page"];
                               
-                              if (dataArray.count>0) {
-                                  //刷新列表
-                                  [mainTableView reloadData];
-                                  
-                              }else{
-                                  [mainTableView reloadData];
-
-                              }
+                              //请求栏目数据
+                            [self getonlineSliderData];
                               
                               
                           }else if (code == -2){
@@ -551,6 +544,47 @@
                           
                       }];
         }
+}
+
+#pragma mark - onlineList 获取栏目数据
+- (void)getonlineSliderData
+{
+    NSString *dJson = nil;
+    @autoreleasepool {
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+        
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%d\"}",updata_id,token,0,1];
+        //获取类型接口
+        PPRDData *pprddata1 = [[PPRDData alloc] init];
+        [pprddata1 startAFRequest:@"/index.php/Api/Update/update_arctype/"
+                      requestdata:dJson
+                   timeOutSeconds:10
+                  completionBlock:^(NSDictionary *json) {
+                      
+                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+                      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                          [JHUD hideForView:self.view];
+                      });
+                      if (code == 1) {
+                          NSArray *dateArray = [json objectForKey:@"data"];
+                          if (dateArray.count == 0 || [dataArray isEqual:[NSNull null]]) {
+                              [mainTableView reloadData];
+                              return ;
+                          }
+                          self.columnArray = [NSMutableArray arrayWithArray:dateArray];
+                          [mainTableView reloadData];
+                      }else{
+                          [mainTableView reloadData];
+                      }
+                  }
+                      failedBlock:^(NSError *error) {
+                          [mainTableView reloadData];
+                          dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                              [JHUD hideForView:self.view];
+                          });
+                      }];
+    }
 }
 
 
@@ -732,11 +766,41 @@
             imageUrl = @"";
         }
         
-        [cell.h_imgView sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@"img_downLoadFail"] options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        [cell.h_imgView sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@"pp_gg_img"] options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
     
         }];
         
-        cell.h_titleLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+        
+        if (self.columnArray.count>0) {
+            NSString *titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+            NSString *aStr = @"【";
+            NSString *bStr = @"】";
+            
+            NSInteger typeid = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"arctype_id"] integerValue];
+            NSString *columnStr = @"";
+
+            for (int i = 0; i<self.columnArray.count; i++) {
+                NSDictionary *dic = [self.columnArray objectAtIndex:i];
+                NSInteger typeidColumn = [[dic objectForKey:@"typeid"] integerValue];
+                if (typeid == typeidColumn) {
+                    columnStr = [dic objectForKey:@"typename"];
+                }
+            }
+            
+            if ([columnStr isEqualToString:@""] || [columnStr isEqual:[NSNull null]]) {
+                cell.h_titleLabel.text = titleStr;
+            }else{
+                NSString *columnSSS = [[aStr stringByAppendingString:columnStr] stringByAppendingString:bStr];
+                titleStr = [NSString stringWithFormat:@"%@%@",columnSSS,titleStr];
+                cell.h_titleLabel.text = titleStr;
+            }
+
+        }else{
+            cell.h_titleLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+     
+        }
+        
+        
         
         return cell;
         
@@ -748,7 +812,35 @@
             cell.selectedBackgroundView.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
             
         }
-        cell.h_titleLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        if (self.columnArray.count>0) {
+            NSString *titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+            NSString *aStr = @"【";
+            NSString *bStr = @"】";
+            
+            NSInteger typeid = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"arctype_id"] integerValue];
+            NSString *columnStr = @"";
+            
+            for (int i = 0; i<self.columnArray.count; i++) {
+                NSDictionary *dic = [self.columnArray objectAtIndex:i];
+                NSInteger typeidColumn = [[dic objectForKey:@"typeid"] integerValue];
+                if (typeid == typeidColumn) {
+                    columnStr = [dic objectForKey:@"typename"];
+                }
+            }
+            
+            if ([columnStr isEqualToString:@""] || [columnStr isEqual:[NSNull null]]) {
+                cell.h_titleLabel.text = titleStr;
+            }else{
+                NSString *columnSSS = [[aStr stringByAppendingString:columnStr] stringByAppendingString:bStr];
+                titleStr = [NSString stringWithFormat:@"%@%@",columnSSS,titleStr];
+                cell.h_titleLabel.text = titleStr;
+            }
+            
+        }else{
+            cell.h_titleLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+            
+        }
         return cell;
     }
     
