@@ -11,7 +11,7 @@
 @implementation FirmStringCell
 
 
-@synthesize allcontentView,iConView,userNameLabel,timeLabel,contenStringView,contenStringSuperView;
+@synthesize allcontentView,iConView,userNameLabel,timeLabel,contenStringView,contenStringSuperView,lineLabel;
 
 
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -26,6 +26,7 @@
         self.timeLabel = [[UILabel alloc] init];
         self.contenStringView = [[UILabel alloc] init];
         self.contenStringSuperView = [[UIButton alloc] init];
+        self.lineLabel = [[UILabel alloc] init];
         
         
         self.allcontentView.backgroundColor = [UIColor whiteColor];
@@ -67,6 +68,9 @@
         self.timeLabel.font = [UIFont systemFontOfSize:15];
         self.timeLabel.textAlignment = NSTextAlignmentLeft;
         [self.allcontentView addSubview:self.timeLabel];
+        
+        self.lineLabel.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
+        [self.allcontentView addSubview:lineLabel];
     }
     return self;
 }
@@ -79,6 +83,7 @@
     self.iConView.frame = CGRectMake(20, 10, 50, 50);
     self.userNameLabel.frame = CGRectMake(15,75, 60, 30);
     self.timeLabel.frame = CGRectMake(90, 10, 200, 30);
+    self.lineLabel.frame = CGRectMake(10, self.frame.size.height-0.5, self.frame.size.width-20, 0.5);
     
 }
 

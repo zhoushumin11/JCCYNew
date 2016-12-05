@@ -34,12 +34,12 @@ static BOOL const kDefaultShouldResizeFromCenter = YES;
 /**
  *  Default spacing between dots
  */
-static NSInteger const kDefaultSpacingBetweenDots = 8;
+static NSInteger const kDefaultSpacingBetweenDots = 12;
 
 /**
  *  Default dot size
  */
-static CGSize const kDefaultDotSize = {8, 8};
+static CGSize const kDefaultDotSize = {12, 12};
 
 
 @interface TAPageControl()
@@ -197,7 +197,7 @@ static CGSize const kDefaultDotSize = {8, 8};
     CGFloat x = (self.dotSize.width + self.spacingBetweenDots) * index + ( (CGRectGetWidth(self.frame) - [self sizeForNumberOfPages:self.numberOfPages].width) / 2);
     CGFloat y = (CGRectGetHeight(self.frame) - self.dotSize.height) / 2;
     
-    dot.frame = CGRectMake(x, y, self.dotSize.width, self.dotSize.height);
+    dot.frame = CGRectMake(x, y-5, self.dotSize.width+5, self.dotSize.height+5);
 }
 
 

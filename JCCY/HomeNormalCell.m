@@ -9,7 +9,7 @@
 #import "HomeNormalCell.h"
 
 @implementation HomeNormalCell
-@synthesize h_titleLabel,allcontentView;
+@synthesize h_titleLabel,allcontentView,lineLabel;
 
 
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -27,10 +27,14 @@
         
         h_titleLabel.textColor = [UIColor blackColor];
 //        h_titleLabel.font = SystemFont(15);
-        h_titleLabel.font = [UIFont systemFontOfSize:15];
+        h_titleLabel.font = [UIFont systemFontOfSize:18];
         
         h_titleLabel.textAlignment = NSTextAlignmentLeft;
         [allcontentView addSubview:h_titleLabel];
+        
+        lineLabel = [[UILabel alloc] init];
+        lineLabel.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
+        [allcontentView addSubview:lineLabel];
         
     }
     return self;
@@ -40,8 +44,8 @@
 {
     [super layoutSubviews];
     allcontentView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    h_titleLabel.frame = CGRectMake(15, 0, self.bounds.size.width-25,44);
-    
+    h_titleLabel.frame = CGRectMake(10, 0, self.bounds.size.width-30,self.frame.size.height);
+    lineLabel.frame = CGRectMake(10, 0.5, self.frame.size.width-20, 0.5);
 }
 
 

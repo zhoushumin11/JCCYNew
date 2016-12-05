@@ -76,23 +76,24 @@
     //支付类型 默认支付宝
     pay_type = 1;
     
-    NSArray *dataArr = [[NSUserDefaults standardUserDefaults] objectForKey:@"getChongZhiStatusArray"];
-    if (dataArr == nil || dataArr.count == 0) {
-        //获取充值数据
+//    NSArray *dataArr = [[NSUserDefaults standardUserDefaults] objectForKey:@"getChongZhiStatusArray"];
+//    if (dataArr == nil || dataArr.count == 0) {
+//        //获取充值数据
         [self getChongZhiStatus];
  
-    }else{//读取本地数据
-        dataArray = [NSMutableArray arrayWithArray:dataArr];
-        if (dataArray.count > 0) {
-            
-            conf_recharge_id = [[dataArray objectAtIndex:0] objectForKey:@"conf_recharge_id"];
-            conf_recharge_amount = [[dataArray objectAtIndex:0] objectForKey:@"conf_recharge_amount"];
-            conf_recharge_gold = [[dataArray objectAtIndex:0] objectForKey:@"conf_recharge_gold"];
-            
-            [self creatViews];
-        }
-   
-    }
+//    }
+//    else{//读取本地数据
+//        dataArray = [NSMutableArray arrayWithArray:dataArr];
+//        if (dataArray.count > 0) {
+//            
+//            conf_recharge_id = [[dataArray objectAtIndex:0] objectForKey:@"conf_recharge_id"];
+//            conf_recharge_amount = [[dataArray objectAtIndex:0] objectForKey:@"conf_recharge_amount"];
+//            conf_recharge_gold = [[dataArray objectAtIndex:0] objectForKey:@"conf_recharge_gold"];
+//            
+//            [self creatViews];
+//        }
+//   
+//    }
     
 
 
@@ -220,26 +221,29 @@
         
         //设置标题
 
-        btn.titleEdgeInsets = UIEdgeInsetsMake( buttonH/4,0.0 , buttonH/4*3, 0.0);
-
+        btn.titleEdgeInsets = UIEdgeInsetsMake(buttonH/3+10,0.0 , buttonH/4*3-10, 0.0);
         [btn setTitle:[NSString stringWithFormat:@"¥%@",[titleDic objectForKey:@"conf_recharge_amount"]] forState:UIControlStateNormal];
         
         //设置副标题
-        UILabel *rmbLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, buttonH/4*2, buttonW, buttonH/4)];
+        UILabel *rmbLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, buttonH/4*2+10, buttonW, buttonH/4)];
         rmbLabel.textColor = [UIColor grayColor];
         rmbLabel.textAlignment = NSTextAlignmentCenter;
         rmbLabel.text = [NSString stringWithFormat:@"(%@金币)",[titleDic objectForKey:@"conf_recharge_gold"]];
         [btn addSubview:rmbLabel];
         if (PPMainViewWidth < 350) {
-            btn.titleLabel.font = [UIFont systemFontOfSize:16];
-            rmbLabel.font = [UIFont systemFontOfSize:16];
+            btn.titleLabel.font = [UIFont systemFontOfSize:17];
+            rmbLabel.font = [UIFont systemFontOfSize:12];
         }else{
-            btn.titleLabel.font = [UIFont systemFontOfSize:22];
+            btn.titleLabel.font = [UIFont systemFontOfSize:20];
             rmbLabel.font = [UIFont systemFontOfSize:12];
         }
         
         //设置选中背景imageView
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(buttonW - 20, buttonH - 20, 20, 20)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(buttonW - 35, buttonH - 35, 35, 35)];
+        if (PPMainViewWidth < 350) {
+            imageView.frame = CGRectMake(buttonW - 25, buttonH - 25, 25, 25);
+        }
+        
         if (selectedIndex == i) {
             imageView.image = [UIImage imageNamed:@"JCCY_YiXuan"];
             [btn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
@@ -248,8 +252,8 @@
         }else{
             imageView.image = [UIImage imageNamed:@""];
             [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [btn.layer setBorderWidth:0];
-            btn.layer.borderColor=[UIColor whiteColor].CGColor;
+            [btn.layer setBorderWidth:1.0];
+            btn.layer.borderColor=[UIColor colorFromHexRGB:@"d9d9d9"].CGColor;
         }
         
         [btn addSubview:imageView];
@@ -282,19 +286,29 @@
 #pragma 创建支付类型按钮
 -(void)creatPayTypeBtn:(NSInteger)payType{
     
-    payView = [[UIView alloc] initWithFrame:CGRectMake(10,buttonsView.frame.origin.y+ buttonsView.frame.size.height, PPMainViewWidth-20, 130)];
+    payView = [[UIView alloc] initWithFrame:CGRectMake(10,buttonsView.frame.origin.y+ buttonsView.frame.size.height, PPMainViewWidth-20, 150)];
     payView.backgroundColor = [UIColor whiteColor];
+    [payView.layer setBorderWidth:1.0];
+    [payView.layer setMasksToBounds:YES];
+    [payView.layer setCornerRadius:5.0]; //设置矩形四个圆角半径
+    payView.layer.borderColor=[UIColor colorFromHexRGB:@"d9d9d9"].CGColor;
     [mainScrollView addSubview:payView];
     
     //确定 button
     UIButton *quedingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    quedingBtn.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:17];
-    quedingBtn.frame = CGRectMake(35, payView.frame.origin.y + payView.frame.size.height+30, PPMainViewWidth-70, 45);
-    
+    quedingBtn.titleLabel.font = [UIFont systemFontOfSize:17];
+    if (PPMainViewWidth < 350) {
+        quedingBtn.frame = CGRectMake(10, payView.frame.origin.y + payView.frame.size.height+20, PPMainViewWidth-20, 44);
+    }else{
+        quedingBtn.frame = CGRectMake(10, payView.frame.origin.y + payView.frame.size.height+20, PPMainViewWidth-20, 60);
+        
+    }
+
     [quedingBtn.layer setMasksToBounds:YES];
     [quedingBtn.layer setCornerRadius:5.0]; //设置矩形四个圆角半径
     quedingBtn.backgroundColor = [UIColor colorFromHexRGB:@"e60013"];
     [quedingBtn setTitle:@"确认" forState:UIControlStateNormal];
+    quedingBtn.titleLabel.font = [UIFont systemFontOfSize:20];
     [quedingBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [quedingBtn addTarget:self action:@selector(quedingPhone) forControlEvents:UIControlEventTouchUpInside];
     [mainScrollView addSubview:quedingBtn];
@@ -304,17 +318,17 @@
     NSArray *subTitleArray = [NSArray arrayWithObjects:@"推荐支付宝用户使用",@"推荐有微信支付的账户的用户使用", nil];
 
     for (int i = 0; i<2; i++) {
-        UIView *view  = [[UIView alloc] initWithFrame:CGRectMake(0, (60*i)+(10*i), PPMainViewWidth-20, 60)];
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 50, 50)];
+        UIView *view  = [[UIView alloc] initWithFrame:CGRectMake(0, (60*i)+(10*i)+10, PPMainViewWidth-20, 75)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
         imageView.image = [UIImage imageNamed:[imageArray objectAtIndex:i]];
         [view addSubview:imageView];
         
-        UILabel *titleLable = [[UILabel alloc] initWithFrame:CGRectMake(58, 5, 200, 20)];
-        titleLable.textColor = [UIColor grayColor];
+        UILabel *titleLable = [[UILabel alloc] initWithFrame:CGRectMake(68, 5, 200, 20)];
+        titleLable.textColor = [UIColor blackColor];
         titleLable.text = titleArray[i];
         [view addSubview:titleLable];
         
-        UILabel *sublabel  = [[UILabel alloc] initWithFrame:CGRectMake(58, 30, PPMainViewWidth-20-58-40, 20)];
+        UILabel *sublabel  = [[UILabel alloc] initWithFrame:CGRectMake(68, 30, PPMainViewWidth-20-68-40, 20)];
         sublabel.textColor = [UIColor grayColor];
         sublabel.text = subTitleArray[i];
         [view addSubview:sublabel];
@@ -365,7 +379,7 @@
 
     CGSize size = GetHTextSizeFont(CHONGZHI_CONTENT, PPMainViewWidth-20, 14);
     
-    chongZhiShuoMingView  = [[UIView alloc] initWithFrame:CGRectMake(10, payView.frame.origin.y + payView.frame.size.height+30+50, PPMainViewWidth - 20, size.height + 50)];
+    chongZhiShuoMingView  = [[UIView alloc] initWithFrame:CGRectMake(10, payView.frame.origin.y + payView.frame.size.height+30+60, PPMainViewWidth - 20, size.height + 50)];
     
     chongZhiShuoMingView.backgroundColor = [UIColor clearColor];
     [mainScrollView addSubview:chongZhiShuoMingView];

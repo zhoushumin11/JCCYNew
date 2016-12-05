@@ -15,6 +15,7 @@
 #import "JCCYZiXunTableViewCell.h"
 
 #import "FiemShowByTypeViewController.h"
+#import "JCCYChongZhiViewController.h"
 
 @interface PPBulletinChirldViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -181,7 +182,9 @@
         }
         
     }else if (ad_type == 3){//为金币充值页面
-        
+        JCCYChongZhiViewController *jCCYChongZhiViewController = [[JCCYChongZhiViewController alloc] init];
+        jCCYChongZhiViewController.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:jCCYChongZhiViewController animated:YES];
     }else if (ad_type == 4){//为购买红包里盘页面
         self.tabBarController.selectedIndex = 2;
     }
@@ -232,6 +235,8 @@
         cell.selectedBackgroundView.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
         
     }
+    
+    waitLabel.hidden = YES;
     
     NSString *titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
     NSString *aStr = @"【";

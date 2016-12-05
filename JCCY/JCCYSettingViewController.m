@@ -131,8 +131,8 @@
     
     //退出 button
     UIButton *tuichuBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    tuichuBtn.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:17];
-    tuichuBtn.frame = CGRectMake(35, 300, PPMainViewWidth-70, 45);
+    tuichuBtn.titleLabel.font = [UIFont systemFontOfSize:17];
+    tuichuBtn.frame = CGRectMake(10, 300, PPMainViewWidth-20, 50);
     [tuichuBtn.layer setMasksToBounds:YES];
     [tuichuBtn.layer setCornerRadius:5.0]; //设置矩形四个圆角半径
     tuichuBtn.backgroundColor = [UIColor colorFromHexRGB:@"e60013"];

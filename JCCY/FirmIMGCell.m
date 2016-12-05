@@ -11,7 +11,7 @@
 @implementation FirmIMGCell
 
 
-@synthesize allcontentView,iConView,userNameLabel,timeLabel,contenImageView;
+@synthesize allcontentView,iConView,userNameLabel,timeLabel,contenImageView,lineLabel;
 
 
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -53,6 +53,10 @@
         self.timeLabel.font = [UIFont systemFontOfSize:15];
         self.timeLabel.textAlignment = NSTextAlignmentLeft;
         [self.allcontentView addSubview:self.timeLabel];
+        
+        self.lineLabel.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
+        [self.allcontentView addSubview:lineLabel];
+        
     }
     return self;
 }
@@ -66,7 +70,8 @@
     self.userNameLabel.frame = CGRectMake(15,75, 60, 30);
     self.timeLabel.frame = CGRectMake(90, 10, 200, 30);
     self.contenImageView.frame = CGRectMake(90, 50, 200, 120);
-    
+    self.lineLabel.frame = CGRectMake(10, self.frame.size.height-0.5, self.frame.size.width-20, 0.5);
+
     
 }
 

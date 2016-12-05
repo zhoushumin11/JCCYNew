@@ -15,5 +15,6 @@
 @property(nonatomic,strong) UILabel *userNameLabel; //用户名
 @property(nonatomic,strong) UILabel *timeLabel; //发布时间
 @property(nonatomic,strong) UIButton *contenImageView; //内容图片
+@property(nonatomic,strong) UILabel *lineLabel;
 
 @end

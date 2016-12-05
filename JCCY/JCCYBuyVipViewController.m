@@ -187,24 +187,24 @@
     
     
     
-    NSArray *dataArr = [[NSUserDefaults standardUserDefaults] objectForKey:@"getBuyListInfoArray"];
-    if (dataArr == nil || dataArr.count == 0) {
+//    NSArray *dataArr = [[NSUserDefaults standardUserDefaults] objectForKey:@"getBuyListInfoArray"];
+//    if (dataArr == nil || dataArr.count == 0) {
         //获取充值数据
         [self getBuyListInfo];
-        
-    }else{//读取本地数据
-        for (int i = 0; i<dataArr.count; i++) {
-            NSDictionary *dic = [dataArr objectAtIndex:i];
-            NSInteger service_type = [[dic objectForKey:@"service_type"] integerValue];
-            if (service_type == self.buyType+1) {
-                [dataArray addObject:dic];
-            }
-        }
-        //创建列表
-        [self creatTableView:0];
-        
-        
-    }
+//        
+//    }else{//读取本地数据
+//        for (int i = 0; i<dataArr.count; i++) {
+//            NSDictionary *dic = [dataArr objectAtIndex:i];
+//            NSInteger service_type = [[dic objectForKey:@"service_type"] integerValue];
+//            if (service_type == self.buyType+1) {
+//                [dataArray addObject:dic];
+//            }
+//        }
+//        //创建列表
+//        [self creatTableView:0];
+//        
+//        
+//    }
     
     
 }
@@ -252,7 +252,6 @@
                       
                   }else{
                       [JCCYResult showResultWithResult:[NSString stringWithFormat:@"%ld",code] controller:self];
-
                   }
                   
               } failedBlock:^(NSError *error) {
@@ -270,8 +269,8 @@
     
     //确定 button
     UIButton *quedingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    quedingBtn.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:17];
-    quedingBtn.frame = CGRectMake(35, 170+30+(dataArray.count*60), PPMainViewWidth-70, 45);
+    quedingBtn.titleLabel.font = [UIFont systemFontOfSize:17];
+    quedingBtn.frame = CGRectMake(10, 170+30+(dataArray.count*60), PPMainViewWidth-20, 45);
     
     [quedingBtn.layer setMasksToBounds:YES];
     [quedingBtn.layer setCornerRadius:5.0]; //设置矩形四个圆角半径

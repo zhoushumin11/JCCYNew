@@ -252,9 +252,9 @@
     back_imgView.image = [UIImage imageNamed:@"user_info_backGImg"];
     [self.headView addSubview:back_imgView];
     self.iconImgView = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.iconImgView.frame = CGRectMake(PPMainViewWidth/2-35,self.headView.center.y-35, 70, 70);
+    self.iconImgView.frame = CGRectMake(PPMainViewWidth/2-50,self.headView.center.y-60, 100, 100);
     self.iconImgView.clipsToBounds = YES;
-    self.iconImgView.layer.cornerRadius = 35;
+    self.iconImgView.layer.cornerRadius = 50;
     self.iconImgView.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.5].CGColor;
     self.iconImgView.layer.borderWidth = 2;
     self.iconImgView.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
@@ -262,7 +262,7 @@
     
     
     self.levelImgView = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.levelImgView.frame = CGRectMake(PPMainViewWidth/2,self.headView.center.y+48, 50, 24);
+    self.levelImgView.frame = CGRectMake(PPMainViewWidth/2+5,self.headView.center.y+48, 50, 24);
     self.levelImgView.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
     [self setLevelImg]; //设置图标
     [self.headView addSubview:self.levelImgView];
@@ -389,9 +389,9 @@
     UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/2 - 1, 75)];
     
     //金币数Label
-    UILabel *jingbiNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15, 10, 60, 25)];
+    UILabel *jingbiNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15, 15, 60, 30)];
     jingbiNumLabel.textColor = [UIColor colorFromHexRGB:@"ee7700"];
-    jingbiNumLabel.font = [UIFont systemFontOfSize:16];
+    jingbiNumLabel.font = [UIFont systemFontOfSize:20];
     NSString *jingbiNum = [[[NSUserDefaults standardUserDefaults] objectForKey:@"golds"] stringValue];
     if (jingbiNum.length == 0 || jingbiNum == nil) {
         jingbiNum = @"0";
@@ -400,13 +400,13 @@
     [view1 addSubview:jingbiNumLabel];
     //图片
     UIButton *img1Btn = [UIButton buttonWithType:UIButtonTypeCustom];
-    img1Btn.frame = CGRectMake(PPMainViewWidth/4-65, 10, 50, 50);
+    img1Btn.frame = CGRectMake(PPMainViewWidth/4-65, 18, 50, 50);
     img1Btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
     [img1Btn setImage:[UIImage imageNamed:@"setting_jinbi"] forState:UIControlStateNormal];
     [view1 addSubview:img1Btn];
     
     //金币label
-    UILabel *jingbiLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15, 30, 60, 25)];
+    UILabel *jingbiLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15, 38, 60, 25)];
     jingbiLabel.text = @"金币";
     jingbiLabel.textColor = [UIColor grayColor];
     jingbiLabel.font = [UIFont systemFontOfSize:14];
@@ -425,15 +425,15 @@
 
     //图片
     UIButton *img2Btn = [UIButton buttonWithType:UIButtonTypeCustom];
-    img2Btn.frame = CGRectMake(PPMainViewWidth/4-65, 10, 50, 50);
+    img2Btn.frame = CGRectMake(PPMainViewWidth/4-65, 18, 50, 50);
     img2Btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
     [img2Btn setImage:[UIImage imageNamed:@"setting_jifen"] forState:UIControlStateNormal];
     [view2 addSubview:img2Btn];
     
     //积分数Label
-    UILabel *jifenNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15 ,10, 60, 25)];
+    UILabel *jifenNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15 ,15, 60, 25)];
     jifenNumLabel.textColor = [UIColor grayColor];
-    jifenNumLabel.font = [UIFont systemFontOfSize:16];
+    jifenNumLabel.font = [UIFont systemFontOfSize:20];
     NSString *jifenNum = [[[NSUserDefaults standardUserDefaults] objectForKey:@"scores"] stringValue];
     if (jifenNum.length == 0 || jifenNum == nil) {
         jifenNum = @"0";
@@ -442,7 +442,7 @@
     [view2 addSubview:jifenNumLabel];
     
     //积分label
-    UILabel *jifenLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15,30, 60, 25)];
+    UILabel *jifenLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15,38, 60, 25)];
     jifenLabel.text = @"积分";
     jifenLabel.textColor = [UIColor grayColor];
     jifenLabel.font = [UIFont systemFontOfSize:14];

@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
-#import "BXTabBarController.h"
 
 @class PPNavigationController;
 @class PPTabBarController;
@@ -23,10 +22,10 @@
 
 
 @property (strong, nonatomic) UIViewController *viewController;
-//@property (strong, nonatomic) PPTabBarController *pptabBarController;
+@property (strong, nonatomic) PPTabBarController *pptabBarController;
 @property (strong, nonatomic) PPNavigationController *ppLoginNavigationController;
 
-@property (nonatomic,strong) BXTabBarController *bXTabBarController;
+//@property (nonatomic,strong) BXTabBarController *bXTabBarController;
 
 - (void)saveContext;
 

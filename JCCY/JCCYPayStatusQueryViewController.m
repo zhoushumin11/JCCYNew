@@ -163,7 +163,7 @@
     
     //完成 button
     UIButton *bangdingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    bangdingBtn.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:17];
+    bangdingBtn.titleLabel.font = [UIFont systemFontOfSize:17];
     bangdingBtn.frame = CGRectMake(35, 500, PPMainViewWidth-70, 45);
     [bangdingBtn.layer setMasksToBounds:YES];
     [bangdingBtn.layer setCornerRadius:5.0]; //设置矩形四个圆角半径

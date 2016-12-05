@@ -75,7 +75,7 @@
     
 }
 -(void)creatMainTableView{
-    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, PPMainViewWidth,self.view.bounds.size.height-64-50-44-4) style:UITableViewStylePlain];
+    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, PPMainViewWidth,PPMainViewHeight-50-64-49) style:UITableViewStylePlain];
     mainTableView.backgroundColor = [UIColor clearColor];
     mainTableView.separatorInset = UIEdgeInsetsZero;
     //        _bulletinlistTableView.tableHeaderView = [[UIView alloc] init];
@@ -101,18 +101,21 @@
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:YES];
     [self timerInvalidate];
-    NSString *LIVE_REFRESH_SECOND = [[NSUserDefaults standardUserDefaults] objectForKey:@"LIVE_REFRESH_SECOND"];
-    if ([LIVE_REFRESH_SECOND isEqual:[NSNull null]] || LIVE_REFRESH_SECOND == nil) {
-        refreshTimeNum = 60;
-    }else{
-        refreshTimeNum = [LIVE_REFRESH_SECOND integerValue];
-    }
+
 }
 
 
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
+    
+    NSString *LIVE_REFRESH_SECOND = [[NSUserDefaults standardUserDefaults] objectForKey:@"LIVE_REFRESH_SECOND"];
+    if ([LIVE_REFRESH_SECOND isEqual:[NSNull null]] || LIVE_REFRESH_SECOND == nil) {
+        refreshTimeNum = 60;
+    }else{
+        refreshTimeNum = [LIVE_REFRESH_SECOND integerValue];
+    }
+    
     [self getServerData];
     //刷新我的信息
     [self initMyView];
@@ -376,9 +379,9 @@
         return 180;
     }else{
     CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
-        float wh = strSize.height + 60;
+        float wh = strSize.height + 60+20;
         if (wh < 110) {
-            return  120;
+            return  130;
         }
         return wh;
     }
@@ -431,7 +434,8 @@
                 [cell.contenImageView setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
             }
         }];
-        
+        cell.contenImageView.clipsToBounds = YES;
+        cell.contenImageView.layer.cornerRadius = 8;
         cell.contenImageView.tag = indexPath.row;
         [cell.contenImageView addTarget:self action:@selector(contenImageViewAction:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -469,8 +473,8 @@
         cell.contenStringView.textColor = [UIColor colorFromHexRGB:colorStr];
         
         CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
-        cell.contenStringSuperView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, strSize.height);
-        cell.contenStringView.frame = CGRectMake(10, 0, PPMainViewWidth - 120, strSize.height);
+        cell.contenStringSuperView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, strSize.height+20);
+        cell.contenStringView.frame = CGRectMake(10, 5, PPMainViewWidth - 120, strSize.height+10);
         return cell;
     }
     

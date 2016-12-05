@@ -359,9 +359,9 @@
         return 180;
     }else{
         CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
-        float wh = strSize.height + 60;
+        float wh = strSize.height + 60+20;
         if (wh < 110) {
-            return  120;
+            return  130;
         }
         return wh;
     }
@@ -448,8 +448,8 @@
         cell.contenStringView.textColor = [UIColor colorFromHexRGB:colorStr];
         
         CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
-        cell.contenStringSuperView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, strSize.height);
-        cell.contenStringView.frame = CGRectMake(10, 0, PPMainViewWidth - 120, strSize.height);
+        cell.contenStringSuperView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, strSize.height+20);
+        cell.contenStringView.frame = CGRectMake(10, 5, PPMainViewWidth - 120, strSize.height+10);
         return cell;
     }
     

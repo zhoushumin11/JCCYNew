@@ -101,7 +101,7 @@
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
 
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"ad_category\":\"%d\"}",updata_id,token,1];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"ad_category\":\"%d\"}",updata_id,token,2];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/AdImages/index/"
@@ -301,15 +301,20 @@
                           NSDictionary *dataDic = [json objectForKey:@"data"];
                           NSArray *dataArrrays = [dataDic objectForKey:@"list"];
                           NSDictionary *pageDic = [dataDic objectForKey:@"page"];
-                          dataArray = [NSMutableArray arrayWithArray:dataArrrays];
                           
-                          if (dataArray.count < 20) {
-                              ui.bulletinlistTableView.mj_footer.hidden = YES;
-                              [ui.bulletinlistTableView.mj_footer endRefreshingWithNoMoreData];
+                          if (![dataArrrays isEqual:[NSNull null]]) {
+                              dataArray = [NSMutableArray arrayWithArray:dataArrrays];
                           }else{
-                              [ui.bulletinlistTableView.mj_footer resetNoMoreData];
-                              ui.bulletinlistTableView.mj_footer.hidden = NO;
+                              dataArray = [NSMutableArray array];
                           }
+                          
+//                          if (dataArray.count < 20) {
+//                              ui.bulletinlistTableView.mj_footer.hidden = YES;
+//                              [ui.bulletinlistTableView.mj_footer endRefreshingWithNoMoreData];
+//                          }else{
+//                              [ui.bulletinlistTableView.mj_footer resetNoMoreData];
+//                              ui.bulletinlistTableView.mj_footer.hidden = NO;
+//                          }
                           
                           ui.columnArray = columnArray;
                           ui.nowIndex = vcindex;

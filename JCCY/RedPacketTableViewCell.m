@@ -57,7 +57,7 @@
         r_EndDaysLabel.textAlignment = NSTextAlignmentLeft;
         [allcontentView addSubview:r_EndDaysLabel];
         //使用说明
-        r_UseInfoLabel.textColor = [UIColor blackColor];
+        r_UseInfoLabel.textColor = [UIColor grayColor];
         r_UseInfoLabel.font = [UIFont systemFontOfSize:14];
         r_UseInfoLabel.textAlignment = NSTextAlignmentLeft;
         [allcontentView addSubview:r_UseInfoLabel];
@@ -74,8 +74,8 @@
     r_titleLabel.frame = CGRectMake(10,75,70,25);
     r_EndDaysLabel.frame = CGRectMake(80, 15,PPMainViewWidth - 80,25);
     r_UseInfoLabel.frame = CGRectMake(80, 50,PPMainViewWidth - 80,25);
-    r_enterInBtn.frame = CGRectMake(80, 80,(PPMainViewWidth-100)/2-5,40);
-    r_buyBtn.frame = CGRectMake((PPMainViewWidth-100)/2+90,80 ,(PPMainViewWidth-100)/2-5,40);
+    r_enterInBtn.frame = CGRectMake(80, 100,(PPMainViewWidth-100)/2-5,40);
+    r_buyBtn.frame = CGRectMake((PPMainViewWidth-100)/2+90,100 ,(PPMainViewWidth-100)/2-5,40);
     
 }
 

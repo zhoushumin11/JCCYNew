@@ -47,8 +47,6 @@
 }
 
 - (void)introDidFinish {
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [appDelegate setupViewControllers];
     //设置本地存储值
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     [userDefault setObject:@"1" forKey:@"isLooked4"];//已经看过滑页
@@ -57,5 +55,9 @@
     NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];//当前APP中的版本
     [userDefault setObject:appVersion forKey:@"oldVersion"];//已经看过滑页
     [userDefault synchronize];
+    
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate setupViewControllers];
+    
  }
 @end

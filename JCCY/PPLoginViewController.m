@@ -43,8 +43,19 @@
 
 }
 
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UPDATA_MYViews object:nil];
+}
+
+//重新登录
+-(void)reLogin{
+    [self checkPhoneBangdingSucc:userIdStr :accessTokenStr];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reLogin) name:UPDATA_MYViews object:nil];
     
     mainView = [[UIScrollView alloc] initWithFrame:PPMainFrame];
     mainView.backgroundColor = [UIColor whiteColor];
@@ -60,9 +71,9 @@
     thirdLoginLabel.textColor = [UIColor colorFromHexRGB:@"999999"];
     thirdLoginLabel.textAlignment = NSTextAlignmentCenter;
     if (PPMainViewWidth<350) {
-        thirdLoginLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:14];
+        thirdLoginLabel.font = [UIFont systemFontOfSize:14];
     }else{
-        thirdLoginLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:18];
+        thirdLoginLabel.font = [UIFont systemFontOfSize:18];
     }
     thirdLoginLabel.text = @"————— 请您使用微信登录 —————";
     [mainView addSubview:thirdLoginLabel];
@@ -262,8 +273,8 @@
                               [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isBangding"];
                               [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isLogin"];
                               [[NSUserDefaults standardUserDefaults] synchronize];
-                              AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
-                              [appdel setupViewControllers];
+                              [[NSNotificationCenter defaultCenter] postNotificationName:LOGINSUCCESSNOTIFACTION object:nil];  //登录成功
+
                           }
                       
                       }else if (code == -2){
@@ -289,8 +300,8 @@
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:@"isBangding"];
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"isLogin"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [appdel setupViewControllers];
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOGINSUCCESSNOTIFACTION object:nil];  //登录成功
+
 
 }
 

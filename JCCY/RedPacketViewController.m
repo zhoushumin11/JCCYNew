@@ -15,6 +15,9 @@
 
 #import "JCCYMyListViewController.h"
 
+#import "NSString+WPAttributedMarkup.h"
+
+
 @interface RedPacketViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property(nonatomic,strong) UITableView *mainTableView;
@@ -221,7 +224,7 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 150;
+    return 170;
 }
 
 
@@ -268,6 +271,8 @@
     NSDate *nd3 = [NSDate dateWithTimeIntervalSince1970:i3];
     NSString *time_service_3Str = [dateFormat stringFromDate:nd3];
     
+    NSDictionary* style1 = @{@"red": [UIColor redColor]};
+    
     if (indexPath.row == 0) {
         NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
         fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
@@ -288,7 +293,10 @@
             daystr = @"剩余0天";
             [cell.r_enterInBtn setHidden:YES];
         }
-        cell.r_EndDaysLabel.text = daystr;
+        NSString *dasss = [NSString stringWithFormat:@"剩余<red>%d</red>天",days];
+        cell.r_EndDaysLabel.attributedText = [dasss attributedStringWithStyleBook:style1];
+
+//        cell.r_EndDaysLabel.text = daystr;
     }else if (indexPath.row == 1){
         NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
         fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
@@ -309,8 +317,8 @@
             daystr = @"剩余0天";
             [cell.r_enterInBtn setHidden:YES];
         }
-        cell.r_EndDaysLabel.text = daystr;
-    }else if (indexPath.row == 2){
+        NSString *dasss = [NSString stringWithFormat:@"剩余<red>%d</red>天",days];
+        cell.r_EndDaysLabel.attributedText = [dasss attributedStringWithStyleBook:style1];    }else if (indexPath.row == 2){
         NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
         fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
         NSDate *daoqiTime = [fomart dateFromString:time_service_3Str];
@@ -330,9 +338,9 @@
             daystr = @"剩余0天";
             [cell.r_enterInBtn setHidden:YES];
         }
-        cell.r_EndDaysLabel.text = daystr;
-    }
-    
+            NSString *dasss = [NSString stringWithFormat:@"剩余<red>%d</red>天",days];
+            cell.r_EndDaysLabel.attributedText = [dasss attributedStringWithStyleBook:style1];
+        }
     
     
     cell.r_enterInBtn.backgroundColor = [UIColor colorFromHexRGB:[[dataArray objectAtIndex:indexPath.row] objectForKey:@"color"]];

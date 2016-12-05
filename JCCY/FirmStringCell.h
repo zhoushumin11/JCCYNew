@@ -15,5 +15,6 @@
 @property(nonatomic,strong) UILabel *timeLabel; //发布时间
 @property(nonatomic,strong) UILabel *contenStringView; //内容
 @property(nonatomic,strong) UIButton *contenStringSuperView; //内容父视图
+@property(nonatomic,strong) UILabel *lineLabel;
 
 @end

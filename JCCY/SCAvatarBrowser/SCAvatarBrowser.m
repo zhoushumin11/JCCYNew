@@ -7,6 +7,7 @@
 //
 
 #import "SCAvatarBrowser.h"
+#import <Photos/Photos.h>
 
 static CGRect avatarFrame;
 static UIImageView *newAvatarImageView;
@@ -187,14 +188,18 @@ static CGFloat screenHeight;
     }
 }
 
+
+
 // long press to store the avatar
 + (void)actionLongPressOnImage:(UILongPressGestureRecognizer *)sender {
+    
+    
     if ([sender state] == UIGestureRecognizerStateEnded) {
         UIActionSheet *actionSheet = [[UIActionSheet alloc]
                                       initWithTitle:nil
-                                      delegate:(id<UIActionSheetDelegate>)self                                      cancelButtonTitle:@"cancel"
+                                      delegate:(id<UIActionSheetDelegate>)self                                      cancelButtonTitle:@"取消"
                                       destructiveButtonTitle:nil
-                                      otherButtonTitles:@"save the picture", nil];
+                                      otherButtonTitles:@"保存到相册", nil];
         
         actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
         [actionSheet showInView:[sender view]];
@@ -204,7 +209,21 @@ static CGFloat screenHeight;
 // select first button to store image
 + (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 0) {
-        UIImageWriteToSavedPhotosAlbum(newAvatarImageView.image, self, @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), NULL);
+        
+        BOOL isCanUsePhotos = NO;
+        
+        PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+        if (status == PHAuthorizationStatusRestricted ||
+            status == PHAuthorizationStatusDenied) {
+            isCanUsePhotos = NO;
+        }else{
+            isCanUsePhotos =  YES;
+        }
+        
+        if(isCanUsePhotos){
+                 UIImageWriteToSavedPhotosAlbum(newAvatarImageView.image, self, @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), NULL);
+        }
+
     }
 }
 
@@ -213,17 +232,17 @@ static CGFloat screenHeight;
     if (error) {
         NSLog(@"error");
         UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:nil
-                                                             message:@"fail to store image"
+                                                             message:@"f图片保存失败"
                                                             delegate:nil
-                                                   cancelButtonTitle:@"ok"
+                                                   cancelButtonTitle:@"好的"
                                                    otherButtonTitles:nil, nil];
         [errorAlert show];
     } else {
         NSLog(@"success");
         UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:nil
-                                                             message:@"image has benn stored"
+                                                             message:@"图片保存成功"
                                                             delegate:nil
-                                                   cancelButtonTitle:@"ok"
+                                                   cancelButtonTitle:@"好的"
                                                    otherButtonTitles:nil, nil];
         [errorAlert show];
     }

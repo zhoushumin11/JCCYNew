@@ -31,6 +31,8 @@
 
 #import "BangDingViewController.h"
 
+#import "JCCYChongZhiViewController.h"
+
 #import "JHUD.h"
 
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
@@ -77,7 +79,7 @@
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NETWORKNOTIFACTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeTabbarIndex" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UPDATAUPIDDATA object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UPDATA_MYViews object:nil];
 }
 
 - (void)viewDidLoad {
@@ -89,9 +91,10 @@
     self.title = @"首页";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabbarIndex) name:@"changeTabbarIndex" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:UPDATAUPIDDATA object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:UPDATA_MYViews object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(netWorkChangedAction) name:NETWORKNOTIFACTION object:nil];
+
 
     //初始化tableView的数据
     dataArray = [NSMutableArray array];
@@ -152,6 +155,10 @@
         [btnsView addSubview:btn];
     }
     
+    UILabel *linelabel01 = [[UILabel alloc] initWithFrame:CGRectMake(0, ww, PPMainViewWidth, 0.5)];
+    linelabel01.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
+    [btnsView addSubview:linelabel01];
+    
     //添加资讯消息按钮
     UIView *zixunMsgView = [[UIView alloc] initWithFrame:CGRectMake(0,ww +10, PPMainViewWidth, 44)];
     zixunMsgView.backgroundColor = [UIColor whiteColor];
@@ -171,6 +178,10 @@
     zixunTitleLabel.text = @"资讯消息";
     zixunTitleLabel.textColor = [UIColor blackColor];
     [zixunMsgView addSubview:zixunTitleLabel];
+    
+    UILabel *linelabel02 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 0.5)];
+    linelabel02.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
+    [zixunMsgView addSubview:linelabel02];
     
     UIButton *zixunBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     zixunBtn.frame = CGRectMake(0, 0, PPMainViewWidth, 44);
@@ -253,34 +264,42 @@
         [btnsView addSubview:btn];
     }
     
+    UILabel *linelabel01 = [[UILabel alloc] initWithFrame:CGRectMake(0, ww, PPMainViewWidth, 0.5)];
+    linelabel01.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
+    [btnsView addSubview:linelabel01];
+    
     //添加资讯消息按钮
-    UIView *zixunMsgView = [[UIView alloc] initWithFrame:CGRectMake(0,PPMainViewWidth*0.52+ww+10 , PPMainViewWidth, 44)];
+    UIView *zixunMsgView = [[UIView alloc] initWithFrame:CGRectMake(0,PPMainViewWidth*0.52+ww+10 , PPMainViewWidth, 55)];
     zixunMsgView.backgroundColor = [UIColor whiteColor];
-    UIImageView *imgVc = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+    UIImageView *imgVc = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 44, 44)];
     imgVc.image = [UIImage imageNamed:@"zixun_home.png"];
     [zixunMsgView addSubview:imgVc];
     
     //>label
-    UILabel *goLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth - 40,0,40,44)];
+    UILabel *goLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth - 40,0,40,55)];
     goLabel.text = @">";
     goLabel.textColor = [UIColor blackColor];
+    goLabel.font = [UIFont systemFontOfSize:18];
     goLabel.textAlignment = NSTextAlignmentCenter;
     [zixunMsgView addSubview:goLabel];
     
     //资讯信息label
-    UILabel *zixunTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(44,0,80,44)];
+    UILabel *zixunTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55,0,80,55)];
     zixunTitleLabel.text = @"资讯消息";
     zixunTitleLabel.textColor = [UIColor blackColor];
     [zixunMsgView addSubview:zixunTitleLabel];
     
     UIButton *zixunBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    zixunBtn.frame = CGRectMake(0, 0, PPMainViewWidth, 44);
+    zixunBtn.frame = CGRectMake(0, 0, PPMainViewWidth, 55);
     [zixunBtn addTarget:self action:@selector(zixunBtnAction) forControlEvents:UIControlEventTouchUpInside];
     [zixunBtn setBackgroundColor:[UIColor clearColor]];
     [zixunMsgView addSubview:zixunBtn];
     
+    UILabel *linelabel02 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 0.5)];
+    linelabel02.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
+    [zixunMsgView addSubview:linelabel02];
     
-    mainTableViewHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewWidth*0.52 + ww+10+44)];
+    mainTableViewHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewWidth*0.52 + ww+10+55)];
     mainTableViewHeaderView.backgroundColor = [UIColor colorFromHexRGB:@"f4f4f4"];
     
     [mainTableViewHeaderView addSubview:btnsView];
@@ -378,7 +397,9 @@
         }
 
     }else if (ad_type == 3){//为金币充值页面
-        
+        JCCYChongZhiViewController *jCCYChongZhiViewController = [[JCCYChongZhiViewController alloc] init];
+        jCCYChongZhiViewController.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:jCCYChongZhiViewController animated:YES];
     }else if (ad_type == 4){//为购买红包里盘页面
         self.tabBarController.selectedIndex = 2;
     }
@@ -488,7 +509,7 @@
                       completionBlock:^(NSDictionary *json) {
                           NSInteger code = [[json objectForKey:@"code"] integerValue];
                           
-                          dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                          dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                               [JHUD hideForView:self.view];
                           });
                           
@@ -707,7 +728,11 @@
         
         NSString *imageUrl = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"pic"];
         
-        [cell.h_imgView sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@""] options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        if ([imageUrl isEqual:[NSNull null]]) {
+            imageUrl = @"";
+        }
+        
+        [cell.h_imgView sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@"img_downLoadFail"] options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
     
         }];
         
@@ -736,7 +761,7 @@
     if (indexPath.row == 0) {
         return 90;
     }
-    return 44;
+    return 55;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

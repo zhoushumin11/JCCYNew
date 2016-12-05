@@ -10,4 +10,15 @@
 
 @implementation PPTabBarController
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    UIView *view = [[UIView alloc]init];
+    view.backgroundColor = [UIColor whiteColor];
+    view.frame = self.tabBar.bounds;
+    [[UITabBar appearance] insertSubview:view atIndex:0];
+    
+    
+}
+
 @end

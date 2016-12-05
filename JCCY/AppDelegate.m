@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "CoreStatus.h"  //检查网络
 
-//#import "PPTabBarController.h"
+#import "PPTabBarController.h"
 #import "PPNavigationController.h"
 #import "PPLoginViewController.h"
 #import "PPRegistViewController.h"//绑定手机号
@@ -57,7 +57,7 @@
 
 @implementation AppDelegate
 @synthesize currentStatus;
-@synthesize ppLoginNavigationController,bXTabBarController;
+@synthesize ppLoginNavigationController,pptabBarController;
 @synthesize cornerLabel;
 @synthesize currentDeviceToken;
 @synthesize tabbarbuttonArray;
@@ -190,7 +190,6 @@
                               
                           }
                           
-                          
                       } failedBlock:^(NSError *error) {
                               
                           }];
@@ -220,6 +219,13 @@
                   if (code == 1) {
                       NSDictionary *dataDic = [json objectForKey:@"data"];
                       NSArray *updataArray = [dataDic objectForKey:@"update_data"];
+                      
+                      NSString *update_ids = [[json objectForKey:@"data"] objectForKey:@"update_id"];
+                      
+                      [[NSUserDefaults standardUserDefaults] setObject:update_ids forKey:@"updata_id"];
+                      [[NSUserDefaults standardUserDefaults] synchronize];
+                      [[NSNotificationCenter defaultCenter] postNotificationName:UPDATA_MYViews object:nil];
+                      
                       //根据服务器返回的更新要求 更新界面
                       if (![updataArray isEqual:[NSNull null]] || updataArray.count > 0) {
                           
@@ -236,7 +242,6 @@
                           }
                           
                       }
-                      
                       
                       NSNumber *update_id = [dataDic objectForKey:@"update_id"];
                       [[NSUserDefaults standardUserDefaults] setObject:update_id forKey:@"update_id"];
@@ -432,16 +437,18 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotifaction:) name:LOGINSUCCESSNOTIFACTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logoutNotifaction:) name:LOGOUTNOTIFACTION object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUpDataId) name:UPDATAUPIDDATA object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshUpdataId) name:UPDATAUPIDDATA object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginOutByService) name:LoginOutByService object:nil];
+    
+
 
 }
 
 //服务器返回其他设备登录
 -(void)loginOutByService{
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您的账号在其他设备登录，请重新登录！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-    [self loginNotifaction:nil];
+    [self logoutNotifaction:nil];
     [alert show];
 }
 
@@ -509,14 +516,12 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 }
 - (void)loginNotifaction:(NSNotification *)object
 {
-    if (bXTabBarController == nil) {
-        bXTabBarController = [[BXTabBarController alloc] init];
-    }
-    
-    self.viewController = bXTabBarController;
+    self.viewController = pptabBarController;
+    pptabBarController.selectedIndex = 0;
     [self.window setRootViewController:self.viewController];
     [self.window makeKeyAndVisible];
-    bXTabBarController.selectedIndex = 0;
+    [self updataPublicInfo];
+
     [WSProgressHUD showShimmeringString:@"登录成功" maskType:WSProgressHUDMaskTypeClear maskWithout:WSProgressHUDMaskWithoutDefault];
     [self autoDismiss];
     
@@ -572,17 +577,103 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
 #pragma mark - 初始化功能
 - (void)setupViewControllers {
-    
+
+#pragma mark --------------
+
     //初始化登录
     PPLoginViewController *ppLoginViewController = [[PPLoginViewController alloc] init];
     
     ppLoginNavigationController = [[PPNavigationController alloc] initWithRootViewController:ppLoginViewController];
     
-    #pragma mark  -- 修改过后的tabbar ----
     
-    if (bXTabBarController == nil) {
-        bXTabBarController = [[BXTabBarController alloc] init];
-    }
+    //2.初始化tabBar视图控制器
+    pptabBarController = [[PPTabBarController alloc]init];
+    pptabBarController.tabBar.tintColor = [UIColor colorFromHexRGB:@"e60013"];
+    pptabBarController.delegate = self;
+
+    //首页
+    HomeViewController *homeVC = [[HomeViewController alloc]init];
+    homeVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"首页" image:[UIImage imageNamed:@"tabBar_icon_shouye_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_shouye_selected1@2x"]];
+    [homeVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                              [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
+                                              [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+                                    forState:UIControlStateNormal];
+    [homeVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                              [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
+                                              [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+                                    forState:UIControlStateSelected];
+    
+    PPNavigationController *homeNav = [[PPNavigationController alloc]initWithRootViewController:homeVC];
+    curNavController = homeNav;
+
+    //实盘
+    FirmViewController *firmVC = [[FirmViewController alloc]init];
+    firmVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"实盘" image:[UIImage imageNamed:@"tabBar_icon_shipan_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_shipan_selected1@2x"]];
+    [firmVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                              [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
+                                              [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+                                    forState:UIControlStateNormal];
+    [firmVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                              [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
+                                              [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+                                    forState:UIControlStateSelected];
+
+    PPNavigationController *firmNav = [[PPNavigationController alloc]initWithRootViewController:firmVC];
+    
+    //红包
+    RedPacketViewController *redPVC = [[RedPacketViewController alloc]init];
+    redPVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"红包" image:[UIImage imageNamed:@"tabBar_icon_redPacket_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_redPacket_selected1@2x"]];
+    [redPVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
+                                                [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+                                      forState:UIControlStateNormal];
+    [redPVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
+                                                [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+                                      forState:UIControlStateSelected];
+    PPNavigationController *redPNav = [[PPNavigationController alloc]initWithRootViewController:redPVC];
+    
+    //秘籍
+    FourViewController *mijiVC = [[FourViewController alloc]init];
+    mijiVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"秘籍" image:[UIImage imageNamed:@"tabBar_icon_miji_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_miji_selected1@2x"]];
+    [mijiVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                 [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
+                                                 [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+                                       forState:UIControlStateNormal];
+    [mijiVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                 [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
+                                                 [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+                                       forState:UIControlStateSelected];
+
+    PPNavigationController *mjNav = [[PPNavigationController alloc]initWithRootViewController:mijiVC];
+    
+    
+    //开户
+    FiveViewController *kaihuVC = [[FiveViewController alloc]init];
+    kaihuVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"开户" image:[UIImage imageNamed:@"tabBar_icon_kaihu_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_kaihu_selected1@2x"]];
+    [kaihuVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                 [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
+                                                 [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+                                       forState:UIControlStateNormal];
+    [kaihuVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                 [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
+                                                 [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+                                       forState:UIControlStateSelected];
+    
+    PPNavigationController *kaihuNav = [[PPNavigationController alloc]initWithRootViewController:kaihuVC];
+    
+    //    SecondNav
+    pptabBarController.viewControllers = @[homeNav,  firmNav, redPNav, mjNav,kaihuNav];
+    
+    CGFloat ww = pptabBarController.tabBar.bounds.size.width/5*0.63;
+    
+    self.cornerLabel = [[UILabel alloc] initWithFrame:CGRectMake(ww, 2, 8, 8)];
+    cornerLabel.layer.cornerRadius = 4;
+    cornerLabel.clipsToBounds = YES;
+    cornerLabel.backgroundColor = [UIColor colorFromHexRGB:@"f74c31"];
+    cornerLabel.hidden = YES;
+    [pptabBarController.tabBar addSubview:cornerLabel];
+    
     
     
     BOOL isLoginsucc = [[NSUserDefaults standardUserDefaults] objectForKey:@"isLogin"];
@@ -591,50 +682,43 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     {
         self.viewController = ppLoginNavigationController;
     }else{
-        self.viewController = bXTabBarController;
+        self.viewController = pptabBarController;
         //刷新公共信息
         [self updataPublicInfo];
     }
-    
-    self.bXTabBarController.selectedIndex = 0;
-
     
     [_window setRootViewController:self.viewController];
 
 }
 
--(void)getUpDataId{
-    NSString *dJson = nil;
-    
-        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
-        
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
-        //获取类型接
-        PPRDData *pprddata1 = [[PPRDData alloc] init];
-        [pprddata1 startAFRequest:@"/index.php/Api/Update/index/"
-                      requestdata:dJson
-                   timeOutSeconds:10
-                  completionBlock:^(NSDictionary *json) {
-                      
-                      NSInteger code = [[json objectForKey:@"code"] integerValue];
-                      if (code == 1) {
-                          NSString *update_ids = [[json objectForKey:@"data"] objectForKey:@"update_id"];
-                        
-                          [[NSUserDefaults standardUserDefaults] setObject:update_ids forKey:@"updata_id"];
-                          [[NSUserDefaults standardUserDefaults] synchronize];
-                          
-                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATA_MYViews object:nil];
-
-                      }else if (code == -2){
-                          //检查信息更新
-                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
-                          
-                      }
-                  } failedBlock:^(NSError *error) {
-                      
-            }];
-}
+//-(void)getUpDataId{
+//    NSString *dJson = nil;
+//    
+//        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+//        NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
+//        
+//        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\"}",updata_id,token];
+//        //获取类型接
+//        PPRDData *pprddata1 = [[PPRDData alloc] init];
+//        [pprddata1 startAFRequest:@"/index.php/Api/Update/index/"
+//                      requestdata:dJson
+//                   timeOutSeconds:10
+//                  completionBlock:^(NSDictionary *json) {
+//                      
+//                      NSInteger code = [[json objectForKey:@"code"] integerValue];
+//                      if (code == 1) {
+//
+//                          [self refreshUpdataId];
+//
+//                      }else if (code == -2){
+//                          //检查信息更新
+//                          [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
+//                          
+//                      }
+//                  } failedBlock:^(NSError *error) {
+//                      
+//            }];
+//}
 #pragma  mark ---- 当服务器提示要做公共信息更新时 ----
 -(void)updataPublicInfo{
     NSString *dJson = nil;
@@ -800,6 +884,20 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     if (self.indexFlag != index) {
         [self animationWithIndex:index];
     }
+    if (index == 3 || index == 4) {
+        tabBarController.selectedIndex = self.nowSelectIndex;
+        //        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"此功能尚未完善" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        //        [alert show];
+        [ALToastView toastInView:self.window withText:@"敬请期待"];
+    }else{
+        if (index == self.nowSelectIndex) {
+            self.nowSelectIndex = index;
+        }else{
+            self.oldSelectIndex = self.oldSelectIndex;
+            self.nowSelectIndex = index;
+        }
+    }
+
     
 }
 

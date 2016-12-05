@@ -61,14 +61,14 @@
     [phoneNumberField setAutocorrectionType:UITextAutocorrectionTypeNo];
     
     [phoneNumberField setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-    phoneNumberField.font = [UIFont fontWithName:@"PingFangSC-Light" size:15];
+    phoneNumberField.font = [UIFont systemFontOfSize:15];
     [mainView addSubview:phoneNumberField];
     
     UILabel *phoneNumberName = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
     phoneNumberName.textColor = [UIColor grayColor];
     phoneNumberName.textAlignment = NSTextAlignmentCenter;
     phoneNumberName.text = @"手机号";
-    phoneNumberName.font = [UIFont fontWithName:@"PingFangSC-Light" size:17];
+    phoneNumberName.font = [UIFont systemFontOfSize:17];
     
     
     phoneNumberField.leftView = phoneNumberName;
@@ -85,7 +85,7 @@
     passwordField.delegate = self;
     passwordField.backgroundColor = [UIColor whiteColor];
     [passwordField.layer setMasksToBounds:YES];
-    passwordField.font = [UIFont fontWithName:@"PingFangSC-Light" size:15];
+    passwordField.font = [UIFont systemFontOfSize:15];
     passwordField.returnKeyType = UIReturnKeyGo;
     //    passwordField.font = SystemFont(15);
     passwordField.text = @"";// 123456
@@ -93,7 +93,7 @@
     passwordName.textColor = [UIColor grayColor];
     passwordName.textAlignment = NSTextAlignmentCenter;
     passwordName.text = @"验证码";
-    passwordName.font = [UIFont fontWithName:@"PingFangSC-Light" size:17];
+    passwordName.font = [UIFont systemFontOfSize:17];
     
     passwordField.leftView = passwordName;
     passwordField.leftViewMode = UITextFieldViewModeAlways;
@@ -118,7 +118,7 @@
     
     //绑定 button
     UIButton *bangdingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    bangdingBtn.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:17];
+    bangdingBtn.titleLabel.font = [UIFont systemFontOfSize:17];
     bangdingBtn.frame = CGRectMake(35, 220, PPMainViewWidth-70, 45);
     bangdingBtn.center = CGPointMake(PPMainViewWidth/2, 170);
     
@@ -163,11 +163,21 @@
                       if (code == 1) {
                           [WSProgressHUD showSuccessWithStatus:@"发送成功"];
                           [WSProgressHUD autoDismiss:2];
+                          seconds = 60;
+                          timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerFireMethod:) userInfo:nil repeats:YES];
                           
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
                           
+                      }else if (code == -112){
+                          //手机号已被绑定
+                          NSString *msg = [json objectForKey:@"info"];
+                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:msg delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                          alert.tag = 2016;
+                          alert.delegate = self;
+                          [alert show];
+                          return ;
                       }else{
                           [WSProgressHUD dismiss];
                           NSString *msg = [json objectForKey:@"info"];
@@ -182,19 +192,11 @@
                       }];
     }
     
-    seconds = 60;
-    timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerFireMethod:) userInfo:nil repeats:YES];
+
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if (alertView.tag == 20161122) {
-        if (buttonIndex == 0) {
-            [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:@"isLogin"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
-            [appdel setupViewControllers];
-        }
-    }
+
 }
 
 

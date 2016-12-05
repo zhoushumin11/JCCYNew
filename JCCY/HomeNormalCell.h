@@ -12,5 +12,6 @@
 
 @property(nonatomic,strong) UIView *allcontentView;
 @property(nonatomic,strong) UILabel *h_titleLabel;     //新闻标题
+@property(nonatomic,strong) UILabel *lineLabel;
 
 @end
