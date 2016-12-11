@@ -58,8 +58,9 @@
         [allcontentView addSubview:r_EndDaysLabel];
         //使用说明
         r_UseInfoLabel.textColor = [UIColor grayColor];
-        r_UseInfoLabel.font = [UIFont systemFontOfSize:14];
+        r_UseInfoLabel.font = [UIFont systemFontOfSize:16];
         r_UseInfoLabel.textAlignment = NSTextAlignmentLeft;
+        r_UseInfoLabel.numberOfLines = 0;
         [allcontentView addSubview:r_UseInfoLabel];
         
     }
@@ -69,13 +70,13 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    allcontentView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height-20);
-    r_imgBtn.frame = CGRectMake(20, 20, 50, 50);
-    r_titleLabel.frame = CGRectMake(10,75,70,25);
-    r_EndDaysLabel.frame = CGRectMake(80, 15,PPMainViewWidth - 80,25);
-    r_UseInfoLabel.frame = CGRectMake(80, 50,PPMainViewWidth - 80,25);
-    r_enterInBtn.frame = CGRectMake(80, 100,(PPMainViewWidth-100)/2-5,40);
-    r_buyBtn.frame = CGRectMake((PPMainViewWidth-100)/2+90,100 ,(PPMainViewWidth-100)/2-5,40);
+//    allcontentView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height-20);
+    r_imgBtn.frame = CGRectMake(20, 20, 60, 60);
+    r_titleLabel.frame = CGRectMake(15,85,70,25);
+    r_EndDaysLabel.frame = CGRectMake(100, 20,PPMainViewWidth - 100,25);
+//    r_UseInfoLabel.frame = CGRectMake(100, 50,PPMainViewWidth - 100,25);
+//    r_enterInBtn.frame = CGRectMake(100, 100,(PPMainViewWidth-120)/2-10,40);
+//    r_buyBtn.frame = CGRectMake((PPMainViewWidth-120)/2+105,100 ,(PPMainViewWidth-120)/2-5,40);
     
 }
 

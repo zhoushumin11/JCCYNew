@@ -17,10 +17,16 @@
 #import "FiemShowByTypeViewController.h"
 #import "JCCYChongZhiViewController.h"
 
-@interface PPBulletinChirldViewController ()<UITableViewDelegate,UITableViewDataSource>
+#import "RedPacketViewController.h"
+#import "PPNavigationController.h"
 
-@property (nonatomic, strong) NJBannerView *adBannerView;//广告滚动页
+#import "SDCycleScrollView.h"
+
+@interface PPBulletinChirldViewController ()<UITableViewDelegate,UITableViewDataSource,SDCycleScrollViewDelegate>
+
+@property (nonatomic, strong) SDCycleScrollView *adBannerView;//广告滚动页
 @property (nonatomic,strong) UIView *mainTableViewHeaderView; //表头视图
+@property (nonatomic,strong) NSMutableArray *bannerDataArray;
 
 @end
 
@@ -28,7 +34,7 @@
 
 @implementation PPBulletinChirldViewController
 @synthesize waitLabel;
-@synthesize dataArray,scrollNewsArray,adBannerView,mainTableViewHeaderView;
+@synthesize dataArray,scrollNewsArray,adBannerView,mainTableViewHeaderView,bannerDataArray;
 
 
 - (instancetype)init
@@ -59,7 +65,7 @@
     cmheader.lastUpdatedTimeLabel.hidden = YES;
     
     _bulletinlistTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(refreshMoreTableView)];
-    _bulletinlistTableView.mj_footer.hidden = YES;
+    _bulletinlistTableView.mj_footer.hidden = NO;
     
     _bulletinlistTableView.mj_header = cmheader;
     _bulletinlistTableView.delegate = self;
@@ -87,10 +93,12 @@
     }
     
     scrollNewsArray = [NSMutableArray array];
+    bannerDataArray = [NSMutableArray array];
     scrollNewsArray = list;
     
     NSMutableArray *currentDatas = [NSMutableArray arrayWithCapacity:0];
     NSMutableArray *titleList = [NSMutableArray arrayWithCapacity:0];
+    NSMutableArray *imgList = [NSMutableArray arrayWithCapacity:0];
     
     for (int i = 0 ; i < [list count]; i++) {
         
@@ -110,17 +118,21 @@
                                 @"ad_id":ad_id,
                                 @"ad_parameter":ad_parameter,
                                 @"ad_title":ad_title,
-                                @"ad_type":ad_type,
-                                @"index":[NSString stringWithFormat:@"%d",i]
+                                @"ad_type":ad_type
                                 };
         [currentDatas addObject:newsa];
         [titleList addObject:ad_title];
+        [imgList addObject:ad_pic];
         
     }
-    NJBannerView *bannerV = [[NJBannerView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewWidth*0.52)];
     
-    bannerV.titles = titleList;
-    bannerV.datas = currentDatas;
+    bannerDataArray = currentDatas;
+    SDCycleScrollView *bannerV = [[SDCycleScrollView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewWidth*0.52)];
+    bannerV.pageControlAliment = SDCycleScrollViewPageContolAlimentRight;
+    bannerV.titlesGroup = titleList;
+    bannerV.imageURLStringsGroup = imgList;
+    bannerV.autoScrollTimeInterval = 3.0;
+    bannerV.delegate = self;
     
     adBannerView = bannerV;
     
@@ -132,17 +144,31 @@
     _bulletinlistTableView.tableHeaderView = mainTableViewHeaderView;
     
     
-    __weak PPBulletinChirldViewController *weakSelf = self;
-    bannerV.linkAction = ^(NSDictionary *linkDict)
-    {
-        [weakSelf endterNewsPage:linkDict];
-    };
+//    __weak PPBulletinChirldViewController *weakSelf = self;
+//    bannerV.linkAction = ^(NSDictionary *linkDict)
+//    {
+//        [weakSelf endterNewsPage:linkDict];
+//    };
     
     if ([_bulletinlistTableView.mj_header isRefreshing]) {
         [_bulletinlistTableView.mj_header endRefreshing];
     }
     
 }
+
+#pragma mark - SDCycleScrollViewDelegate
+
+- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index
+{
+    if (bannerDataArray.count-1<index) {
+        return;
+    }
+    NSDictionary *dic = [bannerDataArray objectAtIndex:index];
+    [self endterNewsPage:dic];
+    
+}
+
+
 //滚动新闻点击事件
 -(void)endterNewsPage:(NSDictionary *)dic{
     
@@ -186,8 +212,9 @@
         jCCYChongZhiViewController.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:jCCYChongZhiViewController animated:YES];
     }else if (ad_type == 4){//为购买红包里盘页面
-        self.tabBarController.selectedIndex = 2;
-    }
+        RedPacketViewController *plusVC = [[RedPacketViewController alloc] init];
+        PPNavigationController *navVc = [[PPNavigationController alloc] initWithRootViewController:plusVC];
+        [self presentViewController:navVc animated:YES completion:nil];    }
 }
 
 

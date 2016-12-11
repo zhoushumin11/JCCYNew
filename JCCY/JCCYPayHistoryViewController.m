@@ -206,7 +206,7 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0,0, PPMainViewWidth, 44)];
-    view.backgroundColor = [UIColor colorFromHexRGB:@"c9c7c7"];
+    view.backgroundColor = [UIColor grayColor];
     
     UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/4, 44)];
     lable1.textAlignment = NSTextAlignmentCenter;
@@ -237,24 +237,26 @@
     [view addSubview:lable4];
     
     if (PPMainViewWidth < 350) {
-        lable1.font = [UIFont boldSystemFontOfSize:14];
-        lable2.font = [UIFont boldSystemFontOfSize:14];
-        lable3.font = [UIFont boldSystemFontOfSize:14];
-        lable4.font = [UIFont boldSystemFontOfSize:14];
+        lable1.font = [UIFont systemFontOfSize:16];
+        lable2.font = [UIFont systemFontOfSize:16];
+        lable3.font = [UIFont systemFontOfSize:16];
+        lable4.font = [UIFont systemFontOfSize:16];
     }else{
-        lable1.font = [UIFont boldSystemFontOfSize:18];
-        lable2.font = [UIFont boldSystemFontOfSize:18];
-        lable3.font = [UIFont boldSystemFontOfSize:18];
-        lable4.font = [UIFont boldSystemFontOfSize:18];
+        lable1.font = [UIFont systemFontOfSize:16];
+        lable2.font = [UIFont systemFontOfSize:16];
+        lable3.font = [UIFont systemFontOfSize:16];
+        lable4.font = [UIFont systemFontOfSize:16];
     }
 
-
-    
     return view;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 44;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 55;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -268,7 +270,7 @@
     
     if (dataArray.count > 0) {
         static NSString *identify = @"cell";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
@@ -276,40 +278,37 @@
         
         [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         
-        UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/4+10, 44)];
+        UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/4+10, 55)];
         lable1.textAlignment = NSTextAlignmentCenter;
-        lable1.textColor = [UIColor blackColor];
+        lable1.textColor = [UIColor colorFromHexRGB:@"333333"];
         int num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] intValue];
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"yyyy-MM-dd HH:MM"];
+        [formatter setDateFormat:@"yyyy-MM-dd"];
         NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:num];
         NSString *confromTimespStr = [formatter stringFromDate:confromTimesp];
         lable1.text = confromTimespStr;
         lable1.backgroundColor = [UIColor clearColor];
-        lable1.font = [UIFont systemFontOfSize:12];
         [cell.contentView addSubview:lable1];
         
-        UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4, 0, PPMainViewWidth/4, 44)];
+        UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4, 0, PPMainViewWidth/4, 55)];
         lable2.textAlignment = NSTextAlignmentCenter;
         lable2.textColor = [UIColor redColor];
         NSString *sss1 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"recharge_amount"];
         NSString *rmbString = [NSString stringWithFormat:@"¥%@",sss1];
         lable2.text = rmbString;
         lable2.backgroundColor = [UIColor clearColor];
-        lable2.font = [UIFont systemFontOfSize:12];
         [cell.contentView addSubview:lable2];
         
-        UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*2, 0, PPMainViewWidth/4, 44)];
+        UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*2, 0, PPMainViewWidth/4, 55)];
         lable3.textAlignment = NSTextAlignmentCenter;
         NSString *sss2 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"recharge_gold"];
         NSString *goldString = [NSString stringWithFormat:@"¥%@",sss2];
         lable3.text = goldString;
-        lable3.textColor = [UIColor blackColor];
+        lable3.textColor = [UIColor colorFromHexRGB:@"333333"];
         lable3.backgroundColor = [UIColor clearColor];
-        lable3.font = [UIFont systemFontOfSize:12];
         [cell.contentView addSubview:lable3];
         
-        UILabel *lable4 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*3, 0, PPMainViewWidth/4, 44)];
+        UILabel *lable4 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4*3, 0, PPMainViewWidth/4, 55)];
         lable4.textAlignment = NSTextAlignmentCenter;
         NSString *sss3 = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"pay_type"];
         NSString *pay_type = @"";
@@ -320,15 +319,37 @@
             }else if ([sss3 isEqualToString:@"2"]){
                 pay_type = @"微信";
             }else{
-                pay_type = @"系统";
+                pay_type = @"系统充值";
             }
+        }else{
+            pay_type = @"系统充值";
         }
         
         lable4.text = pay_type;
-        lable4.textColor = [UIColor blackColor];
+        lable4.textColor = [UIColor colorFromHexRGB:@"333333"];
         lable4.backgroundColor = [UIColor clearColor];
-        lable4.font = [UIFont systemFontOfSize:14];
         [cell.contentView addSubview:lable4];
+        
+        if (PPMainViewWidth<350) {
+            lable1.font = [UIFont systemFontOfSize:16];
+            lable2.font = [UIFont systemFontOfSize:16];
+            lable3.font = [UIFont systemFontOfSize:16];
+            lable4.font = [UIFont systemFontOfSize:16];
+        }else{
+            lable1.font = [UIFont systemFontOfSize:16];
+            lable2.font = [UIFont systemFontOfSize:16];
+            lable3.font = [UIFont systemFontOfSize:16];
+            lable4.font = [UIFont systemFontOfSize:16];
+        }
+        
+        UILabel *lineLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 54.5, PPMainViewWidth, 0.5)];
+        lineLabel.backgroundColor = [UIColor colorFromHexRGB:@"d3d3d3"];
+        [cell.contentView addSubview:lineLabel];
+        if (indexPath.row == dataArray.count-1) {
+            lineLabel.hidden = YES;
+        }else{
+            lineLabel.hidden = NO;
+        }
         
         return cell;
     }else{

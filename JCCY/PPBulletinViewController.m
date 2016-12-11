@@ -255,7 +255,6 @@
                       [self addChildViewController:tabBarVC];
                       
                       
-                      
                       //刷新第0个视图
                       NSString *columnIdstring = [[columnArray objectAtIndex:vcindex] objectForKey:@"typeid"];
                       [self getonlineData:columnIdstring];
@@ -280,6 +279,7 @@
 {
     NSString *dJson = nil;
     @autoreleasepool {
+        [WSProgressHUD dismiss];
         [WSProgressHUD showWithStatus:nil maskType:WSProgressHUDMaskTypeDefault];
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
         NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
@@ -308,13 +308,13 @@
                               dataArray = [NSMutableArray array];
                           }
                           
-//                          if (dataArray.count < 20) {
-//                              ui.bulletinlistTableView.mj_footer.hidden = YES;
-//                              [ui.bulletinlistTableView.mj_footer endRefreshingWithNoMoreData];
-//                          }else{
-//                              [ui.bulletinlistTableView.mj_footer resetNoMoreData];
-//                              ui.bulletinlistTableView.mj_footer.hidden = NO;
-//                          }
+                          if (dataArray.count < 20) {
+                              ui.bulletinlistTableView.mj_footer.hidden = YES;
+                              [ui.bulletinlistTableView.mj_footer endRefreshingWithNoMoreData];
+                          }else{
+                              [ui.bulletinlistTableView.mj_footer resetNoMoreData];
+                              ui.bulletinlistTableView.mj_footer.hidden = NO;
+                          }
                           
                           ui.columnArray = columnArray;
                           ui.nowIndex = vcindex;
@@ -360,7 +360,7 @@
         NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
 
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%ld\"}",updata_id,token,[columnIDStr intValue],nowPageNum];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"arctype_id\":\"%d\",\"page\":\"%ld\"}",updata_id,token,[columnIDStr intValue],nowPageNum+1];
         //获取类型接口
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/Archives/index/"
@@ -373,13 +373,17 @@
                       if (code == 1) {//接口响应正确
                           NSDictionary *dataDic = [json objectForKey:@"data"];
                           NSArray *dataArrrays = [dataDic objectForKey:@"list"];
-                          NSInteger datacount = [ui.dataArray count];
+//                          NSInteger datacount = [ui.dataArray count];
                           NSDictionary *pageDic = [dataDic objectForKey:@"page"];
                           ui.columnArray = columnArray;
                           ui.nowIndex = vcindex;
                           ui.pageMainDic = pageDic;
                           ui.dataArray = [NSMutableArray arrayWithArray:[ui.dataArray arrayByAddingObjectsFromArray:dataArrrays]];
-                          if (dataArray.count == datacount) {
+                          
+                          NSInteger nowPages = [[pageDic objectForKey:@"now_page"] integerValue];
+                          NSInteger totalPages = [[pageDic objectForKey:@"total_pages"] integerValue];
+
+                          if (nowPages == totalPages) {
                               ui.bulletinlistTableView.mj_footer.hidden = YES;
                               [ui.bulletinlistTableView.mj_footer endRefreshingWithNoMoreData];
                           }

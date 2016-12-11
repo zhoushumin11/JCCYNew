@@ -17,4 +17,7 @@
 @property(nonatomic,strong) UIButton *contenStringSuperView; //内容父视图
 @property(nonatomic,strong) UILabel *lineLabel;
 
+@property(nonatomic,strong) UITextView *contentTextView; //内容
+
+
 @end

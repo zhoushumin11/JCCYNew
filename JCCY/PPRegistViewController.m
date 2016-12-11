@@ -43,12 +43,12 @@
 
     
     //输入手机号
-    phoneNumberField = [[UITextField alloc] initWithFrame:CGRectMake(0, 40, PPMainViewWidth, 50)];
-    phoneNumberField.center = CGPointMake(PPMainViewWidth/2, 40);
+    phoneNumberField = [[UITextField alloc] initWithFrame:CGRectMake(0, 10, PPMainViewWidth, 60)];
+//    phoneNumberField.center = CGPointMake(PPMainViewWidth/2, 40);
     phoneNumberField.placeholder = @"+86";
-    phoneNumberField.keyboardType = UIKeyboardTypeASCIICapable;
+    phoneNumberField.keyboardType = UIKeyboardTypeNumberPad;
     phoneNumberField.delegate = self;
-    phoneNumberField.tag = 102;
+    phoneNumberField.tag = 654321;
     phoneNumberField.backgroundColor = [UIColor whiteColor];
     phoneNumberField.returnKeyType = UIReturnKeyNext;
     [phoneNumberField setAutocorrectionType:UITextAutocorrectionTypeNo];
@@ -70,10 +70,11 @@
     
     
     //输入密码框
-    passwordField = [[UITextField alloc] initWithFrame:CGRectMake(0, 91, PPMainViewWidth, 50)];
-    passwordField.center = CGPointMake(PPMainViewWidth/2, 90);
+    passwordField = [[UITextField alloc] initWithFrame:CGRectMake(0, 70, PPMainViewWidth, 60)];
+//    passwordField.center = CGPointMake(PPMainViewWidth/2, 90);
 //    passwordField.secureTextEntry = YES;
     passwordField.placeholder = @"请输入您收到的验证码";
+    passwordField.keyboardType = UIKeyboardTypeNumberPad;
     passwordField.tag = 123456;
     passwordField.delegate = self;
     passwordField.backgroundColor = [UIColor whiteColor];
@@ -82,7 +83,7 @@
     passwordField.returnKeyType = UIReturnKeyGo;
     //    passwordField.font = SystemFont(15);
     passwordField.text = @"";// 123456
-    UILabel *passwordName = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
+    UILabel *passwordName = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 60)];
     passwordName.textColor = [UIColor grayColor];
     passwordName.textAlignment = NSTextAlignmentCenter;
     passwordName.text = @"验证码";
@@ -93,13 +94,13 @@
     [mainView addSubview:passwordField];
     
     //分割线
-    UILabel *lineLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, phoneNumberField.frame.origin.y + 50, PPMainViewWidth - 20, 0.3)];
+    UILabel *lineLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, phoneNumberField.frame.origin.y + 60, PPMainViewWidth - 20, 0.3)];
     lineLabel.backgroundColor = [UIColor grayColor];
     [mainView addSubview:lineLabel];
     
     //获取验证码的button
     getYanZhengBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    getYanZhengBtn.frame = CGRectMake(PPMainViewWidth - 110, phoneNumberField.frame.origin.y + 5, 100, 40);
+    getYanZhengBtn.frame = CGRectMake(PPMainViewWidth - 110, phoneNumberField.frame.origin.y + 10, 100, 40);
     [getYanZhengBtn setTitle:@"获取验证码" forState:UIControlStateNormal];
     [getYanZhengBtn setTitleColor:[UIColor colorFromHexRGB:@"e56357"] forState:UIControlStateNormal];
     getYanZhengBtn.layer.masksToBounds = YES;
@@ -112,7 +113,7 @@
     //绑定 button
     UIButton *bangdingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     bangdingBtn.titleLabel.font = [UIFont systemFontOfSize:17];
-    bangdingBtn.frame = CGRectMake(10, 220, PPMainViewWidth-20, 50);
+    bangdingBtn.frame = CGRectMake(10, passwordField.frame.origin.y+80, PPMainViewWidth-20, 50);
 //    bangdingBtn.center = CGPointMake(PPMainViewWidth/2, 170);
     
     [bangdingBtn.layer setMasksToBounds:YES];
@@ -302,7 +303,31 @@
     }
     return YES;
 }
-
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if ([string isEqualToString:@"\n"]){
+        return YES;
+    }
+    
+    NSString * aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    if (phoneNumberField == textField || passwordField == textField)
+    {
+        if (textField.tag == 654321) {
+            if ([aString length] > 11) {
+                textField.text = [aString substringToIndex:11];
+                return NO;
+            }
+        }else if (textField.tag == 123456){
+            if ([aString length] > 4) {
+                textField.text = [aString substringToIndex:4];
+                return NO;
+            }
+        }
+        
+    }
+    return YES;
+    
+}
 - (void) animateTextField: (UITextField*) textField up: (BOOL) up
 {
 

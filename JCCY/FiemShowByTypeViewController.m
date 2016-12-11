@@ -16,6 +16,9 @@
 #import "JCCYMyListViewController.h"
 
 #import "SCAvatarBrowser.h"
+#import "CalculateHeight.h"
+#import "NSString+WPAttributedMarkup.h"
+#import "JJLabel.h"
 
 @interface FiemShowByTypeViewController ()<UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
 {
@@ -71,12 +74,119 @@
     
     //创建顶部视图
     [self creatHeadViews];
+    
+    if ([self.typeString isEqualToString:@"0"]){
+
+    }else{
+        //创建倒计时
+        [self creatEndTimeView];
+    }
+    
+
     //创建表视图
     [self creatMainTableView];
     
+    
 }
+
+-(void)creatEndTimeView{
+    
+    UILabel *endTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 50, PPMainViewWidth, 30)];
+    endTimeLabel.font = [UIFont systemFontOfSize:16];
+    endTimeLabel.textAlignment = NSTextAlignmentCenter;
+    endTimeLabel.backgroundColor = [UIColor whiteColor];
+    endTimeLabel.textColor = [UIColor colorFromHexRGB:@"333333"];
+    [self.view addSubview:endTimeLabel];
+    
+    NSNumber *present_time = [[NSUserDefaults standardUserDefaults] objectForKey:@"present_time"];
+    NSNumber *time_service_1 = [[NSUserDefaults standardUserDefaults] objectForKey:@"time_service_1"];
+    NSNumber *time_service_2 = [[NSUserDefaults standardUserDefaults] objectForKey:@"time_service_2"];
+    NSNumber *time_service_3 = [[NSUserDefaults standardUserDefaults] objectForKey:@"time_service_3"];
+    
+    //服务器当前时间
+    double i0 = [present_time doubleValue];
+    NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i0];
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+    NSString *present_timeStr = [dateFormat stringFromDate:nd];
+    
+    //赞赏到期时间
+    double i1 = [time_service_1 doubleValue];
+    NSDate *nd1 = [NSDate dateWithTimeIntervalSince1970:i1];
+    NSString *time_service_1Str = [dateFormat stringFromDate:nd1];
+    //钻石到期时间
+    double i2 = [time_service_2 doubleValue];
+    NSDate *nd2 = [NSDate dateWithTimeIntervalSince1970:i2];
+    NSString *time_service_2Str = [dateFormat stringFromDate:nd2];
+    //黄金到期时间
+    double i3 = [time_service_3 doubleValue];
+    NSDate *nd3 = [NSDate dateWithTimeIntervalSince1970:i3];
+    NSString *time_service_3Str = [dateFormat stringFromDate:nd3];
+    
+    NSDictionary* style1 = @{@"red": [UIColor redColor]};
+    
+    if ([self.typeString isEqualToString:@"1"]) {
+        NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
+        fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
+        NSDate *daoqiTime = [fomart dateFromString:time_service_1Str];
+        NSDate *dangqianTime = [fomart dateFromString:present_timeStr];
+        
+        NSTimeInterval daoqiTimeI = [daoqiTime timeIntervalSince1970];
+        NSTimeInterval dangqianTimeI = [dangqianTime timeIntervalSince1970];
+        NSTimeInterval cha=daoqiTimeI-dangqianTimeI;
+        
+        div_t d = div(cha, 86400);
+        int days = d.quot;
+        NSString *ds = [NSString stringWithFormat:@"%@",time_service_1];
+        if ([ds isEqualToString:@"0"] ) {
+            days = 0;
+        }
+        NSString *dasss = [NSString stringWithFormat:@"距离到期还有<red>%d</red>天",days];
+        endTimeLabel.attributedText = [dasss attributedStringWithStyleBook:style1];
+        
+    }else if ([self.typeString isEqualToString:@"2"]){
+        NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
+        fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
+        NSDate *daoqiTime = [fomart dateFromString:time_service_2Str];
+        NSDate *dangqianTime = [fomart dateFromString:present_timeStr];
+        
+        NSTimeInterval daoqiTimeI = [daoqiTime timeIntervalSince1970];
+        NSTimeInterval dangqianTimeI = [dangqianTime timeIntervalSince1970];
+        NSTimeInterval cha=daoqiTimeI-dangqianTimeI;
+        
+        div_t d = div(cha, 86400);
+        int days = d.quot;
+        NSString *ds = [NSString stringWithFormat:@"%@",time_service_2];
+        
+        if ([ds isEqualToString:@"0"] ) {
+            days = 0;
+        }
+        NSString *dasss = [NSString stringWithFormat:@"距离到期还有<red>%d</red>天",days];
+        endTimeLabel.attributedText = [dasss attributedStringWithStyleBook:style1];
+        
+    }else if ([self.typeString isEqualToString:@"3"]){
+        NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
+        fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
+        NSDate *daoqiTime = [fomart dateFromString:time_service_3Str];
+        NSDate *dangqianTime = [fomart dateFromString:present_timeStr];
+        
+        NSTimeInterval daoqiTimeI = [daoqiTime timeIntervalSince1970];
+        NSTimeInterval dangqianTimeI = [dangqianTime timeIntervalSince1970];
+        NSTimeInterval cha=daoqiTimeI-dangqianTimeI;
+        
+        div_t d = div(cha, 86400);
+        int days = d.quot;
+        NSString *ds = [NSString stringWithFormat:@"%@",time_service_3];
+        if ([ds isEqualToString:@"0"] ) {
+            days = 0;
+        }
+        NSString *dasss = [NSString stringWithFormat:@"距离到期还有<red>%d</red>天",days];
+        endTimeLabel.attributedText = [dasss attributedStringWithStyleBook:style1];
+    }
+}
+
 -(void)creatMainTableView{
-    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, PPMainViewWidth,self.view.bounds.size.height-64-50) style:UITableViewStylePlain];
+    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 80, PPMainViewWidth,self.view.bounds.size.height-64-80) style:UITableViewStylePlain];
     mainTableView.backgroundColor = [UIColor clearColor];
     mainTableView.separatorInset = UIEdgeInsetsZero;
     //        _bulletinlistTableView.tableHeaderView = [[UIView alloc] init];
@@ -88,9 +198,9 @@
     }
     mainTableView.separatorColor = [UIColor colorFromHexRGB:@"f0f0f0"];
     MJRefreshNormalHeader *cmheader = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(getServerData)];
+    mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(refreshMoreTableView)];
+    mainTableView.mj_footer.hidden = NO;
     cmheader.lastUpdatedTimeLabel.hidden = YES;
-    
-    mainTableView.mj_footer.hidden = YES;
     
     mainTableView.mj_header = cmheader;
     mainTableView.delegate = self;
@@ -98,6 +208,14 @@
     
     [self.view addSubview:mainTableView];
 }
+-(void)refreshMoreTableView{
+    if ([mainTableView.mj_footer isRefreshing]) {
+        [mainTableView.mj_footer endRefreshing];
+    }
+    [mainTableView.mj_footer endRefreshingWithNoMoreData];
+    
+}
+
 
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:YES];
@@ -232,6 +350,8 @@
         return;
     }
     timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timeAction) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+
 }
 #pragma mark --- 计时器运行 -----
 -(void)timeAction{
@@ -308,6 +428,9 @@
                           
                           dataArray  = [NSMutableArray arrayWithArray:dataArr];
                           [mainTableView reloadData];
+                          
+                          [mainTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
@@ -356,13 +479,36 @@
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSString *live_picStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_pic"];
     if (![live_picStr isEqual:[NSNull null]]) { //图片内容
-        return 185;
+        return 190;
     }else{
-        CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
-        float wh = strSize.height + 60+20;
-        if (wh < 110) {
-            return  130;
+        //    CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
+        //    CGFloat h = [CalculateHeight getSpaceLabelHeight:[[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"] withWidth:PPMainViewWidth - 120];
+        
+        JJLabel *spaceLab = [[JJLabel alloc] init];
+        spaceLab.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"];
+        spaceLab.numberOfLines = 0;
+        spaceLab.backgroundColor = [UIColor clearColor];
+        spaceLab.lineSpace = 0.0f;
+        spaceLab.characterSpace = 0.0f;
+        spaceLab.font = [UIFont systemFontOfSize:15];
+        spaceLab.isCopy = NO;
+        
+        CGFloat labHeight = [spaceLab getLableHeightWithMaxWidth:(PPMainViewWidth - 120)];
+        
+        float wh = labHeight +100 ;
+        //        if (wh < 110) {
+        //            return  120;
+        //        }else if (wh < 150){
+        //            return 150;
+        //        }
+        if (wh>90 && wh < 135) {
+            return 135;
         }
+        
+        if (wh<90) {
+            return 120;
+        }
+        
         return wh;
     }
 }
@@ -370,6 +516,12 @@
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return dataArray.count;
 }
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    return mainHeadView;
+}
+
+
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -382,8 +534,8 @@
             cell = [[FirmIMGCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
         tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-
         
         cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
         
@@ -391,11 +543,12 @@
         double i = [[NSNumber numberWithInteger:num] doubleValue];
         NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-        [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm"];
+        [dateFormat setDateFormat:@"HH:mm"];
         NSString *timeStr = [dateFormat stringFromDate:nd];
         cell.timeLabel.text = timeStr;
         
         NSString *icon_picStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_pic"];
+        
         
         //设置头像图片
         [cell.iConView sd_setImageWithURL:[NSURL URLWithString:icon_picStr] forState:UIControlStateNormal placeholderImage:nil options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
@@ -412,9 +565,10 @@
             }
         }];
         
-        UILabel *linelabels = [[UILabel alloc] initWithFrame:CGRectMake(10, 179.5, PPMainViewWidth - 20, 0.5)];
+        UILabel *linelabels = [[UILabel alloc] initWithFrame:CGRectMake(10, 185.5, PPMainViewWidth - 20, 0.5)];
         linelabels.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
         [cell addSubview:linelabels];
+        
         
         cell.contenImageView.tag = indexPath.row;
         [cell.contenImageView addTarget:self action:@selector(contenImageViewAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -422,22 +576,28 @@
         return cell;
     }else{//文字内容
         static NSString *identify = @"FirmStringCell";
-        FirmStringCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+        //        FirmStringCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+        FirmStringCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         
         if (cell == nil) {
             cell = [[FirmStringCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
         }
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-
         
+        if (indexPath.row == dataArray.count-1) {
+            cell.lineLabel.hidden = YES;
+        }else{
+            cell.lineLabel.hidden = NO;
+        }
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         
         NSInteger num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] integerValue];
         double i = [[NSNumber numberWithInteger:num] doubleValue];
         NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-        [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm"];
+        [dateFormat setDateFormat:@"HH:mm"];
         NSString *timeStr = [dateFormat stringFromDate:nd];
         cell.timeLabel.text = timeStr;
         
@@ -455,9 +615,43 @@
         colorStr = [colorStr substringFromIndex:1];
         cell.contenStringView.textColor = [UIColor colorFromHexRGB:colorStr];
         
-        CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
-        cell.contenStringSuperView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, strSize.height+20);
-        cell.contenStringView.frame = CGRectMake(10, 5, PPMainViewWidth - 120, strSize.height+10);
+        //        CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
+        
+        CGFloat h = [CalculateHeight getSpaceLabelHeight:[[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"] withWidth:PPMainViewWidth - 120];
+        
+        
+        {
+            
+            NSString *titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"];
+            JJLabel *spaceLab = [[JJLabel alloc] init];
+            spaceLab.text = titleStr;
+            spaceLab.numberOfLines = 0;
+            spaceLab.backgroundColor = [UIColor clearColor];
+            spaceLab.lineSpace = 0.0f;
+            spaceLab.characterSpace = 0.0f;
+            spaceLab.isCopy = NO;
+            spaceLab.font = [UIFont systemFontOfSize:15];
+            spaceLab.textColor = [UIColor colorFromHexRGB:colorStr];
+            
+            CGFloat labHeight = [spaceLab getLableHeightWithMaxWidth:(PPMainViewWidth - 120)];
+            cell.contenStringSuperView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, labHeight+20);
+            spaceLab.frame = CGRectMake(10, 10, PPMainViewWidth - 120, labHeight);
+            [cell.contenStringSuperView addSubview:spaceLab];
+        }
+        
+        //        cell.contenStringSuperView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, h+14);
+        //        cell.contenStringView.frame = CGRectMake(10, 7, PPMainViewWidth - 120, h);
+        
+        //        cell.contentTextView.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"];
+        //        NSString *colorStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title_color"];
+        //        colorStr = [colorStr substringFromIndex:1];
+        //        cell.contentTextView.textColor = [UIColor colorFromHexRGB:colorStr];
+        //
+        //        CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
+        //        cell.contentTextView.frame = CGRectMake(90, 50, PPMainViewWidth - 120, strSize.height+10);
+        
+        
+        
         return cell;
     }
     

@@ -8,6 +8,9 @@
 
 #import "JCCYPayStatusQueryViewController.h"
 
+#import "AppDelegate.h"
+
+
 @interface JCCYPayStatusQueryViewController ()
 {
     NSTimer *timer;
@@ -45,17 +48,27 @@
 }
 
 -(void)initWaitingView{
-    imageView = [[UIImageView alloc] initWithFrame:CGRectMake(PPMainViewWidth/2 - 50, 100, 100, 100)];
+    imageView = [[UIImageView alloc] init];
     imageView.image = [UIImage imageNamed:@"pay_success"];
     [imageView setContentMode:UIViewContentModeScaleAspectFill];
     imageView.clipsToBounds = YES;
     [self.view addSubview:imageView];
     
-    tishiLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 240, PPMainViewWidth-20, 30)];
+    tishiLabel = [[UILabel alloc] init];
     tishiLabel.textAlignment = NSTextAlignmentCenter;
-    tishiLabel.font = [UIFont boldSystemFontOfSize:22];
-    tishiLabel.textColor = [UIColor blackColor];
+    tishiLabel.textColor = [UIColor colorFromHexRGB:@"333333"];
     tishiLabel.text = @"正在充值，请耐心等待...";
+    
+    if (PPMainViewWidth<350) {
+        imageView.frame = CGRectMake(PPMainViewWidth/2 - 50, 130, 100, 100);
+        tishiLabel.frame = CGRectMake(10, 230, PPMainViewWidth-20, 40);
+        tishiLabel.font = [UIFont boldSystemFontOfSize:24];
+
+    }else{
+        imageView.frame = CGRectMake(PPMainViewWidth/2 - 50, 130, 100, 100);
+        tishiLabel.frame = CGRectMake(10, 230, PPMainViewWidth-20, 40);
+        tishiLabel.font = [UIFont boldSystemFontOfSize:24];
+    }
     
     [self.view addSubview:tishiLabel];
 }
@@ -148,14 +161,14 @@
     
     
     UILabel *recharge_goldLa = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth - 160, 50, 150, 50)];
-    recharge_goldLa.textColor = [UIColor grayColor];
+    recharge_goldLa.textColor = [UIColor colorFromHexRGB:@"333333"];
     recharge_goldLa.font = [UIFont systemFontOfSize:18];
     recharge_goldLa.textAlignment = NSTextAlignmentRight;
     recharge_goldLa.text = [NSString stringWithFormat:@"¥%@",recharge_amount];
     [succ_View addSubview:recharge_goldLa];
     
     UILabel *recharge_amountLa = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth - 160, 100, 150, 50)];
-    recharge_amountLa.textColor = [UIColor grayColor];
+    recharge_amountLa.textColor = [UIColor colorFromHexRGB:@"333333"];
     recharge_amountLa.font = [UIFont systemFontOfSize:18];
     recharge_amountLa.textAlignment = NSTextAlignmentRight;
     recharge_amountLa.text = [NSString stringWithFormat:@"%@",recharge_gold];
@@ -164,7 +177,7 @@
     //完成 button
     UIButton *bangdingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     bangdingBtn.titleLabel.font = [UIFont systemFontOfSize:17];
-    bangdingBtn.frame = CGRectMake(35, 500, PPMainViewWidth-70, 45);
+    bangdingBtn.frame = CGRectMake(10, succ_View.frame.origin.y+30+150, PPMainViewWidth-20, 50);
     [bangdingBtn.layer setMasksToBounds:YES];
     [bangdingBtn.layer setCornerRadius:5.0]; //设置矩形四个圆角半径
     bangdingBtn.backgroundColor = [UIColor colorFromHexRGB:@"e60013"];
@@ -176,7 +189,14 @@
     
 }
 -(void)bangdingPhone{
-    [self.navigationController popViewControllerAnimated:YES];
+//    [self.navigationController popViewControllerAnimated:YES];
+    
+    AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    if (appdel.jCCYMyListViewController == nil) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else{
+        [self.navigationController popToViewController:appdel.jCCYMyListViewController animated:YES];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

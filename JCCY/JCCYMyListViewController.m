@@ -19,6 +19,8 @@
 
 #import "JCCYChongZhiViewController.h"
 
+#import "AppDelegate.h"
+
 #define HEADHEIGHT (PPMainViewWidth*0.5)
 
 @interface JCCYMyListViewController ()<UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
@@ -251,30 +253,57 @@
     back_imgView.clipsToBounds = YES;
     back_imgView.image = [UIImage imageNamed:@"user_info_backGImg"];
     [self.headView addSubview:back_imgView];
+    
+    //头像
     self.iconImgView = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.iconImgView.frame = CGRectMake(PPMainViewWidth/2-50,self.headView.center.y-60, 100, 100);
-    self.iconImgView.clipsToBounds = YES;
-    self.iconImgView.layer.cornerRadius = 50;
-    self.iconImgView.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.5].CGColor;
-    self.iconImgView.layer.borderWidth = 2;
     self.iconImgView.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
     [self.headView addSubview:iconImgView];
     
-    
+    //等级
     self.levelImgView = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.levelImgView.frame = CGRectMake(PPMainViewWidth/2+5,self.headView.center.y+48, 50, 24);
     self.levelImgView.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+    [self.levelImgView setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
     [self setLevelImg]; //设置图标
     [self.headView addSubview:self.levelImgView];
     
-    self.iconImgLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/2-100,self.headView.center.y+50, 90, 20)];
+    //姓名
+    self.iconImgLabel = [[UILabel alloc] init];
     self.iconImgLabel.textColor = [UIColor whiteColor];
     self.iconImgLabel.textAlignment = NSTextAlignmentRight;
     self.iconImgLabel.clipsToBounds = YES;
-    self.iconImgLabel.font = SystemFoldFont(18);
     NSString *nameStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_chinese_name"];
     self.iconImgLabel.text = nameStr;
     [self.headView addSubview:self.iconImgLabel];
+    
+    
+    if (PPMainViewWidth<350) {
+        self.iconImgView.frame = CGRectMake(PPMainViewWidth/2-38,self.headView.center.y-55+10-13, 76, 76);
+        self.iconImgView.clipsToBounds = YES;
+        self.iconImgView.layer.cornerRadius = 38;
+        self.iconImgView.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.5].CGColor;
+        self.iconImgView.layer.borderWidth = 2;
+        
+        
+        self.iconImgLabel.frame = CGRectMake(PPMainViewWidth/2-98,self.headView.center.y+25, 95, 30);
+        self.iconImgLabel.font = SystemFont(17);
+        
+        self.levelImgView.frame = CGRectMake(PPMainViewWidth/2+6,self.headView.center.y+29, 45,20);
+
+
+
+    }else{
+        self.iconImgView.frame = CGRectMake(PPMainViewWidth/2-50,self.headView.center.y-70,100, 100);
+        self.iconImgView.clipsToBounds = YES;
+        self.iconImgView.layer.cornerRadius = 50;
+        self.iconImgView.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.5].CGColor;
+        self.iconImgView.layer.borderWidth = 2;
+        
+        self.levelImgView.frame = CGRectMake(PPMainViewWidth/2+5,self.headView.center.y+54, 45, 20);
+        
+        self.iconImgLabel.frame = CGRectMake(PPMainViewWidth/2-87,self.headView.center.y+50, 85, 30);
+        self.iconImgLabel.font = SystemFont(17);
+    }
+    
     
     // 与图像高度一样防止数据被遮挡
     self.settingTableView.tableHeaderView = headView;
@@ -294,21 +323,18 @@
 
 
 -(void)setLevelImg{
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"0"] || [[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] == nil) {
-        [self.levelImgView setBackgroundImage:[UIImage imageNamed:@"level0"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"1"]) {
-        [self.levelImgView setBackgroundImage:[UIImage imageNamed:@"level1"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"2"]) {
-        [self.levelImgView setBackgroundImage:[UIImage imageNamed:@"level2"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"3"]) {
-        [self.levelImgView setBackgroundImage:[UIImage imageNamed:@"level3"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"4"]) {
-        [self.levelImgView setBackgroundImage:[UIImage imageNamed:@"level4"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"5"]) {
-        [self.levelImgView setBackgroundImage:[UIImage imageNamed:@"level5"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"6"]) {
-        [self.levelImgView setBackgroundImage:[UIImage imageNamed:@"level6"] forState:UIControlStateNormal];//给button添加image
+    
+    NSString *levelString = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"];
+    [self.levelImgView setBackgroundImage:[UIImage imageNamed:@"levelBGIMG"] forState:UIControlStateNormal];//给button添加image
+
+    self.levelImgView.titleLabel.font = [UIFont systemFontOfSize:14];
+
+
+    if (levelString == nil || [levelString isEqual:[NSNull null]]) {
+        levelString = @"0";
     }
+    
+    [self.levelImgView setTitle:[NSString stringWithFormat:@"Lv.%@",levelString] forState:UIControlStateNormal];
 }
 
 
@@ -333,7 +359,7 @@
     return [self.settingList count];
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 50;
+    return 60;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -353,6 +379,10 @@
         alertView.tag = 101010;
         [alertView show];
     }else if (indexPath.row == 0){//在线充值
+        
+        AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        appdel.jCCYMyListViewController = self;
+        
         JCCYChongZhiViewController *jCCYChongZhiViewController = [[JCCYChongZhiViewController alloc] init];
         jCCYChongZhiViewController.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:jCCYChongZhiViewController animated:YES];
@@ -360,7 +390,7 @@
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 80;
+    return 90;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
@@ -374,7 +404,7 @@
 
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    UIView *tableHeadView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 80)];
+    UIView *tableHeadView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 90)];
     tableHeadView.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
     
     UIView *toolsView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 75)];
@@ -389,24 +419,27 @@
     UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/2 - 1, 75)];
     
     //金币数Label
-    UILabel *jingbiNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15, 15, 60, 30)];
-    jingbiNumLabel.textColor = [UIColor colorFromHexRGB:@"ee7700"];
-    jingbiNumLabel.font = [UIFont systemFontOfSize:20];
     NSString *jingbiNum = [[[NSUserDefaults standardUserDefaults] objectForKey:@"golds"] stringValue];
     if (jingbiNum.length == 0 || jingbiNum == nil) {
         jingbiNum = @"0";
     }
+    CGSize size1 = GetWTextSizeFont(jingbiNum, 30, 20);
+    
+    UILabel *jingbiNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15+10, 15, size1.width+50, 30)];
+    jingbiNumLabel.textColor = [UIColor colorFromHexRGB:@"ee7700"];
+    jingbiNumLabel.font = [UIFont systemFontOfSize:20];
+
     jingbiNumLabel.text = jingbiNum;
     [view1 addSubview:jingbiNumLabel];
     //图片
     UIButton *img1Btn = [UIButton buttonWithType:UIButtonTypeCustom];
-    img1Btn.frame = CGRectMake(PPMainViewWidth/4-65, 18, 50, 50);
+    img1Btn.frame = CGRectMake(PPMainViewWidth/4-65+10, 18, 50, 50);
     img1Btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
     [img1Btn setImage:[UIImage imageNamed:@"setting_jinbi"] forState:UIControlStateNormal];
     [view1 addSubview:img1Btn];
     
     //金币label
-    UILabel *jingbiLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15, 38, 60, 25)];
+    UILabel *jingbiLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15+10, 38, 60, 25)];
     jingbiLabel.text = @"金币";
     jingbiLabel.textColor = [UIColor grayColor];
     jingbiLabel.font = [UIFont systemFontOfSize:14];
@@ -425,24 +458,26 @@
 
     //图片
     UIButton *img2Btn = [UIButton buttonWithType:UIButtonTypeCustom];
-    img2Btn.frame = CGRectMake(PPMainViewWidth/4-65, 18, 50, 50);
+    img2Btn.frame = CGRectMake(PPMainViewWidth/4-65+10, 18, 50, 50);
     img2Btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
     [img2Btn setImage:[UIImage imageNamed:@"setting_jifen"] forState:UIControlStateNormal];
     [view2 addSubview:img2Btn];
     
     //积分数Label
-    UILabel *jifenNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15 ,15, 60, 25)];
-    jifenNumLabel.textColor = [UIColor grayColor];
-    jifenNumLabel.font = [UIFont systemFontOfSize:20];
     NSString *jifenNum = [[[NSUserDefaults standardUserDefaults] objectForKey:@"scores"] stringValue];
     if (jifenNum.length == 0 || jifenNum == nil) {
         jifenNum = @"0";
     }
+    CGSize size2 = GetWTextSizeFont(jifenNum, 25, 20);
+    UILabel *jifenNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15+10 ,15,size2.width+50, 25)];
+    jifenNumLabel.textColor = [UIColor grayColor];
+    jifenNumLabel.font = [UIFont systemFontOfSize:20];
+
     jifenNumLabel.text = jifenNum;
     [view2 addSubview:jifenNumLabel];
     
     //积分label
-    UILabel *jifenLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15,38, 60, 25)];
+    UILabel *jifenLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/4-15+10,38, 60, 25)];
     jifenLabel.text = @"积分";
     jifenLabel.textColor = [UIColor grayColor];
     jifenLabel.font = [UIFont systemFontOfSize:14];
@@ -488,9 +523,14 @@
     cell.settingTitleLabel.text = title;
     [cell.iConView setImage:[[self.settingList objectAtIndex:indexPath.row] objectForKey:@"img"] forState:UIControlStateNormal];
     
+    cell.allViewBtn.tag = indexPath.row;
+    [cell.allViewBtn addTarget:self action:@selector(allViewBtnAction:) forControlEvents:UIControlEventTouchUpInside];
     
     if (indexPath.row == 0||indexPath.row == 1 || indexPath.row == 2) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        UILabel *linelabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 60-0.5, PPMainViewWidth-20, 0.5)];
+        linelabel.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
+        [cell.allcontentView addSubview:linelabel];
     }else{
         NSString *kefuTelephone = [[NSUserDefaults standardUserDefaults] objectForKey:@"KEFU_TELPHONE"];
         cell.settingTitleLabel.text = [NSString stringWithFormat:@"客服电话：%@",kefuTelephone];
@@ -501,6 +541,28 @@
     return cell;
 }
 
+-(void)allViewBtnAction:(UIButton *)btn{
+    if (btn.tag == 1) {////充值记录
+        
+        JCCYPayHistoryViewController *jCCYPayHistoryViewController = [[JCCYPayHistoryViewController alloc] init];
+        jCCYPayHistoryViewController.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:jCCYPayHistoryViewController animated:YES];
+    }else if (btn.tag == 2){//消费记录
+        JCCYUsedHistoryViewController *sCCYUsedHistoryViewController = [[JCCYUsedHistoryViewController alloc] init];
+        sCCYUsedHistoryViewController.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:sCCYUsedHistoryViewController animated:YES];
+    }else if (btn.tag == 3){ //客服电话
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"是否拨打客服电话？" delegate:self cancelButtonTitle:@"拨打" otherButtonTitles:@"取消", nil];
+        alertView.tag = 101010;
+        [alertView show];
+    }else if (btn.tag == 0){//在线充值
+        AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        appdel.jCCYMyListViewController = self;
+        JCCYChongZhiViewController *jCCYChongZhiViewController = [[JCCYChongZhiViewController alloc] init];
+        jCCYChongZhiViewController.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:jCCYChongZhiViewController animated:YES];
+    }
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

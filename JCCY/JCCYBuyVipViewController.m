@@ -10,6 +10,12 @@
 #import "AppDelegate.h"
 #import "UIButton+WebCache.h"
 
+#import "CoreStatus.h"  //检查网络
+
+#import <CoreText/CoreText.h>
+#import "NSString+WPAttributedMarkup.h"
+
+
 @interface JCCYBuyVipViewController ()<UIAlertViewDelegate>
 
 @property(nonatomic,strong) NSMutableArray *dataArray;
@@ -38,6 +44,16 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(get_info) name:UPDATAUPIDDATA object:nil];
+
+    //判断有无网络
+    
+    BOOL isNetOK = [CoreStatus isNetworkEnable];
+    if (isNetOK) {
+        
+    }else{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"暂无网络,请检查网络设置！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+    }
 
     
     dataArray = [NSMutableArray array];
@@ -116,39 +132,69 @@
 }
 
 -(void)creatUserInfoView{
+    
+    if (mainScrollView) {
+        [mainScrollView removeFromSuperview];
+    }
+    
     mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewHeight-64)];
     mainScrollView.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
     
     userInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 130)];
     userInfoView.backgroundColor = [UIColor whiteColor];
+    userInfoView.layer.masksToBounds = YES;
+    userInfoView.layer.borderWidth = 0.5;
+    userInfoView.layer.borderColor = [UIColor colorFromHexRGB:@"d9d9d9"].CGColor;
     
     NSString *golds = [[[NSUserDefaults standardUserDefaults] objectForKey:@"golds"] stringValue];
     
-    CGSize size = GetWTextSizeFoldFont(golds, 70, 28);
+    if (golds == nil) {
+        golds = @"0";
+    }
     
+    NSDictionary* style1 = @{@"font01":[UIFont systemFontOfSize:45.0],
+                             @"font02":[UIFont systemFontOfSize:18.0],
+                             @"color": [UIColor colorFromHexRGB:@"333333"]};
     
-    UILabel *goldNumlabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, size.width+20, 70)];
-    goldNumlabel.textColor = [UIColor blackColor];
-    goldNumlabel.font = [UIFont boldSystemFontOfSize:28];
-    goldNumlabel.text = golds;
-    [userInfoView addSubview:goldNumlabel];
+    NSDictionary* style2 = @{@"font01":[UIFont systemFontOfSize:38.0],
+                             @"font02":[UIFont systemFontOfSize:16.0],
+                             @"color": [UIColor colorFromHexRGB:@"333333"]};
     
-    UILabel *goldslabel = [[UILabel alloc] initWithFrame:CGRectMake(size.width+25, 20,40, 40)];
-    goldslabel.textColor = [UIColor blackColor];
-    goldslabel.font = [UIFont systemFontOfSize:16];
-    goldslabel.text = @"金币";
-    [userInfoView addSubview:goldslabel];
+    UILabel *label1 = [[UILabel alloc] initWithFrame:(CGRectMake(10, 10, PPMainViewWidth - 100, 70))];
+    NSString *goldstr = [NSString stringWithFormat:@"<color><font01>%@</font01></color><color><font02>金币</font02></color>",golds];
+    if (PPMainViewWidth<350) {
+        label1.attributedText = [goldstr attributedStringWithStyleBook:style2];
+    }else{
+        label1.attributedText = [goldstr attributedStringWithStyleBook:style1];
+    }
+
+    [userInfoView addSubview:label1];
+
     
-    UILabel *dangqianyuelabel = [[UILabel alloc] initWithFrame:CGRectMake(10,70,70, 30)];
-    dangqianyuelabel.textColor = [UIColor blackColor];
-    dangqianyuelabel.font = [UIFont systemFontOfSize:16];
+//    CGSize size = GetWTextSizeFoldFont(golds, 70, 45);
+//    
+//    UILabel *goldNumlabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, size.width+20, 70)];
+//    goldNumlabel.textColor = [UIColor colorFromHexRGB:@"333333"];
+//    goldNumlabel.font = [UIFont systemFontOfSize:45];
+//    goldNumlabel.text = golds;
+//    [userInfoView addSubview:goldNumlabel];
+//    
+//    UILabel *goldslabel = [[UILabel alloc] initWithFrame:CGRectMake(size.width+25, 30,40, 40)];
+//    goldslabel.textColor = [UIColor colorFromHexRGB:@"333333"];
+//    goldslabel.font = [UIFont systemFontOfSize:16];
+//    goldslabel.text = @"金币";
+//    [userInfoView addSubview:goldslabel];
+    
+    UILabel *dangqianyuelabel = [[UILabel alloc] initWithFrame:CGRectMake(10,80,100, 30)];
+    dangqianyuelabel.textColor = [UIColor colorFromHexRGB:@"333333"];
+    dangqianyuelabel.font = [UIFont systemFontOfSize:18];
     dangqianyuelabel.text = @"当前余额";
     [userInfoView addSubview:dangqianyuelabel];
     
     NSString *user_headImg = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_pic"];
     
     UIButton *iconImgView = [UIButton buttonWithType:UIButtonTypeCustom];
-    iconImgView.frame = CGRectMake(PPMainViewWidth-90,20, 70, 70);
+    iconImgView.frame = CGRectMake(PPMainViewWidth-90,30, 70, 70);
     iconImgView.clipsToBounds = YES;
     iconImgView.layer.cornerRadius = 35;
     iconImgView.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.5].CGColor;
@@ -165,7 +211,7 @@
     [mainScrollView addSubview:userInfoView];
     
     //当前购买的类型
-    UILabel *label = [[UILabel alloc] initWithFrame:(CGRectMake(10, 130, 300, 40))];
+    UILabel *label = [[UILabel alloc] initWithFrame:(CGRectMake(10, 130, 300, 45))];
     [mainScrollView addSubview:label];
     serviceStr = nil;
     if (self.buyType == 0) {
@@ -177,7 +223,7 @@
     }
 
     label.textColor = [UIColor grayColor];
-    label.font = [UIFont systemFontOfSize:16];
+    label.font = [UIFont systemFontOfSize:18];
     
     NSMutableAttributedString *noteStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"您当前正在购买%@服务",serviceStr]];
     NSRange redRange = NSMakeRange([[noteStr string] rangeOfString:serviceStr].location, [[noteStr string] rangeOfString:serviceStr].length);
@@ -263,14 +309,21 @@
 
 -(void)creatTableView:(NSInteger)payType{
     
-    payView = [[UIView alloc] initWithFrame:CGRectMake(0,170, PPMainViewWidth, dataArray.count*60)];
+    if (payView) {
+        [payView removeFromSuperview];
+    }
+    
+    payView = [[UIView alloc] initWithFrame:CGRectMake(0,175, PPMainViewWidth, dataArray.count*60)];
     payView.backgroundColor = [UIColor whiteColor];
+    payView.layer.masksToBounds = YES;
+    payView.layer.borderWidth = 0.5;
+    payView.layer.borderColor = [UIColor colorFromHexRGB:@"d9d9d9"].CGColor;
     [mainScrollView addSubview:payView];
     
     //确定 button
     UIButton *quedingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     quedingBtn.titleLabel.font = [UIFont systemFontOfSize:17];
-    quedingBtn.frame = CGRectMake(10, 170+30+(dataArray.count*60), PPMainViewWidth-20, 45);
+    quedingBtn.frame = CGRectMake(10, 175+30+(dataArray.count*60), PPMainViewWidth-20, 50);
     
     [quedingBtn.layer setMasksToBounds:YES];
     [quedingBtn.layer setCornerRadius:5.0]; //设置矩形四个圆角半径
@@ -284,7 +337,7 @@
         UIView *view  = [[UIView alloc] initWithFrame:CGRectMake(0, (60*i), PPMainViewWidth-20, 60)];
 
         UILabel *titleLable = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 200, 40)];
-        titleLable.textColor = [UIColor blackColor];
+        titleLable.textColor = [UIColor colorFromHexRGB:@"333333"];
         titleLable.font = [UIFont systemFontOfSize:18];
         NSString *goldString = [[dataArray objectAtIndex:i] objectForKey:@"gold_cost"];
         NSString *dayString = [[dataArray objectAtIndex:i] objectForKey:@"service_days"];
@@ -292,12 +345,12 @@
         [view addSubview:titleLable];
         
         UILabel *sublabel  = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, PPMainViewWidth-10, 0.5)];
-        sublabel.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
+        sublabel.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
         [view addSubview:sublabel];
 
         
         UIButton *chooseeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        chooseeBtn.frame = CGRectMake(PPMainViewWidth - 20 - 40, 10, 40, 40);
+        chooseeBtn.frame = CGRectMake(PPMainViewWidth - 10 - 40, 10, 40, 40);
         
         chooseeBtn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
         
@@ -336,6 +389,10 @@
 //说明视图
 -(void)creatChongZhiShuoMingView{
     
+    if (chongZhiShuoMingView) {
+        [chongZhiShuoMingView removeFromSuperview];
+    }
+    
     NSString *CHONGZHI_CONTENT = nil;
     
     if (self.buyType == 0) {
@@ -347,7 +404,7 @@
     }
 
     
-    CGSize size = GetHTextSizeFont(CHONGZHI_CONTENT, PPMainViewWidth-20, 14);
+    CGSize size = GetHTextSizeFont(CHONGZHI_CONTENT, PPMainViewWidth-20, 16);
     
     chongZhiShuoMingView  = [[UIView alloc] initWithFrame:CGRectMake(10, 170+30+(dataArray.count*60) + 45 +30, PPMainViewWidth - 20, size.height + 50)];
     
@@ -357,20 +414,20 @@
     UILabel *chongzhishuominLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth-20, 30)];
     chongzhishuominLabel.text  = [NSString stringWithFormat:@"%@说明：",serviceStr];
     chongzhishuominLabel.backgroundColor = [UIColor clearColor];
-    chongzhishuominLabel.font = [UIFont systemFontOfSize:14];
+    chongzhishuominLabel.font = [UIFont systemFontOfSize:16];
     chongzhishuominLabel.textColor = [UIColor redColor];
     [chongZhiShuoMingView addSubview:chongzhishuominLabel];
     
-    UITextView *chongzhishuominLabels = [[UITextView alloc] initWithFrame:CGRectMake(0, 30, PPMainViewWidth-20, size.height+20)];
+    UITextView *chongzhishuominLabels = [[UITextView alloc] initWithFrame:CGRectMake(-4, 30, PPMainViewWidth-20, size.height+20)];
     chongzhishuominLabels.text  = CHONGZHI_CONTENT;
-    chongzhishuominLabels.font = [UIFont systemFontOfSize:14];
+    chongzhishuominLabels.font = [UIFont systemFontOfSize:16];
     chongzhishuominLabels.backgroundColor = [UIColor clearColor];
     chongzhishuominLabels.editable = NO;
     chongzhishuominLabels.textColor = [UIColor blackColor];
     [chongZhiShuoMingView addSubview:chongzhishuominLabels];
     
     
-    [mainScrollView setContentSize:CGSizeMake(PPMainViewWidth,170+30+(dataArray.count*60) + 45 +30 + size.height + 50)];
+    [mainScrollView setContentSize:CGSizeMake(PPMainViewWidth,190+30+(dataArray.count*60) + 45 +30 + size.height + 50)];
     
 }
 

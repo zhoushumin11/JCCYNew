@@ -76,7 +76,7 @@
 {
     NSString *titleAll = @"";
     
-    CGFloat titleWidth = 10*self.VCArr.count;
+    CGFloat titleWidth = 30*self.VCArr.count;
     
     for (int j = 0; j < self.VCArr.count; j++) {
         UIViewController *vc = self.VCArr[j];
@@ -110,12 +110,12 @@
         CGFloat lblW = size.width;
         CGFloat lblH = 40;
         PPSXTitleLable *lbl1 = [[PPSXTitleLable alloc]init];
-        lbl1.frame = CGRectMake(lblX, 0, lblW, lblH);
+        lbl1.frame = CGRectMake(lblX, 3, lblW, lblH);
 
         if (i == 0) {
-            lblX = lblX + lbl1.frame.size.width+5;
+            lblX = lblX + lbl1.frame.size.width+30;
         }else{
-            lblX = lblX + lbl1.frame.size.width+5;
+            lblX = lblX + lbl1.frame.size.width+30;
 
         }
         
@@ -162,7 +162,7 @@
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:indexString,@"index", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"YXMainViewControllerAction" object:dic];
 
-    if (self.VCArr.count <= 5) {
+    if (self.VCArr.count <= 4) {
 
     }else{
         // 滚动标题栏

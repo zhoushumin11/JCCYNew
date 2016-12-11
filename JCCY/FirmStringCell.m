@@ -11,7 +11,7 @@
 @implementation FirmStringCell
 
 
-@synthesize allcontentView,iConView,userNameLabel,timeLabel,contenStringView,contenStringSuperView,lineLabel;
+@synthesize allcontentView,iConView,userNameLabel,timeLabel,contenStringView,contenStringSuperView,lineLabel,contentTextView;
 
 
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -54,7 +54,15 @@
         self.contenStringView.backgroundColor = [UIColor clearColor];
         [self.contenStringSuperView addSubview:self.contenStringView];
         
-        
+//        self.contentTextView = [[UITextView alloc] init];
+//        self.contentTextView.editable = NO;
+//        self.contentTextView.layer.masksToBounds = YES;
+//        self.contentTextView.layer.cornerRadius = 6;
+//        self.contentTextView.font = [UIFont systemFontOfSize:15];
+//        self.contentTextView.scrollEnabled = NO;
+//        [self.contentTextView setBackgroundColor:[UIColor colorFromHexRGB:@"f0f0f0"]];
+//
+//        [self.allcontentView addSubview:self.contentTextView];
         
         //姓名
         self.userNameLabel.textColor = [UIColor colorFromHexRGB:@"0a0a0a"];
@@ -65,7 +73,7 @@
         
         //时间
         self.timeLabel.textColor = [UIColor grayColor];
-        self.timeLabel.font = [UIFont systemFontOfSize:15];
+        self.timeLabel.font = [UIFont systemFontOfSize:16];
         self.timeLabel.textAlignment = NSTextAlignmentLeft;
         [self.allcontentView addSubview:self.timeLabel];
         
@@ -83,7 +91,7 @@
     self.iConView.frame = CGRectMake(20, 10, 50, 50);
     self.userNameLabel.frame = CGRectMake(15,75, 60, 30);
     self.timeLabel.frame = CGRectMake(90, 10, 200, 30);
-    self.lineLabel.frame = CGRectMake(10, self.frame.size.height-0.5, self.frame.size.width-20, 0.5);
+    self.lineLabel.frame = CGRectMake(10, self.frame.size.height-0.5-5, self.frame.size.width-20, 0.5);
     
 }
 

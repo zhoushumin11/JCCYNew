@@ -28,8 +28,9 @@
         allcontentView.backgroundColor = [UIColor whiteColor];
         [self.contentView addSubview:allcontentView];
         
-        h_titleLabel.textColor = [UIColor blackColor];
+        h_titleLabel.textColor = [UIColor colorFromHexRGB:@"333333"];
         h_titleLabel.font = [UIFont systemFontOfSize:16];
+        
         h_titleLabel.textAlignment = NSTextAlignmentLeft;
         [allcontentView addSubview:h_titleLabel];
         
@@ -51,9 +52,9 @@
 {
     [super layoutSubviews];
     allcontentView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    h_titleLabel.frame = CGRectMake(8, 0, self.bounds.size.width-25,44);
-    h_subtitleLabel.frame = CGRectMake(15,34,80,25);
-    h_quanxianLabel.frame = CGRectMake(80, 34,80,25);
+    h_titleLabel.frame = CGRectMake(8, 2, self.bounds.size.width-25,44);
+    h_subtitleLabel.frame = CGRectMake(15,36,80,25);
+    h_quanxianLabel.frame = CGRectMake(80, 36,80,25);
     
 }
 

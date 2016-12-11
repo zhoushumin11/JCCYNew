@@ -33,7 +33,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
     [self get_info];
-    [self initMyView];
+//    [self initMyView];
 }
 #pragma mark --- 更新会员信息 ----
 -(void)get_info{
@@ -99,7 +99,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"红包";
+
     
     self.navigationController.navigationBar.barTintColor = [UIColor colorFromHexRGB:@"e60013"];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
@@ -118,13 +118,30 @@
     NSDictionary *dic3 = [NSDictionary dictionaryWithObjectsAndKeys:@"redPacket_huangjin",@"imgName",@"黄金",@"title",@"ff6e4e",@"color",HUANGJIN_USE_CONTENT,@"info",@"剩余26天",@"endDays", nil];
     [dataArray addObject:dic3];
     
+    
+    [self setUpNav];
+    
     [self creatMainView];
+    
 }
 
+- (void)setUpNav
+{
+    
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"liveRadioPlayingBack"] style:UIBarButtonItemStyleDone target:self action:@selector(pop)];
+    self.navigationItem.leftBarButtonItem = backItem;
+    
+}
+
+- (void)pop
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
 //创建主视图
 -(void)creatMainView{
     self.view.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
-    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth,self.view.bounds.size.height+2) style:UITableViewStylePlain];
+    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth,self.view.bounds.size.height) style:UITableViewStylePlain];
     mainTableView.backgroundColor = [UIColor clearColor];
     mainTableView.separatorInset = UIEdgeInsetsZero;
     //        _bulletinlistTableView.tableHeaderView = [[UIView alloc] init];
@@ -162,6 +179,7 @@
     //初始化用户button
     UIButton *user_info_btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     user_info_btn.frame = CGRectMake(-10, 0, size.width+10, 44);
+    user_info_btn.titleLabel.font = [UIFont systemFontOfSize:16];
     user_info_btn.titleLabel.textAlignment = NSTextAlignmentLeft;
     [user_info_btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [user_info_btn setTitle:@"" forState:UIControlStateNormal];
@@ -170,7 +188,7 @@
     
     //初始化用户等级button
     UIButton *user_info_Level = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    user_info_Level.frame = CGRectMake(size.width, 12, 40, 20);
+    user_info_Level.frame = CGRectMake(size.width, 13, 40, 18);
     user_info_Level.titleLabel.textAlignment = NSTextAlignmentLeft;
     [user_info_Level setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [user_info_Level addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
@@ -215,8 +233,22 @@
     if ([mainTableView.mj_header isRefreshing]) {
         [mainTableView.mj_header endRefreshing];
     }
-    [self get_info];
+    dataArray = [NSMutableArray array];
     
+    NSString *ZANSHANG_USE_CONTENT  = [[NSUserDefaults standardUserDefaults] objectForKey:@"ZANSHANG_USE_CONTENT"];
+    NSDictionary *dic1 = [NSDictionary dictionaryWithObjectsAndKeys:@"redPacket_zangshang",@"imgName",@"赞赏",@"title",@"ffa800",@"color",ZANSHANG_USE_CONTENT,@"info",@"剩余26天",@"endDays", nil];
+    [dataArray addObject:dic1];
+    
+    NSString *ZUANSHI_USE_CONTENT  = [[NSUserDefaults standardUserDefaults] objectForKey:@"ZUANSHI_USE_CONTENT"];
+    NSDictionary *dic2 = [NSDictionary dictionaryWithObjectsAndKeys:@"redPacket_zuanshi",@"imgName",@"钻石",@"title",@"18a3dc",@"color",ZUANSHI_USE_CONTENT,@"info",@"剩余26天",@"endDays", nil];
+    [dataArray addObject:dic2];
+    
+    NSString *HUANGJIN_USE_CONTENT  = [[NSUserDefaults standardUserDefaults] objectForKey:@"HUANGJIN_USE_CONTENT"];
+    NSDictionary *dic3 = [NSDictionary dictionaryWithObjectsAndKeys:@"redPacket_huangjin",@"imgName",@"黄金",@"title",@"ff6e4e",@"color",HUANGJIN_USE_CONTENT,@"info",@"剩余26天",@"endDays", nil];
+    [dataArray addObject:dic3];
+    
+    [self get_info];
+
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -224,7 +256,10 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 170;
+    
+    NSString *info = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"info"];
+    CGSize strSize = GetHTextSizeFont(info, PPMainViewWidth - 120, 15);
+    return 65+strSize.height+40+20+20;
 }
 
 
@@ -241,6 +276,9 @@
     cell.contentView.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
     
     cell.allcontentView.frame = CGRectMake(0, 0, PPMainViewWidth, 135);
+    cell.allcontentView.layer.masksToBounds = YES;
+    [cell.allcontentView setBorderWidth:0.5];
+    [cell.allcontentView setBorderColor:[UIColor colorFromHexRGB:@"d9d9d9"]];
     
     [cell.r_imgBtn setImage:[UIImage imageNamed:[[dataArray objectAtIndex:indexPath.row] objectForKey:@"imgName"]] forState:UIControlStateNormal];
     cell.r_titleLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
@@ -293,6 +331,12 @@
             daystr = @"剩余0天";
             [cell.r_enterInBtn setHidden:YES];
         }
+        
+        NSString *ds = [NSString stringWithFormat:@"%@",time_service_1];
+        
+        if ([ds isEqualToString:@"0"] ) {
+            days = 0;
+        }
         NSString *dasss = [NSString stringWithFormat:@"剩余<red>%d</red>天",days];
         cell.r_EndDaysLabel.attributedText = [dasss attributedStringWithStyleBook:style1];
 
@@ -317,8 +361,15 @@
             daystr = @"剩余0天";
             [cell.r_enterInBtn setHidden:YES];
         }
+        NSString *ds = [NSString stringWithFormat:@"%@",time_service_2];
+        
+        if ([ds isEqualToString:@"0"] ) {
+            days = 0;
+        }
         NSString *dasss = [NSString stringWithFormat:@"剩余<red>%d</red>天",days];
-        cell.r_EndDaysLabel.attributedText = [dasss attributedStringWithStyleBook:style1];    }else if (indexPath.row == 2){
+        cell.r_EndDaysLabel.attributedText = [dasss attributedStringWithStyleBook:style1];
+    
+    }else if (indexPath.row == 2){
         NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
         fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
         NSDate *daoqiTime = [fomart dateFromString:time_service_3Str];
@@ -338,6 +389,11 @@
             daystr = @"剩余0天";
             [cell.r_enterInBtn setHidden:YES];
         }
+        NSString *ds = [NSString stringWithFormat:@"%@",time_service_3];
+        
+        if ([ds isEqualToString:@"0"] ) {
+            days = 0;
+        }
             NSString *dasss = [NSString stringWithFormat:@"剩余<red>%d</red>天",days];
             cell.r_EndDaysLabel.attributedText = [dasss attributedStringWithStyleBook:style1];
         }
@@ -346,7 +402,18 @@
     cell.r_enterInBtn.backgroundColor = [UIColor colorFromHexRGB:[[dataArray objectAtIndex:indexPath.row] objectForKey:@"color"]];
     [cell.r_buyBtn setTitleColor:[UIColor colorFromHexRGB:[[dataArray objectAtIndex:indexPath.row] objectForKey:@"color"]] forState:UIControlStateNormal];
     cell.r_buyBtn.layer.borderColor=[UIColor colorFromHexRGB:[[dataArray objectAtIndex:indexPath.row] objectForKey:@"color"]].CGColor;
-    cell.r_UseInfoLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"info"];
+    
+    NSString *info = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"info"];
+    CGSize strSize = GetHTextSizeFont(info, PPMainViewWidth - 120, 15);
+    
+    cell.r_UseInfoLabel.frame = CGRectMake(100, 50, PPMainViewWidth - 120, strSize.height);
+    
+    cell.r_buyBtn.frame = CGRectMake((PPMainViewWidth-120)/2+105, 65+strSize.height, (PPMainViewWidth-120)/2-5, 40);
+    cell.r_enterInBtn.frame = CGRectMake(100, 65+strSize.height, (PPMainViewWidth-120)/2-10, 40);
+    
+    cell.allcontentView.frame = CGRectMake(0, 0, PPMainViewWidth, 65+strSize.height+40+20);
+    
+    cell.r_UseInfoLabel.text = info;
     cell.r_buyBtn.tag = indexPath.row+100;
     [cell.r_buyBtn addTarget:self action:@selector(rBuyBtnAction:) forControlEvents:UIControlEventTouchUpInside];
     cell.r_enterInBtn.tag = indexPath.row+200;
@@ -354,6 +421,132 @@
     
     return cell;
 }
+
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSNumber *present_time = [[NSUserDefaults standardUserDefaults] objectForKey:@"present_time"];
+    NSNumber *time_service_1 = [[NSUserDefaults standardUserDefaults] objectForKey:@"time_service_1"];
+    NSNumber *time_service_2 = [[NSUserDefaults standardUserDefaults] objectForKey:@"time_service_2"];
+    NSNumber *time_service_3 = [[NSUserDefaults standardUserDefaults] objectForKey:@"time_service_3"];
+    
+    //服务器当前时间
+    double i0 = [present_time doubleValue];
+    NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i0];
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+    NSString *present_timeStr = [dateFormat stringFromDate:nd];
+    
+    //赞赏到期时间
+    double i1 = [time_service_1 doubleValue];
+    NSDate *nd1 = [NSDate dateWithTimeIntervalSince1970:i1];
+    NSString *time_service_1Str = [dateFormat stringFromDate:nd1];
+    //钻石到期时间
+    double i2 = [time_service_2 doubleValue];
+    NSDate *nd2 = [NSDate dateWithTimeIntervalSince1970:i2];
+    NSString *time_service_2Str = [dateFormat stringFromDate:nd2];
+    //黄金到期时间
+    double i3 = [time_service_3 doubleValue];
+    NSDate *nd3 = [NSDate dateWithTimeIntervalSince1970:i3];
+    NSString *time_service_3Str = [dateFormat stringFromDate:nd3];
+    
+    
+    if (indexPath.row == 0) {
+        NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
+        fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
+        NSDate *daoqiTime = [fomart dateFromString:time_service_1Str];
+        NSDate *dangqianTime = [fomart dateFromString:present_timeStr];
+        
+        NSTimeInterval daoqiTimeI = [daoqiTime timeIntervalSince1970];
+        NSTimeInterval dangqianTimeI = [dangqianTime timeIntervalSince1970];
+        NSTimeInterval cha=daoqiTimeI-dangqianTimeI;
+        
+        div_t d = div(cha, 86400);
+        int days = d.quot;
+        if (days>=0) {
+            FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+            fiemShowByTypeViewController.typeString = @"1";
+            fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
+        }else{
+            JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
+            jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
+            jCCYBuyVipViewController.buyType = 0;
+            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];
+        }
+        
+        NSString *ds = [NSString stringWithFormat:@"%@",time_service_1];
+        
+        if ([ds isEqualToString:@"0"] ) {
+            JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
+            jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
+            jCCYBuyVipViewController.buyType = 0;
+            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];
+        }
+        
+    }else if (indexPath.row == 1){
+        NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
+        fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
+        NSDate *daoqiTime = [fomart dateFromString:time_service_2Str];
+        NSDate *dangqianTime = [fomart dateFromString:present_timeStr];
+        
+        NSTimeInterval daoqiTimeI = [daoqiTime timeIntervalSince1970];
+        NSTimeInterval dangqianTimeI = [dangqianTime timeIntervalSince1970];
+        NSTimeInterval cha=daoqiTimeI-dangqianTimeI;
+        
+        div_t d = div(cha, 86400);
+        int days = d.quot;
+        if (days>=0) {
+            FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+            fiemShowByTypeViewController.typeString = @"2";
+            fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
+        }else{
+            JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
+            jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
+            jCCYBuyVipViewController.buyType = 1;
+            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];
+        }
+        NSString *ds = [NSString stringWithFormat:@"%@",time_service_2];
+        
+        if ([ds isEqualToString:@"0"] ) {
+            JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
+            jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
+            jCCYBuyVipViewController.buyType = 1;
+            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];        }
+        
+    }else if (indexPath.row == 2){
+        NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
+        fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
+        NSDate *daoqiTime = [fomart dateFromString:time_service_3Str];
+        NSDate *dangqianTime = [fomart dateFromString:present_timeStr];
+        
+        NSTimeInterval daoqiTimeI = [daoqiTime timeIntervalSince1970];
+        NSTimeInterval dangqianTimeI = [dangqianTime timeIntervalSince1970];
+        NSTimeInterval cha=daoqiTimeI-dangqianTimeI;
+        
+        div_t d = div(cha, 86400);
+        int days = d.quot;
+        if (days>=0) {
+            FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+            fiemShowByTypeViewController.typeString = @"3";
+            fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
+        }else{
+            JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
+            jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
+            jCCYBuyVipViewController.buyType = 2;
+            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];//
+        }
+        NSString *ds = [NSString stringWithFormat:@"%@",time_service_3];
+        
+        if ([ds isEqualToString:@"0"] ) {
+            JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
+            jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
+            jCCYBuyVipViewController.buyType = 2;
+            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];        }
+    }
+}
+
 
 //点击购买
 -(void)rBuyBtnAction:(UIButton *)btn{

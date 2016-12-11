@@ -46,22 +46,22 @@
     
     self.title = @"会员设置";
     
-    UIView *settingView = [[UIView alloc] initWithFrame:CGRectMake(0, 10+64, PPMainViewWidth, 210)];
+    UIView *settingView = [[UIView alloc] initWithFrame:CGRectMake(0, 10+64, PPMainViewWidth, 180)];
     settingView.backgroundColor = [UIColor whiteColor];
     
-    UILabel *shoujihaoLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0,80, 70)];
+    UILabel *shoujihaoLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0,80, 60)];
     shoujihaoLabel.textColor = [UIColor grayColor];
     shoujihaoLabel.text = @"手机号";
     shoujihaoLabel.font = [UIFont systemFontOfSize:18];
     [settingView addSubview:shoujihaoLabel];
     
-    mobileLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 0,200, 70)];
+    mobileLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 0,200, 60)];
     mobileLabel.textColor = [UIColor blackColor];
     NSString *mobileStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_phone"];
     [settingView addSubview:mobileLabel];
     
     bangdingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    bangdingBtn.frame = CGRectMake(PPMainViewWidth - 80, 15, 70, 35);
+    bangdingBtn.frame = CGRectMake(PPMainViewWidth - 80, 12, 70, 35);
     [bangdingBtn setTitle:@"绑定" forState:UIControlStateNormal];
     [bangdingBtn setTitleColor:[UIColor colorFromHexRGB:@"e56357"] forState:UIControlStateNormal];
     bangdingBtn.layer.masksToBounds = YES;
@@ -80,13 +80,13 @@
     
     
     //缓存
-    UILabel *huancunTLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 71,80, 70)];
+    UILabel *huancunTLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 60,80, 60)];
     huancunTLabel.textColor = [UIColor grayColor];
     huancunTLabel.text = @"清空缓存";
     huancunTLabel.font = [UIFont systemFontOfSize:18];
     [settingView addSubview:huancunTLabel];
     
-    huancunLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 71,200, 70)];
+    huancunLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 60,200, 60)];
     huancunLabel.textColor = [UIColor blackColor];
     
     NSUInteger size = [[SDImageCache sharedImageCache] getSize];
@@ -95,34 +95,35 @@
     [settingView addSubview:huancunLabel];
     
     UIButton *clearHuancunBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    clearHuancunBtn.frame = CGRectMake(0, 71, PPMainViewWidth, 70);
+    clearHuancunBtn.frame = CGRectMake(0, 60, PPMainViewWidth, 60);
     [clearHuancunBtn setBackgroundColor:[UIColor clearColor]];
     [clearHuancunBtn addTarget:self action:@selector(clearTmpPics) forControlEvents:UIControlEventTouchUpInside];
     [settingView addSubview:clearHuancunBtn];
     
     
     //版本
-    UILabel *banbenLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 140,80, 70)];
+    UILabel *banbenLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 120,80, 60)];
     banbenLabel.textColor = [UIColor grayColor];
     banbenLabel.text = @"版本";
     banbenLabel.font = [UIFont systemFontOfSize:18];
     [settingView addSubview:banbenLabel];
     
-    UILabel *banbenNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 140,200, 70)];
+    UILabel *banbenNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 120,200, 60)];
     banbenNumLabel.textColor = [UIColor blackColor];
     
     NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
     NSString *appVersion = [infoDic objectForKey:@"CFBundleVersion"];
-    banbenNumLabel.text = appVersion;
+    
+    banbenNumLabel.text = [NSString stringWithFormat:@"%@.0",appVersion];
     [settingView addSubview:banbenNumLabel];
     
     
     //分割线
-    UILabel *lineLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 70, PPMainViewWidth - 20, 0.3)];
+    UILabel *lineLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 60, PPMainViewWidth - 20, 0.3)];
     lineLabel.backgroundColor = [UIColor grayColor];
     [settingView addSubview:lineLabel];
     
-    UILabel *lineLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(10, 141, PPMainViewWidth - 20, 0.3)];
+    UILabel *lineLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(10, 120, PPMainViewWidth - 20, 0.3)];
     lineLabel2.backgroundColor = [UIColor grayColor];
     [settingView addSubview:lineLabel2];
     
@@ -132,7 +133,7 @@
     //退出 button
     UIButton *tuichuBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     tuichuBtn.titleLabel.font = [UIFont systemFontOfSize:17];
-    tuichuBtn.frame = CGRectMake(10, 300, PPMainViewWidth-20, 50);
+    tuichuBtn.frame = CGRectMake(10, 280, PPMainViewWidth-20, 50);
     [tuichuBtn.layer setMasksToBounds:YES];
     [tuichuBtn.layer setCornerRadius:5.0]; //设置矩形四个圆角半径
     tuichuBtn.backgroundColor = [UIColor colorFromHexRGB:@"e60013"];

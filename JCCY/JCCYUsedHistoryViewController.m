@@ -192,7 +192,7 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0,0, PPMainViewWidth, 44)];
-    view.backgroundColor = [UIColor colorFromHexRGB:@"c9c7c7"];
+    view.backgroundColor = [UIColor grayColor];
     
     UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/3, 44)];
     lable1.textAlignment = NSTextAlignmentCenter;
@@ -216,13 +216,13 @@
     [view addSubview:lable3];
     
     if (PPMainViewWidth < 350) {
-        lable1.font = [UIFont boldSystemFontOfSize:14];
-        lable2.font = [UIFont boldSystemFontOfSize:14];
-        lable3.font = [UIFont boldSystemFontOfSize:14];
+        lable1.font = [UIFont systemFontOfSize:16];
+        lable2.font = [UIFont systemFontOfSize:16];
+        lable3.font = [UIFont systemFontOfSize:16];
     }else{
-        lable1.font = [UIFont boldSystemFontOfSize:18];
-        lable2.font = [UIFont boldSystemFontOfSize:18];
-        lable3.font = [UIFont boldSystemFontOfSize:18];
+        lable1.font = [UIFont systemFontOfSize:16];
+        lable2.font = [UIFont systemFontOfSize:16];
+        lable3.font = [UIFont systemFontOfSize:16];
     }
 
 
@@ -234,6 +234,9 @@
     return 44;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 55;
+}
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (dataArray.count > 0) {
         return dataArray.count;
@@ -246,7 +249,7 @@
     if (dataArray.count > 0) {
     static NSString *identify = @"cell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
@@ -255,20 +258,19 @@
     [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
     
-    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/3, 44)];
+    UILabel *lable1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth/3, 55)];
     lable1.textAlignment = NSTextAlignmentCenter;
     lable1.textColor = [UIColor blackColor];
     int num = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"time"] intValue];
     NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-dd HH:MM"];
+    [formatter setDateFormat:@"yyyy-MM-dd"];
     NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:num];
     NSString *confromTimespStr = [formatter stringFromDate:confromTimesp];
     lable1.text = confromTimespStr;
     lable1.backgroundColor = [UIColor clearColor];
-    lable1.font = [UIFont systemFontOfSize:12];
     [cell.contentView addSubview:lable1];
     
-    UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/3, 0, PPMainViewWidth/3, 44)];
+    UILabel *lable2 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/3, 0, PPMainViewWidth/3, 55)];
     lable2.textAlignment = NSTextAlignmentCenter;
     lable2.textColor = [UIColor blackColor];
     NSInteger service_type = [[[dataArray objectAtIndex:indexPath.row] objectForKey:@"service_type"] integerValue];
@@ -282,18 +284,38 @@
         lable2.text = @"黄金";
     }
     lable2.backgroundColor = [UIColor clearColor];
-    lable2.font = [UIFont systemFontOfSize:12];
     [cell.contentView addSubview:lable2];
     
-    UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/3*2, 0, PPMainViewWidth/3, 44)];
+    UILabel *lable3 = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth/3*2, 0, PPMainViewWidth/3, 55)];
     lable3.textAlignment = NSTextAlignmentCenter;
     
     lable3.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"cost_gold"];
     lable3.textColor = [UIColor redColor];
     lable3.backgroundColor = [UIColor clearColor];
-    lable3.font = [UIFont systemFontOfSize:12];
     [cell.contentView addSubview:lable3];
     
+    UILabel *lineLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 54.5, PPMainViewWidth, 0.5)];
+    lineLabel.backgroundColor = [UIColor colorFromHexRGB:@"d3d3d3"];
+    [cell.contentView addSubview:lineLabel];
+        
+    
+        if (PPMainViewWidth<350) {
+            lable1.font = [UIFont systemFontOfSize:16];
+            lable2.font = [UIFont systemFontOfSize:16];
+            lable3.font = [UIFont systemFontOfSize:16];
+        }else{
+            lable1.font = [UIFont systemFontOfSize:16];
+            lable2.font = [UIFont systemFontOfSize:16];
+            lable3.font = [UIFont systemFontOfSize:16];
+        }
+        
+        
+    if (indexPath.row == dataArray.count-1) {
+        lineLabel.hidden = YES;
+    }else{
+        lineLabel.hidden = NO;
+    }
+        
     return cell;
 }else{
         static NSString *identify = @"cell1";

@@ -53,9 +53,10 @@
     phoneNumberField = [[UITextField alloc] initWithFrame:CGRectMake(0, 40, PPMainViewWidth, 50)];
     phoneNumberField.center = CGPointMake(PPMainViewWidth/2, 40);
     phoneNumberField.placeholder = @"+86";
-    phoneNumberField.keyboardType = UIKeyboardTypeASCIICapable;
+    phoneNumberField.keyboardType = UIKeyboardTypeNumberPad;
+
     phoneNumberField.delegate = self;
-    phoneNumberField.tag = 102;
+    phoneNumberField.tag = 654321;
     phoneNumberField.backgroundColor = [UIColor whiteColor];
     phoneNumberField.returnKeyType = UIReturnKeyNext;
     [phoneNumberField setAutocorrectionType:UITextAutocorrectionTypeNo];
@@ -81,6 +82,7 @@
     passwordField.center = CGPointMake(PPMainViewWidth/2, 90);
     //    passwordField.secureTextEntry = YES;
     passwordField.placeholder = @"请输入您收到的验证码";
+    passwordField.keyboardType = UIKeyboardTypeNumberPad;
     passwordField.tag = 123456;
     passwordField.delegate = self;
     passwordField.backgroundColor = [UIColor whiteColor];
@@ -119,7 +121,7 @@
     //绑定 button
     UIButton *bangdingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     bangdingBtn.titleLabel.font = [UIFont systemFontOfSize:17];
-    bangdingBtn.frame = CGRectMake(35, 220, PPMainViewWidth-70, 45);
+    bangdingBtn.frame = CGRectMake(35, 220, PPMainViewWidth-70, 50);
     bangdingBtn.center = CGPointMake(PPMainViewWidth/2, 170);
     
     [bangdingBtn.layer setMasksToBounds:YES];
@@ -310,6 +312,32 @@
         [self bangdingPhone];
     }
     return YES;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if ([string isEqualToString:@"\n"]){
+        return YES;
+    }
+    
+    NSString * aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    if (phoneNumberField == textField || passwordField == textField)
+    {
+        if (textField.tag == 654321) {
+            if ([aString length] > 11) {
+                textField.text = [aString substringToIndex:11];
+                return NO;
+            }
+        }else if (textField.tag == 123456){
+            if ([aString length] > 4) {
+                textField.text = [aString substringToIndex:4];
+                return NO;
+            }
+        }
+        
+    }
+    return YES;
+    
 }
 
 - (void) animateTextField: (UITextField*) textField up: (BOOL) up

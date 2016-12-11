@@ -72,7 +72,15 @@
     //微信支付失败通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(wechatPayFail) name:JCCYWeiXinPayFail object:nil];
 
+    //判断有无网络
     
+    BOOL isNetOK = [CoreStatus isNetworkEnable];
+    if (isNetOK) {
+        
+    }else{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"暂无网络,请检查网络设置！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+    }
     //支付类型 默认支付宝
     pay_type = 1;
     
@@ -220,22 +228,46 @@
         [btn setBackgroundColor:[UIColor whiteColor]];
         
         //设置标题
-
+        NSString *rmbStr = [NSString stringWithFormat:@"¥%@",[titleDic objectForKey:@"conf_recharge_amount"]];
         btn.titleEdgeInsets = UIEdgeInsetsMake(buttonH/3+10,0.0 , buttonH/4*3-10, 0.0);
-        [btn setTitle:[NSString stringWithFormat:@"¥%@",[titleDic objectForKey:@"conf_recharge_amount"]] forState:UIControlStateNormal];
+        [btn setTitle:rmbStr forState:UIControlStateNormal];
         
         //设置副标题
+        NSString *goldsStr = [NSString stringWithFormat:@"(%@金币)",[titleDic objectForKey:@"conf_recharge_gold"]];
         UILabel *rmbLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, buttonH/4*2+10, buttonW, buttonH/4)];
         rmbLabel.textColor = [UIColor grayColor];
         rmbLabel.textAlignment = NSTextAlignmentCenter;
-        rmbLabel.text = [NSString stringWithFormat:@"(%@金币)",[titleDic objectForKey:@"conf_recharge_gold"]];
+        rmbLabel.text = goldsStr;
         [btn addSubview:rmbLabel];
         if (PPMainViewWidth < 350) {
-            btn.titleLabel.font = [UIFont systemFontOfSize:17];
-            rmbLabel.font = [UIFont systemFontOfSize:12];
+            
+            if (rmbStr.length < 10) {
+                btn.titleLabel.font = [UIFont systemFontOfSize:18];
+
+            }else{
+                btn.titleLabel.font = [UIFont systemFontOfSize:16];
+            }
+            
+            if (goldsStr.length < 10) {
+                rmbLabel.font = [UIFont systemFontOfSize:14];
+            }else{
+                rmbLabel.font = [UIFont systemFontOfSize:10];
+            }
+            
         }else{
-            btn.titleLabel.font = [UIFont systemFontOfSize:20];
-            rmbLabel.font = [UIFont systemFontOfSize:12];
+            
+            if (rmbStr.length < 10) {
+                btn.titleLabel.font = [UIFont systemFontOfSize:20];
+                
+            }else{
+                btn.titleLabel.font = [UIFont systemFontOfSize:16];
+            }
+            
+            if (goldsStr.length < 10) {
+                rmbLabel.font = [UIFont systemFontOfSize:14];
+            }else{
+                rmbLabel.font = [UIFont systemFontOfSize:10];
+            }
         }
         
         //设置选中背景imageView
@@ -286,7 +318,7 @@
 #pragma 创建支付类型按钮
 -(void)creatPayTypeBtn:(NSInteger)payType{
     
-    payView = [[UIView alloc] initWithFrame:CGRectMake(10,buttonsView.frame.origin.y+ buttonsView.frame.size.height, PPMainViewWidth-20, 150)];
+    payView = [[UIView alloc] initWithFrame:CGRectMake(10,buttonsView.frame.origin.y+ buttonsView.frame.size.height-10, PPMainViewWidth-20, 150)];
     payView.backgroundColor = [UIColor whiteColor];
     [payView.layer setBorderWidth:1.0];
     [payView.layer setMasksToBounds:YES];
@@ -298,9 +330,9 @@
     UIButton *quedingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     quedingBtn.titleLabel.font = [UIFont systemFontOfSize:17];
     if (PPMainViewWidth < 350) {
-        quedingBtn.frame = CGRectMake(10, payView.frame.origin.y + payView.frame.size.height+20, PPMainViewWidth-20, 44);
+        quedingBtn.frame = CGRectMake(10, payView.frame.origin.y + payView.frame.size.height+20, PPMainViewWidth-20, 50);
     }else{
-        quedingBtn.frame = CGRectMake(10, payView.frame.origin.y + payView.frame.size.height+20, PPMainViewWidth-20, 60);
+        quedingBtn.frame = CGRectMake(10, payView.frame.origin.y + payView.frame.size.height+20, PPMainViewWidth-20, 50);
         
     }
 
@@ -377,9 +409,9 @@
     
     NSString *CHONGZHI_CONTENT = [[NSUserDefaults standardUserDefaults] objectForKey:@"CHONGZHI_CONTENT"];
 
-    CGSize size = GetHTextSizeFont(CHONGZHI_CONTENT, PPMainViewWidth-20, 14);
+    CGSize size = GetHTextSizeFont(CHONGZHI_CONTENT, PPMainViewWidth-20, 16);
     
-    chongZhiShuoMingView  = [[UIView alloc] initWithFrame:CGRectMake(10, payView.frame.origin.y + payView.frame.size.height+30+60, PPMainViewWidth - 20, size.height + 50)];
+    chongZhiShuoMingView  = [[UIView alloc] initWithFrame:CGRectMake(10, payView.frame.origin.y + payView.frame.size.height+25+60, PPMainViewWidth - 20, size.height + 50)];
     
     chongZhiShuoMingView.backgroundColor = [UIColor clearColor];
     [mainScrollView addSubview:chongZhiShuoMingView];
@@ -387,20 +419,21 @@
     UILabel *chongzhishuominLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth-20, 30)];
     chongzhishuominLabel.text  = @"充值说明：";
     chongzhishuominLabel.backgroundColor = [UIColor clearColor];
-    chongzhishuominLabel.font = [UIFont systemFontOfSize:14];
+    chongzhishuominLabel.font = [UIFont systemFontOfSize:16];
     chongzhishuominLabel.textColor = [UIColor redColor];
     [chongZhiShuoMingView addSubview:chongzhishuominLabel];
     
-    UITextView *chongzhishuominLabels = [[UITextView alloc] initWithFrame:CGRectMake(0, 30, PPMainViewWidth-20, size.height+20)];
+    UITextView *chongzhishuominLabels = [[UITextView alloc] initWithFrame:CGRectMake(-4, 30, PPMainViewWidth-20, size.height+30)];
     chongzhishuominLabels.text  = CHONGZHI_CONTENT;
-    chongzhishuominLabels.font = [UIFont systemFontOfSize:14];
+    chongzhishuominLabels.font = [UIFont systemFontOfSize:16];
     chongzhishuominLabels.backgroundColor = [UIColor clearColor];
     chongzhishuominLabels.editable = NO;
+    chongzhishuominLabels.scrollEnabled = NO;
     chongzhishuominLabels.textColor = [UIColor blackColor];
     [chongZhiShuoMingView addSubview:chongzhishuominLabels];
     
     
-    [mainScrollView setContentSize:CGSizeMake(PPMainViewWidth, payView.frame.origin.y + buttonsView.frame.origin.y + chongZhiShuoMingView.frame.origin.y + 10 + 20 + 30)];
+    [mainScrollView setContentSize:CGSizeMake(PPMainViewWidth, payView.frame.origin.y + buttonsView.frame.origin.y + chongZhiShuoMingView.frame.origin.y + 10 + 30 + 30)];
 
     
     
@@ -435,6 +468,14 @@
 //确定充值 1.首先提交到服务器 申请充值
 -(void)quedingPhone{
     
+    //判断有无网络
+    BOOL isNetOK = [CoreStatus isNetworkEnable];
+    if (isNetOK) {
+        
+    }else{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"暂无网络,请检查网络设置！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+    }
 
     
     // NOTE: 当前时间点

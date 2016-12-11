@@ -13,4 +13,6 @@
 @property(nonatomic,strong) UIButton *iConView; //用户图片
 @property(nonatomic,strong) UILabel *settingTitleLabel;    //用户名
 
+@property(nonatomic,strong) UIButton *allViewBtn; //所有行点击btn
+
 @end

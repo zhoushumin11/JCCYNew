@@ -33,4 +33,7 @@
 
 + (void)toastInView:(UIView *)parentView withText:(NSString *)text;
 
++ (void)hidenToastView;
+
+
 @end

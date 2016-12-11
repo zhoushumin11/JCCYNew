@@ -49,11 +49,16 @@
 
 //重新登录
 -(void)reLogin{
-    [self checkPhoneBangdingSucc:userIdStr :accessTokenStr];
+    NSString *isWechatAccess = [[NSUserDefaults standardUserDefaults] objectForKey:@"isWechatAccess"];
+
+    if ([isWechatAccess isEqualToString:@"Yes"]) {
+        [self checkPhoneBangdingSucc:userIdStr :accessTokenStr];
+    }
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reLogin) name:UPDATA_MYViews object:nil];
     
@@ -92,7 +97,6 @@
 
 
 
-
 //微信登录
 -(void)wechatLoginBtn:(UIButton *)btn{
 
@@ -108,6 +112,8 @@
             if (error) {
                 message = @"Get user info fail";
                 UMSocialLogInfo(@"Get user info fail with error %@",error);
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"微信授权失败,请检查网络设置！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alert show];
             }else{
                 if ([result isKindOfClass:[UMSocialUserInfoResponse class]]) {
                     UMSocialUserInfoResponse *resp = result;
@@ -147,7 +153,8 @@
                     accessTokenStr = accessToken;
                     [self checkPhoneBangdingSucc:unionid :accessToken];
                     
-            
+                    [[NSUserDefaults standardUserDefaults] setObject:@"Yes" forKey:@"isWechatAccess"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
                     
                     
                 }else{

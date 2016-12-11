@@ -35,7 +35,13 @@
 
 #import "JHUD.h"
 
-@interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
+#import "RedPacketViewController.h"
+#import "PPNavigationController.h"
+
+#import "SDCycleScrollView.h"
+
+
+@interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,SDCycleScrollViewDelegate>
 
 //@property (nonatomic, strong) UIButton *user_info_btn; //用户信息button
 //@property (nonatomic, strong) UIButton *user_info_Level; //用户等级
@@ -43,6 +49,8 @@
 @property(nonatomic,strong) NSMutableArray *dataArray;//表数据
 @property(nonatomic,strong) NSMutableArray *scrollNewsArray;//滚动数据
 @property(nonatomic,strong) NSMutableArray *columnArray;//栏目
+@property (nonatomic,strong) NSMutableArray *bannerDataArray;
+
 
 
 @property(nonatomic,strong) NSDictionary *pageDic; //分页字典
@@ -51,6 +59,9 @@
 @property(nonatomic,strong) UITableView *mainTableView;
 
 @property (nonatomic, strong) NJBannerView *adBannerView;//广告滚动页
+
+@property (nonatomic,strong) SDCycleScrollView *addadBannerView;
+
 
 @property (nonatomic,strong) UIView *mainTableViewHeaderView; //表头视图
 
@@ -61,7 +72,7 @@
 
 @implementation HomeViewController
 
-@synthesize mainTableView,dataArray,scrollNewsArray,adBannerView,mainTableViewHeaderView,pageDic;
+@synthesize mainTableView,dataArray,scrollNewsArray,adBannerView,mainTableViewHeaderView,pageDic,addadBannerView,bannerDataArray;
 
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -75,6 +86,21 @@
         BangDingViewController *pPRegistViewController = [[BangDingViewController alloc] init];
         [self presentViewController:pPRegistViewController animated:YES completion:nil];
     }
+    
+    //判断有无网络
+    
+    BOOL isNetOK = [CoreStatus isNetworkEnable];
+    if (isNetOK) {
+        
+    }else{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"暂无网络,请检查网络设置！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+    
+    if (dataArray.count == 0) {
+        [self refreshTableView];
+    }
+
     
 }
 
@@ -90,7 +116,14 @@
 
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.barTintColor = [UIColor colorFromHexRGB:@"e60013"];
-    self.title = @"首页";
+    if (PPMainViewWidth<350) {
+        self.title = @"首页";
+        self.tabBarItem.title = @"首页";
+    }else{
+        self.title = @"梧桐证券";
+        self.tabBarItem.title = @"首页";
+    }
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabbarIndex) name:@"changeTabbarIndex" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:UPDATA_MYViews object:nil];
@@ -118,15 +151,18 @@
 }
 //跳入购买页
 -(void)changeTabbarIndex{
-    self.tabBarController.selectedIndex = 2;
+//    self.tabBarController.selectedIndex = 2;
+    RedPacketViewController *plusVC = [[RedPacketViewController alloc] init];
+    PPNavigationController *navVc = [[PPNavigationController alloc] initWithRootViewController:plusVC];
+    [self presentViewController:navVc animated:YES completion:nil];
 }
 
 #pragma mark - 创建没有广告的首页头视图
 -(void)creatOnlyBtnHeaderView{
     
-    if (self.adBannerView) {
-        [self.adBannerView removeFromSuperview];
-        self.adBannerView = nil;
+    if (self.addadBannerView) {
+        [self.addadBannerView removeFromSuperview];
+        self.addadBannerView = nil;
     }
     mainTableViewHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 134)];
     
@@ -148,38 +184,44 @@
         btn.tag = 2016+i;
         [btn addTarget:self action:@selector(homeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, ww-30, ww, 20)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, ww-35, ww, 20)];
+        if (PPMainViewWidth<350) {
+            label .frame = CGRectMake(2, ww-32, ww, 20);
+        }
+        
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont systemFontOfSize:14];
-        label.textColor = [UIColor blackColor];
+        label.textColor = [UIColor colorFromHexRGB:@"333333"];
         label.backgroundColor = [UIColor clearColor];
         label.text = buttonTitleArr[i];
         [btn addSubview:label];
         [btnsView addSubview:btn];
     }
     
+
+    
     UILabel *linelabel01 = [[UILabel alloc] initWithFrame:CGRectMake(0, ww, PPMainViewWidth, 0.5)];
     linelabel01.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
     [btnsView addSubview:linelabel01];
     
     //添加资讯消息按钮
-    UIView *zixunMsgView = [[UIView alloc] initWithFrame:CGRectMake(0,ww +10, PPMainViewWidth, 44)];
+    UIView *zixunMsgView = [[UIView alloc] initWithFrame:CGRectMake(0,ww +10, PPMainViewWidth, 55)];
     zixunMsgView.backgroundColor = [UIColor whiteColor];
 
-    UIImageView *imgVc = [[UIImageView alloc] initWithFrame:CGRectMake(0, 12, 40, 40)];
+    UIImageView *imgVc = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 44, 44)];
     imgVc.image = [UIImage imageNamed:@"zixun_home.png"];
     [zixunMsgView addSubview:imgVc];
     
-    UILabel *goLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth - 40,0,40,44)];
+    UILabel *goLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth - 40,0,40,55)];
     goLabel.text = @">";
-    goLabel.textColor = [UIColor blackColor];
+    goLabel.textColor = [UIColor colorFromHexRGB:@"333333"];
     goLabel.textAlignment = NSTextAlignmentCenter;
     [zixunMsgView addSubview:goLabel];
     
     //资讯信息label
-    UILabel *zixunTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(44,0,80,44)];
+    UILabel *zixunTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55,0,80,55)];
     zixunTitleLabel.text = @"资讯消息";
-    zixunTitleLabel.textColor = [UIColor blackColor];
+    zixunTitleLabel.textColor = [UIColor colorFromHexRGB:@"333333"];
     [zixunMsgView addSubview:zixunTitleLabel];
     
     UILabel *linelabel02 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, 0.5)];
@@ -187,7 +229,7 @@
     [zixunMsgView addSubview:linelabel02];
     
     UIButton *zixunBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    zixunBtn.frame = CGRectMake(0, 0, PPMainViewWidth, 44);
+    zixunBtn.frame = CGRectMake(0, 0, PPMainViewWidth, 55);
     [zixunBtn addTarget:self action:@selector(zixunBtnAction) forControlEvents:UIControlEventTouchUpInside];
     [zixunBtn setBackgroundColor:[UIColor clearColor]];
     [zixunMsgView addSubview:zixunBtn];
@@ -201,13 +243,21 @@
 #pragma mark - 首页新闻滚动图
 - (void)creatScrollNews:(NSMutableArray *)list
 {
-    if (self.adBannerView) {
-        [self.adBannerView removeFromSuperview];
-        self.adBannerView = nil;
+//    if (self.adBannerView) {
+//        [self.adBannerView removeFromSuperview];
+//        self.adBannerView = nil;
+//    }
+    
+    if (self.addadBannerView) {
+        [self.addadBannerView removeFromSuperview];
+        self.addadBannerView = nil;
     }
+    
+    bannerDataArray = [NSMutableArray array];
     
     NSMutableArray *currentDatas = [NSMutableArray arrayWithCapacity:0];
     NSMutableArray *titleList = [NSMutableArray arrayWithCapacity:0];
+    NSMutableArray *imgList = [NSMutableArray arrayWithCapacity:0];
     
     for (int i = 0 ; i < [list count]; i++) {
         
@@ -231,14 +281,21 @@
                                 };
         [currentDatas addObject:newsa];
         [titleList addObject:ad_title];
+        [imgList addObject:ad_pic];
         
     }
-    NJBannerView *bannerV = [[NJBannerView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewWidth*0.52)];
     
-    bannerV.titles = nil;
-    bannerV.datas = currentDatas;
+    bannerDataArray = currentDatas;
     
-    adBannerView = bannerV;
+    SDCycleScrollView *bannerV = [[SDCycleScrollView alloc] initWithFrame:CGRectMake(0, 0, PPMainViewWidth, PPMainViewWidth*0.52)];
+    bannerV.pageControlAliment = SDCycleScrollViewPageContolAlimentCenter;
+    bannerV.titlesGroup = nil;
+    bannerV.imageURLStringsGroup = imgList;
+    bannerV.delegate = self;
+    bannerV.autoScrollTimeInterval = 3.0;
+
+
+    addadBannerView = bannerV;
     
     UIView *btnsView = [[UIView alloc] initWithFrame:CGRectMake(0, PPMainViewWidth*0.52, PPMainViewWidth, 80)];
     NSArray *buttonTitleArr = [NSArray arrayWithObjects:@"实盘",@"赞赏",@"钻石",@"黄金", nil];
@@ -252,15 +309,21 @@
 //        [btn setBackgroundImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateHighlighted];
-        btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+        btn.imageEdgeInsets = UIEdgeInsetsMake(8, 10, 12, 10);
         [btn setBackgroundColor:[UIColor whiteColor]];
         btn.tag = 2016+i;
         [btn addTarget:self action:@selector(homeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, ww-30, ww, 20)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(2, ww-35, ww, 20)];
+        
+        if (PPMainViewWidth<350) {
+            label .frame = CGRectMake(2, ww-32, ww, 20);
+            btn.imageEdgeInsets = UIEdgeInsetsMake(10, 12, 16, 12);
+        }
+        
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont systemFontOfSize:14];
-        label.textColor = [UIColor blackColor];
+        label.textColor = [UIColor colorFromHexRGB:@"333333"];
         label.backgroundColor = [UIColor clearColor];
         label.text = buttonTitleArr[i];
         [btn addSubview:label];
@@ -281,7 +344,7 @@
     //>label
     UILabel *goLabel = [[UILabel alloc] initWithFrame:CGRectMake(PPMainViewWidth - 40,0,40,55)];
     goLabel.text = @">";
-    goLabel.textColor = [UIColor blackColor];
+    goLabel.textColor = [UIColor colorFromHexRGB:@"333333"];
     goLabel.font = [UIFont systemFontOfSize:18];
     goLabel.textAlignment = NSTextAlignmentCenter;
     [zixunMsgView addSubview:goLabel];
@@ -289,7 +352,7 @@
     //资讯信息label
     UILabel *zixunTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55,0,80,55)];
     zixunTitleLabel.text = @"资讯消息";
-    zixunTitleLabel.textColor = [UIColor blackColor];
+    zixunTitleLabel.textColor = [UIColor colorFromHexRGB:@"333333"];
     [zixunMsgView addSubview:zixunTitleLabel];
     
     UIButton *zixunBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -306,18 +369,18 @@
     mainTableViewHeaderView.backgroundColor = [UIColor colorFromHexRGB:@"f4f4f4"];
     
     [mainTableViewHeaderView addSubview:btnsView];
-    [mainTableViewHeaderView addSubview:adBannerView];
+    [mainTableViewHeaderView addSubview:addadBannerView];
     [mainTableViewHeaderView addSubview:zixunMsgView];
 
     mainTableView.tableHeaderView = mainTableViewHeaderView;
     
     
-    __weak HomeViewController *weakSelf = self;
-    bannerV.linkAction = ^(NSDictionary *linkDict)
-    {
-        [weakSelf endterNewsPage:linkDict];
-    };
-    
+//    __weak HomeViewController *weakSelf = self;
+//    bannerV.linkAction = ^(NSDictionary *linkDict)
+//    {
+//        [weakSelf endterNewsPage:linkDict];
+//    };
+//    
     if ([mainTableView.mj_header isRefreshing]) {
         [mainTableView.mj_header endRefreshing];
     }
@@ -326,6 +389,18 @@
     [self getTableListData];
 
 }
+
+#pragma mark - SDCycleScrollViewDelegate
+
+- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index
+{
+    if (bannerDataArray.count-1<index) {
+        return;
+    }
+    NSDictionary *dic = [bannerDataArray objectAtIndex:index];
+    [self endterNewsPage:dic];
+}
+
 
 #pragma mark --资讯消息栏点击事件
 -(void)zixunBtnAction{
@@ -404,9 +479,10 @@
         jCCYChongZhiViewController.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:jCCYChongZhiViewController animated:YES];
     }else if (ad_type == 4){//为购买红包里盘页面
-        self.tabBarController.selectedIndex = 2;
+        RedPacketViewController *plusVC = [[RedPacketViewController alloc] init];
+        PPNavigationController *navVc = [[PPNavigationController alloc] initWithRootViewController:plusVC];
+        [self presentViewController:navVc animated:YES completion:nil];
     }
-    
 }
 
 -(void)initMyView{
@@ -421,6 +497,7 @@
     //初始化用户button
     UIButton *user_info_btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     user_info_btn.frame = CGRectMake(-10, 0, size.width+10, 44);
+    user_info_btn.titleLabel.font = [UIFont systemFontOfSize:16];
     user_info_btn.titleLabel.textAlignment = NSTextAlignmentLeft;
     [user_info_btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [user_info_btn setTitle:@"" forState:UIControlStateNormal];
@@ -429,15 +506,19 @@
     
     //初始化用户等级button
     UIButton *user_info_Level = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    user_info_Level.frame = CGRectMake(size.width, 12, 40, 20);
-    user_info_Level.titleLabel.textAlignment = NSTextAlignmentLeft;
-    [user_info_Level setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    user_info_Level.frame = CGRectMake(size.width, 13, 45, 20);
+    user_info_Level.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [user_info_Level setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
     [user_info_Level addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
     
     UIView *userInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 120, 44)];
     userInfoView.backgroundColor = [UIColor clearColor];
     [userInfoView addSubview:user_info_btn];
     [userInfoView addSubview:user_info_Level];
+    
+    if (PPMainViewWidth<350) {
+        user_info_Level.frame = CGRectMake(size.width, 13, 43, 18);
+    }
     
     UIBarButtonItem *leftbarbtn = [[UIBarButtonItem alloc] initWithCustomView:userInfoView];
     self.navigationItem.leftBarButtonItem = leftbarbtn;
@@ -447,22 +528,17 @@
     [user_info_btn setTitle:nameStr forState:UIControlStateNormal];
     
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"0"] || [[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] == nil) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level0"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"1"]) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level1"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"2"]) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level2"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"3"]) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level3"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"4"]) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level4"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"5"]) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level5"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"6"]) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level6"] forState:UIControlStateNormal];//给button添加image
+    NSString *levelString = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"];
+    [user_info_Level setBackgroundImage:[UIImage imageNamed:@"levelBGIMG"] forState:UIControlStateNormal];//给button添加image
+    user_info_Level.titleLabel.font = [UIFont systemFontOfSize:14];
+    
+    if (levelString == nil || [levelString isEqual:[NSNull null]]) {
+        levelString = @"0";
     }
+    
+    [user_info_Level setTitle:[NSString stringWithFormat:@"Lv.%@",levelString] forState:UIControlStateNormal];
 }
+
 //创建主视图
 -(void)creatMainView{
     self.view.backgroundColor = [UIColor colorFromHexRGB:@"f8f8f8"];
@@ -651,6 +727,17 @@
 //获取首页广告数据
 -(void)getAdData{
     
+    //判断有无网络
+    
+    BOOL isNetOK = [CoreStatus isNetworkEnable];
+    if (isNetOK) {
+        
+    }else{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"暂无网络,请检查网络设置！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        return;
+    }
+    
         NSString *dJson = nil;
         @autoreleasepool {
 
@@ -788,15 +875,37 @@
             }
             
             if ([columnStr isEqualToString:@""] || [columnStr isEqual:[NSNull null]]) {
-                cell.h_titleLabel.text = titleStr;
+                
+                NSMutableAttributedString * attributedString1 = [[NSMutableAttributedString alloc] initWithString:titleStr];
+                NSMutableParagraphStyle * paragraphStyle1 = [[NSMutableParagraphStyle alloc] init];
+                [paragraphStyle1 setLineSpacing:10];
+                [attributedString1 addAttribute:NSParagraphStyleAttributeName value:paragraphStyle1 range:NSMakeRange(0, [titleStr length])];
+                [cell.h_titleLabel setAttributedText:attributedString1];
+                
+//                cell.h_titleLabel.text = titleStr;
             }else{
                 NSString *columnSSS = [[aStr stringByAppendingString:columnStr] stringByAppendingString:bStr];
                 titleStr = [NSString stringWithFormat:@"%@%@",columnSSS,titleStr];
-                cell.h_titleLabel.text = titleStr;
+                
+                NSMutableAttributedString * attributedString1 = [[NSMutableAttributedString alloc] initWithString:titleStr];
+                NSMutableParagraphStyle * paragraphStyle1 = [[NSMutableParagraphStyle alloc] init];
+                [paragraphStyle1 setLineSpacing:10];
+                [attributedString1 addAttribute:NSParagraphStyleAttributeName value:paragraphStyle1 range:NSMakeRange(0, [titleStr length])];
+                [cell.h_titleLabel setAttributedText:attributedString1];
+//                cell.h_titleLabel.text = titleStr;
             }
 
         }else{
-            cell.h_titleLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+            
+            NSString *titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+
+            NSMutableAttributedString * attributedString1 = [[NSMutableAttributedString alloc] initWithString:titleStr];
+            NSMutableParagraphStyle * paragraphStyle1 = [[NSMutableParagraphStyle alloc] init];
+            [paragraphStyle1 setLineSpacing:10];
+            [attributedString1 addAttribute:NSParagraphStyleAttributeName value:paragraphStyle1 range:NSMakeRange(0, [titleStr length])];
+            [cell.h_titleLabel setAttributedText:attributedString1];
+            
+//            cell.h_titleLabel.text =;
      
         }
         
@@ -843,17 +952,17 @@
         }
         return cell;
     }
-    
-
-    
-    
+        
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row == 0) {
-        return 90;
+        if (PPMainViewWidth < 350) {
+            return 120;
+        }
+        return 140;
     }
-    return 55;
+    return 48;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

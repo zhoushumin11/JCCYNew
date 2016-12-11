@@ -174,14 +174,14 @@
     if (self.titles.count == 0 || self.titles == nil) {
         
     }else{
-        UIView *showBackView = [[UIView alloc] initWithFrame:CGRectMake(0, self.bounds.size.height-35, self.bounds.size.width, 35)];
+        UIView *showBackView = [[UIView alloc] initWithFrame:CGRectMake(0, self.bounds.size.height-40, self.bounds.size.width, 40)];
         showBackView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
         [self addSubview:showBackView];
         
-        UILabel *titlelabel = [[UILabel alloc] initWithFrame:CGRectMake(5, self.bounds.size.height-35, self.bounds.size.width-10, 30)];
-        titlelabel.textAlignment = NSTextAlignmentCenter;
+        UILabel *titlelabel = [[UILabel alloc] initWithFrame:CGRectMake(18, self.bounds.size.height-40, self.bounds.size.width-10, 40)];
+        titlelabel.textAlignment = NSTextAlignmentLeft;
         titlelabel.textColor = [UIColor whiteColor];
-        titlelabel.font = SystemFont(15);
+        titlelabel.font = SystemFont(16);
         titlelabel.text = [self.titles objectAtIndex:selectCurrentPage];
         [self addSubview:titlelabel];
         self.showTitleLabel = titlelabel;
@@ -193,7 +193,7 @@
 - (void) setPageControl
 {
     TAPageControl *pageControl = nil;
-    CGRect frame = CGRectMake(0, HEIGHT * 0.95, WIDTH, HEIGHT * 0.05);
+    CGRect frame = CGRectMake(0, HEIGHT * 0.95-10, WIDTH, HEIGHT * 0.05);
     pageControl = [[TAPageControl alloc] initWithFrame:frame];
     // Custom dot view with image
     pageControl.dotImage        = [UIImage imageNamed:@"dotInactive"];

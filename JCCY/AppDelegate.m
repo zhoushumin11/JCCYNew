@@ -11,6 +11,10 @@
 
 #import "PPTabBarController.h"
 #import "PPNavigationController.h"
+#import "LBTabBarController.h"
+
+
+
 #import "PPLoginViewController.h"
 #import "PPRegistViewController.h"//绑定手机号
 //启动页
@@ -39,6 +43,8 @@
 
 #import <AdSupport/ASIdentifierManager.h>
 
+#import <sys/utsname.h>
+#import "AdvertiseView.h"
 
 @interface AppDelegate ()<CoreStatusProtocol,UITabBarControllerDelegate,JPUSHRegisterDelegate,UMSocialPlatformProvider,UIAlertViewDelegate,WXApiDelegate>
 {
@@ -151,12 +157,130 @@
     [self.window setRootViewController:self.viewController];
     [self.window makeKeyAndVisible];
     
+    //显示启动页
+    
+    AdvertiseView *advertiseView = [[AdvertiseView alloc] initWithFrame:self.window.bounds];
+    advertiseView.filePath = @"";
+    [advertiseView show];
+    
+    
     //检查更新
     [self versionUpdate];
 
     [self refreshUpdataId];
+
+    //获取手机型号
+    NSString* phoneModel = [self iphoneType];
+    NSLog(@"手机型号是--- %@",phoneModel);
     
     return YES;
+}
+
+- (NSString *)iphoneType {
+    
+    
+    struct utsname systemInfo;
+    
+    uname(&systemInfo);
+    
+    NSString *platform = [NSString stringWithCString:systemInfo.machine encoding:NSASCIIStringEncoding];
+    
+    if ([platform isEqualToString:@"iPhone1,1"]) return @"iPhone 2G";
+    
+    if ([platform isEqualToString:@"iPhone1,2"]) return @"iPhone 3G";
+    
+    if ([platform isEqualToString:@"iPhone2,1"]) return @"iPhone 3GS";
+    
+    if ([platform isEqualToString:@"iPhone3,1"]) return @"iPhone 4";
+    
+    if ([platform isEqualToString:@"iPhone3,2"]) return @"iPhone 4";
+    
+    if ([platform isEqualToString:@"iPhone3,3"]) return @"iPhone 4";
+    
+    if ([platform isEqualToString:@"iPhone4,1"]) return @"iPhone 4S";
+    
+    if ([platform isEqualToString:@"iPhone5,1"]) return @"iPhone 5";
+    
+    if ([platform isEqualToString:@"iPhone5,2"]) return @"iPhone 5";
+    
+    if ([platform isEqualToString:@"iPhone5,3"]) return @"iPhone 5c";
+    
+    if ([platform isEqualToString:@"iPhone5,4"]) return @"iPhone 5c";
+    
+    if ([platform isEqualToString:@"iPhone6,1"]) return @"iPhone 5s";
+    
+    if ([platform isEqualToString:@"iPhone6,2"]) return @"iPhone 5s";
+    
+    if ([platform isEqualToString:@"iPhone7,1"]) return @"iPhone 6 Plus";
+    
+    if ([platform isEqualToString:@"iPhone7,2"]) return @"iPhone 6";
+    
+    if ([platform isEqualToString:@"iPhone8,1"]) return @"iPhone 6s";
+    
+    if ([platform isEqualToString:@"iPhone8,2"]) return @"iPhone 6s Plus";
+    
+    if ([platform isEqualToString:@"iPhone8,4"]) return @"iPhone SE";
+    
+    if ([platform isEqualToString:@"iPhone9,1"]) return @"iPhone 7";
+    
+    if ([platform isEqualToString:@"iPhone9,2"]) return @"iPhone 7 Plus";
+    
+    if ([platform isEqualToString:@"iPod1,1"])  return @"iPod Touch 1G";
+    
+    if ([platform isEqualToString:@"iPod2,1"])  return @"iPod Touch 2G";
+    
+    if ([platform isEqualToString:@"iPod3,1"])  return @"iPod Touch 3G";
+    
+    if ([platform isEqualToString:@"iPod4,1"])  return @"iPod Touch 4G";
+
+    if ([platform isEqualToString:@"iPod5,1"])  return @"iPod Touch 5G";
+    
+    if ([platform isEqualToString:@"iPad1,1"])  return @"iPad 1G";
+    
+    if ([platform isEqualToString:@"iPad2,1"])  return @"iPad 2";
+    
+    if ([platform isEqualToString:@"iPad2,2"])  return @"iPad 2";
+
+    if ([platform isEqualToString:@"iPad2,3"])  return @"iPad 2";
+    
+    if ([platform isEqualToString:@"iPad2,4"])  return @"iPad 2";
+    
+    if ([platform isEqualToString:@"iPad2,5"])  return @"iPad Mini 1G";
+    
+    if ([platform isEqualToString:@"iPad2,6"])  return @"iPad Mini 1G";
+    
+    if ([platform isEqualToString:@"iPad2,7"])  return @"iPad Mini 1G";
+    
+    if ([platform isEqualToString:@"iPad3,1"])  return @"iPad 3";
+    
+    if ([platform isEqualToString:@"iPad3,2"])  return @"iPad 3";
+    
+    if ([platform isEqualToString:@"iPad3,3"])  return @"iPad 3";
+    
+    if ([platform isEqualToString:@"iPad3,4"])  return @"iPad 4";
+    
+    if ([platform isEqualToString:@"iPad3,5"])  return @"iPad 4";
+    
+    if ([platform isEqualToString:@"iPad3,6"])  return @"iPad 4";
+    
+    if ([platform isEqualToString:@"iPad4,1"])  return @"iPad Air";
+    
+    if ([platform isEqualToString:@"iPad4,2"])  return @"iPad Air";
+    
+    if ([platform isEqualToString:@"iPad4,3"])  return @"iPad Air";
+    
+    if ([platform isEqualToString:@"iPad4,4"])  return @"iPad Mini 2G";
+    
+    if ([platform isEqualToString:@"iPad4,5"])  return @"iPad Mini 2G";
+    
+    if ([platform isEqualToString:@"iPad4,6"])  return @"iPad Mini 2G";
+    
+    if ([platform isEqualToString:@"i386"]) return @"iPhone Simulator";
+    
+    if ([platform isEqualToString:@"x86_64"]) return @"iPhone Simulator";
+    
+    return platform;
+    
 }
 
 #pragma mark --- 更新会员信息 ---- 
@@ -240,7 +364,6 @@
                                   [self getBuyListInfo];
                               }
                           }
-                          
                       }
                       
                       NSNumber *update_id = [dataDic objectForKey:@"update_id"];
@@ -489,6 +612,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WEIXIN_SWITCH"];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_PAY_KEY"];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"WX_SHANGHUHAO"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"No" forKey:@"isWechatAccess"];
+
     //服务器刷新时间
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LIVE_REFRESH_SECOND"];
     
@@ -553,11 +678,12 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];//当前APP中的版本
     
         if(![oldVersion isEqualToString:appVersion]){//检测到更新了版本，则出现滑动页
-            [self bootStartViewController];
-    
+//            [self bootStartViewController];
+            [self setupViewControllers];
         }else{//版本一样
             if(![isLooked isEqualToString:@"1"]){//没有看过滑动页,启动滑动页
-                [self bootStartViewController];
+//                [self bootStartViewController];
+                [self setupViewControllers];
             }else{//直接启动登录页面
                 
                 [self setupViewControllers];
@@ -585,94 +711,95 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
     ppLoginNavigationController = [[PPNavigationController alloc] initWithRootViewController:ppLoginViewController];
     
+    pptabBarController = [[LBTabBarController alloc] init];
     
     //2.初始化tabBar视图控制器
-    pptabBarController = [[PPTabBarController alloc]init];
+//    pptabBarController = [[PPTabBarController alloc]init];
     pptabBarController.tabBar.tintColor = [UIColor colorFromHexRGB:@"e60013"];
     pptabBarController.delegate = self;
-
-    //首页
-    HomeViewController *homeVC = [[HomeViewController alloc]init];
-    homeVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"首页" image:[UIImage imageNamed:@"tabBar_icon_shouye_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_shouye_selected1@2x"]];
-    [homeVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                              [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
-                                              [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-                                    forState:UIControlStateNormal];
-    [homeVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                              [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
-                                              [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-                                    forState:UIControlStateSelected];
-    
-    PPNavigationController *homeNav = [[PPNavigationController alloc]initWithRootViewController:homeVC];
-    curNavController = homeNav;
-
-    //实盘
-    FirmViewController *firmVC = [[FirmViewController alloc]init];
-    firmVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"实盘" image:[UIImage imageNamed:@"tabBar_icon_shipan_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_shipan_selected1@2x"]];
-    [firmVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                              [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
-                                              [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-                                    forState:UIControlStateNormal];
-    [firmVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                              [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
-                                              [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-                                    forState:UIControlStateSelected];
-
-    PPNavigationController *firmNav = [[PPNavigationController alloc]initWithRootViewController:firmVC];
-    
-    //红包
-    RedPacketViewController *redPVC = [[RedPacketViewController alloc]init];
-    redPVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"红包" image:[UIImage imageNamed:@"tabBar_icon_redPacket_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_redPacket_selected1@2x"]];
-    [redPVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
-                                                [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-                                      forState:UIControlStateNormal];
-    [redPVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
-                                                [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-                                      forState:UIControlStateSelected];
-    PPNavigationController *redPNav = [[PPNavigationController alloc]initWithRootViewController:redPVC];
-    
-    //秘籍
-    FourViewController *mijiVC = [[FourViewController alloc]init];
-    mijiVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"秘籍" image:[UIImage imageNamed:@"tabBar_icon_miji_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_miji_selected1@2x"]];
-    [mijiVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
-                                                 [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-                                       forState:UIControlStateNormal];
-    [mijiVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
-                                                 [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-                                       forState:UIControlStateSelected];
-
-    PPNavigationController *mjNav = [[PPNavigationController alloc]initWithRootViewController:mijiVC];
-    
-    
-    //开户
-    FiveViewController *kaihuVC = [[FiveViewController alloc]init];
-    kaihuVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"开户" image:[UIImage imageNamed:@"tabBar_icon_kaihu_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_kaihu_selected1@2x"]];
-    [kaihuVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
-                                                 [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-                                       forState:UIControlStateNormal];
-    [kaihuVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
-                                                 [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
-                                       forState:UIControlStateSelected];
-    
-    PPNavigationController *kaihuNav = [[PPNavigationController alloc]initWithRootViewController:kaihuVC];
-    
-    //    SecondNav
-    pptabBarController.viewControllers = @[homeNav,  firmNav, redPNav, mjNav,kaihuNav];
-    
-    CGFloat ww = pptabBarController.tabBar.bounds.size.width/5*0.63;
-    
-    self.cornerLabel = [[UILabel alloc] initWithFrame:CGRectMake(ww, 2, 8, 8)];
-    cornerLabel.layer.cornerRadius = 4;
-    cornerLabel.clipsToBounds = YES;
-    cornerLabel.backgroundColor = [UIColor colorFromHexRGB:@"f74c31"];
-    cornerLabel.hidden = YES;
-    [pptabBarController.tabBar addSubview:cornerLabel];
+//
+//    //首页
+//    HomeViewController *homeVC = [[HomeViewController alloc]init];
+//    homeVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"首页" image:[UIImage imageNamed:@"tabBar_icon_shouye_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_shouye_selected1@2x"]];
+//    [homeVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+//                                              [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
+//                                              [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+//                                    forState:UIControlStateNormal];
+//    [homeVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+//                                              [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
+//                                              [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+//                                    forState:UIControlStateSelected];
+//    
+//    PPNavigationController *homeNav = [[PPNavigationController alloc]initWithRootViewController:homeVC];
+//    curNavController = homeNav;
+//
+//    //实盘
+//    FirmViewController *firmVC = [[FirmViewController alloc]init];
+//    firmVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"实盘" image:[UIImage imageNamed:@"tabBar_icon_shipan_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_shipan_selected1@2x"]];
+//    [firmVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+//                                              [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
+//                                              [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+//                                    forState:UIControlStateNormal];
+//    [firmVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+//                                              [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
+//                                              [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+//                                    forState:UIControlStateSelected];
+//
+//    PPNavigationController *firmNav = [[PPNavigationController alloc]initWithRootViewController:firmVC];
+//    
+//    //红包
+//    RedPacketViewController *redPVC = [[RedPacketViewController alloc]init];
+//    redPVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"红包" image:[UIImage imageNamed:@"tabBar_icon_redPacket_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_redPacket_selected1@2x"]];
+//    [redPVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+//                                                [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
+//                                                [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+//                                      forState:UIControlStateNormal];
+//    [redPVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+//                                                [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
+//                                                [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+//                                      forState:UIControlStateSelected];
+//    PPNavigationController *redPNav = [[PPNavigationController alloc]initWithRootViewController:redPVC];
+//    
+//    //秘籍
+//    FourViewController *mijiVC = [[FourViewController alloc]init];
+//    mijiVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"秘籍" image:[UIImage imageNamed:@"tabBar_icon_miji_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_miji_selected1@2x"]];
+//    [mijiVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+//                                                 [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
+//                                                 [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+//                                       forState:UIControlStateNormal];
+//    [mijiVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+//                                                 [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
+//                                                 [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+//                                       forState:UIControlStateSelected];
+//
+//    PPNavigationController *mjNav = [[PPNavigationController alloc]initWithRootViewController:mijiVC];
+//    
+//    
+//    //开户
+//    FiveViewController *kaihuVC = [[FiveViewController alloc]init];
+//    kaihuVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"开户" image:[UIImage imageNamed:@"tabBar_icon_kaihu_normal1@2x"] selectedImage:[UIImage imageNamed:@"tabBar_icon_kaihu_selected1@2x"]];
+//    [kaihuVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+//                                                 [UIColor colorFromHexRGB:@"999999"], NSForegroundColorAttributeName,
+//                                                 [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+//                                       forState:UIControlStateNormal];
+//    [kaihuVC.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+//                                                 [UIColor colorFromHexRGB:@"e60013"], NSForegroundColorAttributeName,
+//                                                 [UIFont fontWithName:@"Helvetica" size:11.0], NSFontAttributeName, nil]
+//                                       forState:UIControlStateSelected];
+//    
+//    PPNavigationController *kaihuNav = [[PPNavigationController alloc]initWithRootViewController:kaihuVC];
+//    
+//    //    SecondNav
+//    pptabBarController.viewControllers = @[homeNav,  firmNav, redPNav, mjNav,kaihuNav];
+//    
+//    CGFloat ww = pptabBarController.tabBar.bounds.size.width/5*0.63;
+//    
+//    self.cornerLabel = [[UILabel alloc] initWithFrame:CGRectMake(ww, 2, 8, 8)];
+//    cornerLabel.layer.cornerRadius = 4;
+//    cornerLabel.clipsToBounds = YES;
+//    cornerLabel.backgroundColor = [UIColor colorFromHexRGB:@"f74c31"];
+//    cornerLabel.hidden = YES;
+//    [pptabBarController.tabBar addSubview:cornerLabel];
     
     
     
@@ -882,9 +1009,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     curNavController = (PPNavigationController *)viewController;
     NSInteger index = [tabBarController selectedIndex];
     if (self.indexFlag != index) {
-        [self animationWithIndex:index];
+        
     }
-    if (index == 3 || index == 4) {
+    if (index == 2 || index == 3) {
         tabBarController.selectedIndex = self.nowSelectIndex;
         //        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"此功能尚未完善" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         //        [alert show];
@@ -901,22 +1028,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
 }
 
-// 动画
-- (void)animationWithIndex:(NSInteger) index {
-    
-//    CABasicAnimation*pulse = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-//    pulse.timingFunction= [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-//    pulse.duration = 0.08;
-//    pulse.repeatCount= 1;
-//    pulse.autoreverses= YES;
-//    pulse.fromValue= [NSNumber numberWithFloat:0.7];
-//    pulse.toValue= [NSNumber numberWithFloat:1.3];
-//    [[tabbarbuttonArray[index] layer]
-//     addAnimation:pulse forKey:nil];
-//    
-//    self.indexFlag = index;
-    
-}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
 

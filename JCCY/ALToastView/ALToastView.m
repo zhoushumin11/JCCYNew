@@ -108,13 +108,16 @@ static NSMutableArray *toasts;
 		[toasts addObject:view];
 		[ALToastView nextToastInView:parentView];
 	}
-	else {
-		[toasts addObject:view];
-	}
+//	else {
+//		[toasts addObject:view];
+//	}
 	
 //  [view release];
 }
 
++ (void)hidenToastView{
+    
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Private

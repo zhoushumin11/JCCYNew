@@ -19,7 +19,8 @@
 
 #import "JCCYNoDataView.h"
 
-
+#import "CalculateHeight.h"
+#import "JJLabel.h"
 
 @interface FirmViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
@@ -57,7 +58,7 @@
         self.modalPresentationCapturesStatusBarAppearance = NO;
     }
 
-    self.view.backgroundColor = [UIColor colorFromHexRGB:@"f8f8f8"];
+    self.view.backgroundColor = [UIColor colorFromHexRGB:@"f0f0f0"];
     
     dataArray = [NSMutableArray array];
     
@@ -87,15 +88,23 @@
     }
     mainTableView.separatorColor = [UIColor colorFromHexRGB:@"f0f0f0"];
     MJRefreshNormalHeader *cmheader = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(getServerData)];
+    mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(refreshMoreTableView)];
+    mainTableView.mj_footer.hidden = NO;
+    
     cmheader.lastUpdatedTimeLabel.hidden = YES;
-    
-    mainTableView.mj_footer.hidden = YES;
-    
     mainTableView.mj_header = cmheader;
     mainTableView.delegate = self;
     mainTableView.dataSource = self;
     
     [self.view addSubview:mainTableView];
+}
+
+-(void)refreshMoreTableView{
+    if ([mainTableView.mj_footer isRefreshing]) {
+        [mainTableView.mj_footer endRefreshing];
+    }
+    [mainTableView.mj_footer endRefreshingWithNoMoreData];
+
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -132,6 +141,7 @@
     //初始化用户button
     UIButton *user_info_btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     user_info_btn.frame = CGRectMake(-10, 0, size.width+10, 44);
+    user_info_btn.titleLabel.font = [UIFont systemFontOfSize:16];
     user_info_btn.titleLabel.textAlignment = NSTextAlignmentLeft;
     [user_info_btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [user_info_btn setTitle:@"" forState:UIControlStateNormal];
@@ -140,9 +150,9 @@
     
     //初始化用户等级button
     UIButton *user_info_Level = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    user_info_Level.frame = CGRectMake(size.width, 12, 40, 20);
-    user_info_Level.titleLabel.textAlignment = NSTextAlignmentLeft;
-    [user_info_Level setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    user_info_Level.frame = CGRectMake(size.width, 13, 49, 21);
+    user_info_Level.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [user_info_Level setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
     [user_info_Level addTarget:self action:@selector(userInfoBtnAction) forControlEvents:UIControlEventTouchUpInside];
     
     UIView *userInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 120, 44)];
@@ -158,21 +168,15 @@
     [user_info_btn setTitle:nameStr forState:UIControlStateNormal];
     
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"0"] || [[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] == nil) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level0"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"1"]) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level1"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"2"]) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level2"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"3"]) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level3"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"4"]) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level4"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"5"]) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level5"] forState:UIControlStateNormal];//给button添加image
-    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"] isEqualToString:@"6"]) {
-        [user_info_Level setBackgroundImage:[UIImage imageNamed:@"level6"] forState:UIControlStateNormal];//给button添加image
+    NSString *levelString = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_level"];
+    [user_info_Level setBackgroundImage:[UIImage imageNamed:@"levelBGIMG"] forState:UIControlStateNormal];//给button添加image
+    user_info_Level.titleLabel.font = [UIFont systemFontOfSize:14];
+
+    if (levelString == nil || [levelString isEqual:[NSNull null]]) {
+        levelString = @"0";
     }
+    
+    [user_info_Level setTitle:[NSString stringWithFormat:@"Lv.%@",levelString] forState:UIControlStateNormal];
 }
 
 #pragma mark ---跳入用户详情页 -----
@@ -252,6 +256,10 @@
         return;
     }
     timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timeAction) userInfo:nil repeats:YES];
+    
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+
+    
 }
 #pragma mark --- 计时器运行 -----
 -(void)timeAction{
@@ -335,6 +343,10 @@
                           
                           dataArray  = [NSMutableArray arrayWithArray:dataArr];
                           [mainTableView reloadData];
+                          [mainTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+
+                          
+
                       }else if (code == -2){
                           //检查信息更新
                           [[NSNotificationCenter defaultCenter] postNotificationName:UPDATAUPIDDATA object:nil];
@@ -376,13 +388,36 @@
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSString *live_picStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_pic"];
     if (![live_picStr isEqual:[NSNull null]]) { //图片内容
-        return 180;
+        return 190;
     }else{
-    CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
-        float wh = strSize.height + 60+20;
-        if (wh < 110) {
-            return  130;
+//    CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
+//    CGFloat h = [CalculateHeight getSpaceLabelHeight:[[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"] withWidth:PPMainViewWidth - 120];
+
+        JJLabel *spaceLab = [[JJLabel alloc] init];
+        spaceLab.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"];
+        spaceLab.numberOfLines = 0;
+        spaceLab.backgroundColor = [UIColor clearColor];
+        spaceLab.lineSpace = 0.0f;
+        spaceLab.characterSpace = 0.0f;
+        spaceLab.font = [UIFont systemFontOfSize:15];
+        spaceLab.isCopy = NO;
+        
+        CGFloat labHeight = [spaceLab getLableHeightWithMaxWidth:(PPMainViewWidth - 120)];
+        
+        float wh = labHeight +100 ;
+//        if (wh < 110) {
+//            return  120;
+//        }else if (wh < 150){
+//            return 150;
+//        }
+        if (wh>90 && wh < 135) {
+            return 135;
         }
+        
+        if (wh<90) {
+            return 120;
+        }
+        
         return wh;
     }
 }
@@ -394,6 +429,8 @@
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     return mainHeadView;
 }
+
+
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -415,12 +452,13 @@
         double i = [[NSNumber numberWithInteger:num] doubleValue];
         NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-        [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm"];
+        [dateFormat setDateFormat:@"HH:mm"];
         NSString *timeStr = [dateFormat stringFromDate:nd];
         cell.timeLabel.text = timeStr;
         
         NSString *icon_picStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_pic"];
-
+        
+        
         //设置头像图片
         [cell.iConView sd_setImageWithURL:[NSURL URLWithString:icon_picStr] forState:UIControlStateNormal placeholderImage:nil options:SDWebImageHandleCookies|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             if (image == nil) {
@@ -436,7 +474,7 @@
             }
         }];
         
-        UILabel *linelabels = [[UILabel alloc] initWithFrame:CGRectMake(10, 179.5, PPMainViewWidth - 20, 0.5)];
+        UILabel *linelabels = [[UILabel alloc] initWithFrame:CGRectMake(10, 185.5, PPMainViewWidth - 20, 0.5)];
         linelabels.backgroundColor = [UIColor colorFromHexRGB:@"d9d9d9"];
         [cell addSubview:linelabels];
         
@@ -447,11 +485,19 @@
         return cell;
     }else{//文字内容
         static NSString *identify = @"FirmStringCell";
-        FirmStringCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+//        FirmStringCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+        FirmStringCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         
         if (cell == nil) {
             cell = [[FirmStringCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
         }
+        
+        if (indexPath.row == dataArray.count-1) {
+            cell.lineLabel.hidden = YES;
+        }else{
+            cell.lineLabel.hidden = NO;
+        }
+        
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.userNameLabel.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_teacher_name"];
         tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -460,7 +506,7 @@
         double i = [[NSNumber numberWithInteger:num] doubleValue];
         NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i];
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-        [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm"];
+        [dateFormat setDateFormat:@"HH:mm"];
         NSString *timeStr = [dateFormat stringFromDate:nd];
         cell.timeLabel.text = timeStr;
         
@@ -478,9 +524,43 @@
         colorStr = [colorStr substringFromIndex:1];
         cell.contenStringView.textColor = [UIColor colorFromHexRGB:colorStr];
         
-        CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
-        cell.contenStringSuperView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, strSize.height+20);
-        cell.contenStringView.frame = CGRectMake(10, 5, PPMainViewWidth - 120, strSize.height+10);
+//        CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
+        
+        CGFloat h = [CalculateHeight getSpaceLabelHeight:[[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"] withWidth:PPMainViewWidth - 120];
+
+        
+        {
+
+            NSString *titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"];
+            JJLabel *spaceLab = [[JJLabel alloc] init];
+            spaceLab.text = titleStr;
+            spaceLab.numberOfLines = 0;
+            spaceLab.backgroundColor = [UIColor clearColor];
+            spaceLab.lineSpace = 0.0f;
+            spaceLab.characterSpace = 0.0f;
+            spaceLab.isCopy = NO;
+            spaceLab.font = [UIFont systemFontOfSize:15];
+            spaceLab.textColor = [UIColor colorFromHexRGB:colorStr];
+
+            CGFloat labHeight = [spaceLab getLableHeightWithMaxWidth:(PPMainViewWidth - 120)];
+            cell.contenStringSuperView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, labHeight+20);
+            spaceLab.frame = CGRectMake(10, 10, PPMainViewWidth - 120, labHeight);
+            [cell.contenStringSuperView addSubview:spaceLab];
+        }
+
+//        cell.contenStringSuperView.frame = CGRectMake(90, 50, PPMainViewWidth - 100, h+14);
+//        cell.contenStringView.frame = CGRectMake(10, 7, PPMainViewWidth - 120, h);
+        
+//        cell.contentTextView.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"];
+//        NSString *colorStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title_color"];
+//        colorStr = [colorStr substringFromIndex:1];
+//        cell.contentTextView.textColor = [UIColor colorFromHexRGB:colorStr];
+//        
+//        CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
+//        cell.contentTextView.frame = CGRectMake(90, 50, PPMainViewWidth - 120, strSize.height+10);
+
+        
+        
         return cell;
     }
     

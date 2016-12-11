@@ -14,6 +14,7 @@ static UIImageView *newAvatarImageView;
 static CGFloat currentScale;
 static CGFloat screenWidth;
 static CGFloat screenHeight;
+UIWindow *keyWindow;
 
 @implementation SCAvatarBrowser
 
@@ -26,7 +27,7 @@ static CGFloat screenHeight;
     screenWidth = [UIScreen mainScreen].bounds.size.width;
     screenHeight = [UIScreen mainScreen].bounds.size.height;
     
-    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+    keyWindow = [UIApplication sharedApplication].keyWindow;
     UIImage *avatarImage = [avatarImageView image];
     
     // black background contains the avatar image
@@ -58,6 +59,14 @@ static CGFloat screenHeight;
     // move avatar by pan on image
     UIPanGestureRecognizer *panOnImage = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(actionPanOnImage:)];
     [newAvatarImageView addGestureRecognizer:panOnImage];
+    
+    
+    UIButton *savaBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [savaBtn setTitle:@"保存" forState:UIControlStateNormal];
+    savaBtn.frame = CGRectMake(20, background.frame.size.height - 50, 50,25);
+    [savaBtn addTarget:self action:@selector(saveIMG) forControlEvents:UIControlEventTouchUpInside];
+    [background addSubview:savaBtn];
+
     
     // store avatar image by long press on it
     UILongPressGestureRecognizer *longPressOnImage = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(actionLongPressOnImage:)];
@@ -189,6 +198,16 @@ static CGFloat screenHeight;
 }
 
 
++(void)saveIMG{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                  initWithTitle:nil
+                                  delegate:(id<UIActionSheetDelegate>)self                                      cancelButtonTitle:@"取消"
+                                  destructiveButtonTitle:nil
+                                  otherButtonTitles:@"保存到相册", nil];
+    
+    actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+    [actionSheet showInView:keyWindow];
+}
 
 // long press to store the avatar
 + (void)actionLongPressOnImage:(UILongPressGestureRecognizer *)sender {
