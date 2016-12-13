@@ -49,14 +49,14 @@
 
 
 @property(nonatomic,strong) NSMutableArray *dataArray;
-
+@property(nonatomic,strong) NSString *switchType; //支付开关类型  0 都有 1 微信 2支付宝
 
 
 @end
 
 @implementation JCCYChongZhiViewController
 
-@synthesize dataArray,mainScrollView,buttonsView,conf_recharge_id,payView,pay_type,conf_recharge_amount,conf_recharge_gold,recharge_number,chongZhiShuoMingView;
+@synthesize dataArray,mainScrollView,buttonsView,conf_recharge_id,payView,pay_type,conf_recharge_amount,conf_recharge_gold,recharge_number,chongZhiShuoMingView,switchType;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -210,7 +210,7 @@
 
 -(void)creatButtons:(NSInteger)selectedIndex{
     
-    float viewY = (dataArray.count/3+1) *(((PPMainViewWidth-40)/3)-30) +(dataArray.count * 10);
+    float viewY = (dataArray.count/3+1) *(((PPMainViewWidth-40)/3)-30) +((dataArray.count %3) * 10);
     
     buttonsView  = [[UIView alloc] initWithFrame:CGRectMake(0, 50, PPMainViewWidth, viewY)];
     
@@ -311,14 +311,37 @@
     //设置支付类型按钮
     [self creatPayTypeBtn:0];
     
-
-    
 }
 
 #pragma 创建支付类型按钮
 -(void)creatPayTypeBtn:(NSInteger)payType{
     
-    payView = [[UIView alloc] initWithFrame:CGRectMake(10,buttonsView.frame.origin.y+ buttonsView.frame.size.height-10, PPMainViewWidth-20, 150)];
+    
+    NSString *WEIXIN_SWITCH = [[NSUserDefaults standardUserDefaults] objectForKey:@"WEIXIN_SWITCH"];
+    NSString *ALIPAY_SWITCH = [[NSUserDefaults standardUserDefaults] objectForKey:@"ALIPAY_SWITCH"];
+    
+    switchType = @"0";
+    
+    if ([WEIXIN_SWITCH isEqualToString:@"1"] && [ALIPAY_SWITCH isEqualToString:@"1"]) {
+        switchType = @"0"; //所有类型
+    }else{
+        if ([WEIXIN_SWITCH isEqualToString:@"1"]) {
+            switchType = @"1"; //只有微信支付
+        }else if ([ALIPAY_SWITCH isEqualToString:@"1"]){
+            switchType = @"2"; //只有支付宝支付
+        }else{
+            switchType = @"3";
+        }
+    }
+
+    if ([switchType isEqualToString:@"0"]) {
+        payView = [[UIView alloc] initWithFrame:CGRectMake(10,buttonsView.frame.origin.y+ buttonsView.frame.size.height-10, PPMainViewWidth-20, 150)];
+ 
+    }else{
+        payView = [[UIView alloc] initWithFrame:CGRectMake(10,buttonsView.frame.origin.y+ buttonsView.frame.size.height-10, PPMainViewWidth-20, 75)];
+    }
+    
+//    payView = [[UIView alloc] initWithFrame:CGRectMake(10,buttonsView.frame.origin.y+ buttonsView.frame.size.height-10, PPMainViewWidth-20, 150)];
     payView.backgroundColor = [UIColor whiteColor];
     [payView.layer setBorderWidth:1.0];
     [payView.layer setMasksToBounds:YES];
@@ -348,54 +371,155 @@
     NSArray *imageArray = [NSArray arrayWithObjects:@"zhifubao_PayType",@"weixin_PayType", nil];
     NSArray *titleArray = [NSArray arrayWithObjects:@"支付宝钱包充值",@"微信充值", nil];
     NSArray *subTitleArray = [NSArray arrayWithObjects:@"推荐支付宝用户使用",@"推荐有微信支付的账户的用户使用", nil];
-
-    for (int i = 0; i<2; i++) {
-        UIView *view  = [[UIView alloc] initWithFrame:CGRectMake(0, (60*i)+(10*i)+10, PPMainViewWidth-20, 75)];
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
-        imageView.image = [UIImage imageNamed:[imageArray objectAtIndex:i]];
-        [view addSubview:imageView];
-        
-        UILabel *titleLable = [[UILabel alloc] initWithFrame:CGRectMake(68, 5, 200, 20)];
-        titleLable.textColor = [UIColor blackColor];
-        titleLable.text = titleArray[i];
-        [view addSubview:titleLable];
-        
-        UILabel *sublabel  = [[UILabel alloc] initWithFrame:CGRectMake(68, 30, PPMainViewWidth-20-68-40, 20)];
-        sublabel.textColor = [UIColor grayColor];
-        sublabel.text = subTitleArray[i];
-        [view addSubview:sublabel];
-        
-        if (PPMainViewWidth < 350) {
-            titleLable.font = [UIFont systemFontOfSize:16];
-            sublabel.font = [UIFont systemFontOfSize:14];
-        }else{
-            titleLable.font = [UIFont systemFontOfSize:18];
-            sublabel.font = [UIFont systemFontOfSize:16];
+    
+    
+    if ([switchType isEqualToString:@"0"]) {
+        for (int i = 0; i<2; i++) {
+            UIView *view  = [[UIView alloc] initWithFrame:CGRectMake(0, (60*i)+(10*i)+10, PPMainViewWidth-20, 75)];
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
+            imageView.image = [UIImage imageNamed:[imageArray objectAtIndex:i]];
+            [view addSubview:imageView];
+            
+            UILabel *titleLable = [[UILabel alloc] initWithFrame:CGRectMake(68, 5, 200, 20)];
+            titleLable.textColor = [UIColor blackColor];
+            titleLable.text = titleArray[i];
+            [view addSubview:titleLable];
+            
+            UILabel *sublabel  = [[UILabel alloc] initWithFrame:CGRectMake(68, 30, PPMainViewWidth-20-68-40, 20)];
+            sublabel.textColor = [UIColor grayColor];
+            sublabel.text = subTitleArray[i];
+            [view addSubview:sublabel];
+            
+            if (PPMainViewWidth < 350) {
+                titleLable.font = [UIFont systemFontOfSize:16];
+                sublabel.font = [UIFont systemFontOfSize:14];
+            }else{
+                titleLable.font = [UIFont systemFontOfSize:18];
+                sublabel.font = [UIFont systemFontOfSize:16];
+            }
+            
+            UIButton *chooseeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+            chooseeBtn.frame = CGRectMake(PPMainViewWidth - 20 - 40, 10, 40, 40);
+            chooseeBtn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+            
+            if (payType == i) {
+                [chooseeBtn setImage:[UIImage imageNamed:@"payType_selected"] forState:UIControlStateNormal];
+            }else{
+                [chooseeBtn setImage:[UIImage imageNamed:@"payType_DisSelected"] forState:UIControlStateNormal];
+            }
+            
+            chooseeBtn.tag = i;
+            
+            [chooseeBtn addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+            [view addSubview:chooseeBtn];
+            
+            UIButton *chooseeBtn1 = [UIButton buttonWithType:UIButtonTypeCustom];
+            chooseeBtn1.frame = CGRectMake(0,0,PPMainViewWidth, 60);
+            chooseeBtn1.tag = i;
+            [chooseeBtn1 addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+            [view addSubview:chooseeBtn1];
+            
+            [payView addSubview:view];
         }
-        
-        UIButton *chooseeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        chooseeBtn.frame = CGRectMake(PPMainViewWidth - 20 - 40, 10, 40, 40);
-        chooseeBtn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
-        
-        if (payType == i) {
-            [chooseeBtn setImage:[UIImage imageNamed:@"payType_selected"] forState:UIControlStateNormal];
-        }else{
-            [chooseeBtn setImage:[UIImage imageNamed:@"payType_DisSelected"] forState:UIControlStateNormal];
+    }else if([switchType isEqualToString:@"1"]){ //微信
+        for (int i = 0; i<1; i++) {
+            UIView *view  = [[UIView alloc] initWithFrame:CGRectMake(0, (60*i)+(10*i)+10, PPMainViewWidth-20, 75)];
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
+            imageView.image = [UIImage imageNamed:[imageArray objectAtIndex:1]];
+            [view addSubview:imageView];
+            
+            UILabel *titleLable = [[UILabel alloc] initWithFrame:CGRectMake(68, 5, 200, 20)];
+            titleLable.textColor = [UIColor blackColor];
+            titleLable.text = titleArray[1];
+            [view addSubview:titleLable];
+            
+            UILabel *sublabel  = [[UILabel alloc] initWithFrame:CGRectMake(68, 30, PPMainViewWidth-20-68-40, 20)];
+            sublabel.textColor = [UIColor grayColor];
+            sublabel.text = subTitleArray[1];
+            [view addSubview:sublabel];
+            
+            if (PPMainViewWidth < 350) {
+                titleLable.font = [UIFont systemFontOfSize:16];
+                sublabel.font = [UIFont systemFontOfSize:14];
+            }else{
+                titleLable.font = [UIFont systemFontOfSize:18];
+                sublabel.font = [UIFont systemFontOfSize:16];
+            }
+            
+            UIButton *chooseeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+            chooseeBtn.frame = CGRectMake(PPMainViewWidth - 20 - 40, 10, 40, 40);
+            chooseeBtn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+            
+            if (payType == i) {
+                [chooseeBtn setImage:[UIImage imageNamed:@"payType_selected"] forState:UIControlStateNormal];
+            }else{
+                [chooseeBtn setImage:[UIImage imageNamed:@"payType_DisSelected"] forState:UIControlStateNormal];
+            }
+            
+            chooseeBtn.tag = i;
+            
+            [chooseeBtn addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+            [view addSubview:chooseeBtn];
+            
+            UIButton *chooseeBtn1 = [UIButton buttonWithType:UIButtonTypeCustom];
+            chooseeBtn1.frame = CGRectMake(0,0,PPMainViewWidth, 60);
+            chooseeBtn1.tag = i;
+            [chooseeBtn1 addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+            [view addSubview:chooseeBtn1];
+            
+            [payView addSubview:view];
         }
-        
-        chooseeBtn.tag = i;
-        
-        [chooseeBtn addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
-        [view addSubview:chooseeBtn];
-
-        UIButton *chooseeBtn1 = [UIButton buttonWithType:UIButtonTypeCustom];
-        chooseeBtn1.frame = CGRectMake(0,0,PPMainViewWidth, 60);
-        chooseeBtn1.tag = i;
-        [chooseeBtn1 addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
-        [view addSubview:chooseeBtn1];
-
-        [payView addSubview:view];
+    }else if ([switchType isEqualToString:@"2"]){ //支付宝
+        for (int i = 0; i<1; i++) {
+            UIView *view  = [[UIView alloc] initWithFrame:CGRectMake(0, (60*i)+(10*i)+10, PPMainViewWidth-20, 75)];
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
+            imageView.image = [UIImage imageNamed:[imageArray objectAtIndex:0]];
+            [view addSubview:imageView];
+            
+            UILabel *titleLable = [[UILabel alloc] initWithFrame:CGRectMake(68, 5, 200, 20)];
+            titleLable.textColor = [UIColor blackColor];
+            titleLable.text = titleArray[0];
+            [view addSubview:titleLable];
+            
+            UILabel *sublabel  = [[UILabel alloc] initWithFrame:CGRectMake(68, 30, PPMainViewWidth-20-68-40, 20)];
+            sublabel.textColor = [UIColor grayColor];
+            sublabel.text = subTitleArray[0];
+            [view addSubview:sublabel];
+            
+            if (PPMainViewWidth < 350) {
+                titleLable.font = [UIFont systemFontOfSize:16];
+                sublabel.font = [UIFont systemFontOfSize:14];
+            }else{
+                titleLable.font = [UIFont systemFontOfSize:18];
+                sublabel.font = [UIFont systemFontOfSize:16];
+            }
+            
+            UIButton *chooseeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+            chooseeBtn.frame = CGRectMake(PPMainViewWidth - 20 - 40, 10, 40, 40);
+            chooseeBtn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+            
+            if (payType == i) {
+                [chooseeBtn setImage:[UIImage imageNamed:@"payType_selected"] forState:UIControlStateNormal];
+            }else{
+                [chooseeBtn setImage:[UIImage imageNamed:@"payType_DisSelected"] forState:UIControlStateNormal];
+            }
+            
+            chooseeBtn.tag = i;
+            
+            [chooseeBtn addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+            [view addSubview:chooseeBtn];
+            
+            UIButton *chooseeBtn1 = [UIButton buttonWithType:UIButtonTypeCustom];
+            chooseeBtn1.frame = CGRectMake(0,0,PPMainViewWidth, 60);
+            chooseeBtn1.tag = i;
+            [chooseeBtn1 addTarget:self action:@selector(choosePayTypeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+            [view addSubview:chooseeBtn1];
+            
+            [payView addSubview:view];
+        }
     }
+
+
     
     //创建充值说明view
     if (chongZhiShuoMingView==nil) {
@@ -433,7 +557,7 @@
     [chongZhiShuoMingView addSubview:chongzhishuominLabels];
     
     
-    [mainScrollView setContentSize:CGSizeMake(PPMainViewWidth, payView.frame.origin.y + buttonsView.frame.origin.y + chongZhiShuoMingView.frame.origin.y + 10 + 30 + 30)];
+    [mainScrollView setContentSize:CGSizeMake(PPMainViewWidth, payView.frame.size.height + buttonsView.frame.size.height + chongZhiShuoMingView.frame.size.height + 10 + 30 + 30+150)];
 
     
     
@@ -477,6 +601,13 @@
         [alert show];
     }
 
+    
+    if([switchType isEqualToString:@"1"]){
+        pay_type = 2;
+    }else if ([switchType isEqualToString:@"2"]){
+        pay_type = 1;
+    }
+    
     
     // NOTE: 当前时间点
     NSDateFormatter* formatter = [NSDateFormatter new];

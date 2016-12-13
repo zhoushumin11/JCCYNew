@@ -67,7 +67,7 @@
         //姓名
         self.userNameLabel.textColor = [UIColor colorFromHexRGB:@"0a0a0a"];
         //        self.settingTitleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:15];
-        self.userNameLabel.font = [UIFont systemFontOfSize:15];
+        self.userNameLabel.font = [UIFont systemFontOfSize:16];
         self.userNameLabel.textAlignment = NSTextAlignmentCenter;
         [self.allcontentView addSubview:self.userNameLabel];
         

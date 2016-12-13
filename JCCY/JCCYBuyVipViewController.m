@@ -45,16 +45,6 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(get_info) name:UPDATAUPIDDATA object:nil];
 
-    //判断有无网络
-    
-    BOOL isNetOK = [CoreStatus isNetworkEnable];
-    if (isNetOK) {
-        
-    }else{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"暂无网络,请检查网络设置！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alert show];
-    }
-
     
     dataArray = [NSMutableArray array];
     pay_typeIndex = 0;

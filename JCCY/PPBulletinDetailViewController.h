@@ -12,5 +12,6 @@
 
 @property(nonatomic,strong) NSString *documentPath;
 @property(nonatomic,strong) NSString *titleStr;//公告标题
+@property(nonatomic,strong) NSString *isOutWebside; //是否为外链
 
 @end

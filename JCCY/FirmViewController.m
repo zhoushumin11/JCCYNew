@@ -397,9 +397,9 @@
         spaceLab.text = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"];
         spaceLab.numberOfLines = 0;
         spaceLab.backgroundColor = [UIColor clearColor];
-        spaceLab.lineSpace = 0.0f;
+        spaceLab.lineSpace = 3.0f;
         spaceLab.characterSpace = 0.0f;
-        spaceLab.font = [UIFont systemFontOfSize:15];
+        spaceLab.font = [UIFont systemFontOfSize:16];
         spaceLab.isCopy = NO;
         
         CGFloat labHeight = [spaceLab getLableHeightWithMaxWidth:(PPMainViewWidth - 120)];
@@ -526,7 +526,7 @@
         
 //        CGSize strSize = GetHTextSizeFont([[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"], PPMainViewWidth - 120, 15);
         
-        CGFloat h = [CalculateHeight getSpaceLabelHeight:[[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"] withWidth:PPMainViewWidth - 120];
+//        CGFloat h = [CalculateHeight getSpaceLabelHeight:[[dataArray objectAtIndex:indexPath.row] objectForKey:@"live_title"] withWidth:PPMainViewWidth - 120];
 
         
         {
@@ -536,10 +536,10 @@
             spaceLab.text = titleStr;
             spaceLab.numberOfLines = 0;
             spaceLab.backgroundColor = [UIColor clearColor];
-            spaceLab.lineSpace = 0.0f;
+            spaceLab.lineSpace = 3.0f;
             spaceLab.characterSpace = 0.0f;
             spaceLab.isCopy = NO;
-            spaceLab.font = [UIFont systemFontOfSize:15];
+            spaceLab.font = [UIFont systemFontOfSize:16];
             spaceLab.textColor = [UIColor colorFromHexRGB:colorStr];
 
             CGFloat labHeight = [spaceLab getLableHeightWithMaxWidth:(PPMainViewWidth - 120)];

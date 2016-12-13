@@ -87,8 +87,7 @@
     NSLog(@"UMeng social version: %@", [UMSocialGlobal umSocialSDKVersion]);
     //设置微信的appId和appKey
     [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:@"wxbc85f05c6861a34e" appSecret:@"48bb173f1e200ea671123dc229ac3f54" redirectURL:@"http://www.jc2006.com/index.html"];
-    //设置分享到QQ互联的appId和appKey
-    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_QQ appKey:@"100424468"  appSecret:nil redirectURL:@"http://mobile.umeng.com/social"];
+
     
 #pragma mark --- 设置友盟End ----
  
@@ -893,6 +892,11 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
                           NSString *ALIPAY_PUBLIC = [dataDic objectForKey:@"ALIPAY_PUBLIC"] ;
                           NSString *ALIPAY_SWITCH = [dataDic objectForKey:@"ALIPAY_SWITCH"];
                           
+                          
+                          //支付总开关
+                          NSString *IPHONE_PAYMENT_SWITCH = [dataDic objectForKey:@"IPHONE_PAYMENT_SWITCH"];
+
+                          
                           //充值说明
                           NSString *CHONGZHI_CONTENT = [dataDic objectForKey:@"CHONGZHI_CONTENT"];
 
@@ -934,6 +938,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
                           [[NSUserDefaults standardUserDefaults] setObject:ALIPAY_ACCOUNT forKey:@"ALIPAY_ACCOUNT"];
                           
                           [[NSUserDefaults standardUserDefaults] setObject:CHONGZHI_CONTENT forKey:@"CHONGZHI_CONTENT"];
+
+                          [[NSUserDefaults standardUserDefaults] setObject:IPHONE_PAYMENT_SWITCH forKey:@"IPHONE_PAYMENT_SWITCH"];
 
 
                           [[NSUserDefaults standardUserDefaults] synchronize];

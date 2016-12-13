@@ -462,21 +462,16 @@
         
         div_t d = div(cha, 86400);
         int days = d.quot;
-        if (days>=0) {
+        if (days>0) {
             FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
             fiemShowByTypeViewController.typeString = @"1";
             fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
-        }else{
-            JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
-            jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
-            jCCYBuyVipViewController.buyType = 0;
-            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];
         }
         
         NSString *ds = [NSString stringWithFormat:@"%@",time_service_1];
         
-        if ([ds isEqualToString:@"0"] ) {
+        if ([ds isEqualToString:@"0"] || days == 0) {
             JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
             jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
             jCCYBuyVipViewController.buyType = 0;
@@ -495,20 +490,16 @@
         
         div_t d = div(cha, 86400);
         int days = d.quot;
-        if (days>=0) {
+        if (days>0) {
             FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
             fiemShowByTypeViewController.typeString = @"2";
             fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
-        }else{
-            JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
-            jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
-            jCCYBuyVipViewController.buyType = 1;
-            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];
         }
+
         NSString *ds = [NSString stringWithFormat:@"%@",time_service_2];
         
-        if ([ds isEqualToString:@"0"] ) {
+        if ([ds isEqualToString:@"0"] || days == 0) {
             JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
             jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
             jCCYBuyVipViewController.buyType = 1;
@@ -526,20 +517,15 @@
         
         div_t d = div(cha, 86400);
         int days = d.quot;
-        if (days>=0) {
+        if (days>0) {
             FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
             fiemShowByTypeViewController.typeString = @"3";
             fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
-        }else{
-            JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
-            jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
-            jCCYBuyVipViewController.buyType = 2;
-            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];//
         }
         NSString *ds = [NSString stringWithFormat:@"%@",time_service_3];
         
-        if ([ds isEqualToString:@"0"] ) {
+        if ([ds isEqualToString:@"0"] || days == 0) {
             JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
             jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
             jCCYBuyVipViewController.buyType = 2;

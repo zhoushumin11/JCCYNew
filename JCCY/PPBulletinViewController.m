@@ -112,6 +112,9 @@
                       NSInteger code = [[json objectForKey:@"code"] integerValue];
                       if (code == 1) {
                           NSArray *dataArr = [json objectForKey:@"data"];
+                          if ([dataArr isEqual:[NSNull null]]) {
+                              return;
+                          }
                           scrollNewsArray = [NSMutableArray arrayWithArray:dataArr];
                           
                       }else if (code == -110){

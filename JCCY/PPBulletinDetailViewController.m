@@ -61,7 +61,11 @@ UIActivityIndicatorView  *activityIndicator;
     
     navBarHairlineImageView = [self findHairlineImageViewUnder:self.navigationController.navigationBar];
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-    documentPath = [NSString stringWithFormat:@"%@&token=%@",documentPath,token];
+    if ([self.isOutWebside isEqualToString:@"yes"]) {
+        
+    }else{
+        documentPath = [NSString stringWithFormat:@"%@&token=%@",documentPath,token];
+    }
     
     [self createWEBView];
 }

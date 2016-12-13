@@ -71,7 +71,15 @@
     self.settingList = [NSMutableArray arrayWithCapacity:0];
 
     NSDictionary *collectDict = [NSDictionary dictionaryWithObjectsAndKeys:@"在线充值",@"title",[UIImage imageNamed:@"user_info_zxcz"],@"img", nil];
-    [settingList addObject:collectDict];
+    
+    NSString *IPHONE_PAYMENT_SWITCH = [[NSUserDefaults standardUserDefaults] objectForKey:@"IPHONE_PAYMENT_SWITCH"];
+    
+    if ([IPHONE_PAYMENT_SWITCH isEqualToString:@"1"]) {
+        [settingList addObject:collectDict];
+    }else{
+        
+    }
+    
     
     NSDictionary *clearCacheDict = [NSDictionary dictionaryWithObjectsAndKeys:@"充值记录",@"title",[UIImage imageNamed:@"user_info_czjl"],@"img", nil];
     [settingList addObject:clearCacheDict];
@@ -81,6 +89,8 @@
     
     NSDictionary *aboutusDict = [NSDictionary dictionaryWithObjectsAndKeys:@"客服电话：",@"title",[UIImage imageNamed:@"user_info_kfdh"],@"img", nil];
     [settingList addObject:aboutusDict];
+    
+    
     
     self.levelArray = [NSMutableArray array];
     
@@ -193,6 +203,7 @@
                           
                           NSString *kefuPhoneNum = [dataDic objectForKey:@"KEFU_TELPHONE"];
                           
+                          
                           self.KEFU_TELPHONE = kefuPhoneNum;
                           [settingTableView reloadData];
                           NSData *levelData = [levelDataStr dataUsingEncoding:NSASCIIStringEncoding];
@@ -271,7 +282,13 @@
     self.iconImgLabel.textColor = [UIColor whiteColor];
     self.iconImgLabel.textAlignment = NSTextAlignmentRight;
     self.iconImgLabel.clipsToBounds = YES;
+    
     NSString *nameStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_chinese_name"];
+    if (nameStr.length > 6) {
+        nameStr = [nameStr substringToIndex:6];
+    }
+
+    
     self.iconImgLabel.text = nameStr;
     [self.headView addSubview:self.iconImgLabel];
     

@@ -41,7 +41,7 @@
 #import "SDCycleScrollView.h"
 
 
-@interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,SDCycleScrollViewDelegate>
+@interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,SDCycleScrollViewDelegate,UIAlertViewDelegate>
 
 //@property (nonatomic, strong) UIButton *user_info_btn; //用户信息button
 //@property (nonatomic, strong) UIButton *user_info_Level; //用户等级
@@ -93,7 +93,8 @@
     if (isNetOK) {
         
     }else{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"暂无网络,请检查网络设置！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"暂无网络,请检查网络设置！" delegate:self cancelButtonTitle:@"去设置" otherButtonTitles:@"取消", nil];
+        alert.tag = 101010;
         [alert show];
     }
     
@@ -103,6 +104,18 @@
 
     
 }
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.tag == 101010) {
+        if (buttonIndex == 0) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+
+        }else{
+            return;
+        }
+    }
+}
+
 
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NETWORKNOTIFACTION object:nil];
@@ -178,8 +191,7 @@
         //        [btn setBackgroundImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:buttonImgArr[i]] forState:UIControlStateHighlighted];
-        btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
-        
+        btn.imageEdgeInsets = UIEdgeInsetsMake(8, 10, 12, 10);
         [btn setBackgroundColor:[UIColor whiteColor]];
         btn.tag = 2016+i;
         [btn addTarget:self action:@selector(homeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -187,8 +199,9 @@
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, ww-35, ww, 20)];
         if (PPMainViewWidth<350) {
             label .frame = CGRectMake(2, ww-32, ww, 20);
+            btn.imageEdgeInsets = UIEdgeInsetsMake(10, 12, 16, 12);
         }
-        
+
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont systemFontOfSize:14];
         label.textColor = [UIColor colorFromHexRGB:@"333333"];
@@ -445,6 +458,7 @@
         PPBulletinDetailViewController *pPBulletinDetailViewController = [[PPBulletinDetailViewController alloc] init];
         pPBulletinDetailViewController.hidesBottomBarWhenPushed = YES;
         pPBulletinDetailViewController.documentPath = ad_parameter;
+        pPBulletinDetailViewController.isOutWebside = @"yes";
         pPBulletinDetailViewController.titleStr = [dic objectForKey:@"ad_title"];
         [self.navigationController pushViewController:pPBulletinDetailViewController animated:YES];
     }else if (ad_type == 1){//1为文章栏目ad_parameter为栏目id
@@ -456,7 +470,10 @@
     }else if (ad_type == 2){//为直播间ad_parameter为直播间类别0免费1赞赏2钻石 3黄金
         NSString *ad_parameter = [dic objectForKey:@"ad_parameter"];
         if ([ad_parameter isEqualToString:@"0"]) {
-            self.tabBarController.selectedIndex = 1;
+            FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
+            fiemShowByTypeViewController.typeString = @"0";
+            fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
         }else if ([ad_parameter isEqualToString:@"1"]){
             FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
             fiemShowByTypeViewController.typeString = @"1";
@@ -733,8 +750,6 @@
     if (isNetOK) {
         
     }else{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"暂无网络,请检查网络设置！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alert show];
         return;
     }
     
@@ -757,6 +772,10 @@
                           NSInteger code = [[json objectForKey:@"code"] integerValue];
                           if (code == 1) {
                               NSArray *dataArr = [json objectForKey:@"data"];
+                              if ([dataArr isEqual:[NSNull null]]) {
+                                  [self creatOnlyBtnHeaderView];
+                                  return ;
+                              }
                               scrollNewsArray = [NSMutableArray arrayWithArray:dataArr];
                               if (scrollNewsArray.count>0) {
                                   //创建广告图
@@ -766,8 +785,8 @@
                                   [self creatOnlyBtnHeaderView];
                               }
 
-                              
                           }else if (code == -110){
+                              
                               //退出登录
                               [[NSNotificationCenter defaultCenter] postNotificationName:LoginOutByService object:nil];
                               
@@ -777,10 +796,17 @@
                               
                           }else{
                               //异常处理
+                              dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                  [JHUD hideForView:self.view];
+                              });
                           }
                           
                       } failedBlock:^(NSError *error) {
+                          dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                              [JHUD hideForView:self.view];
+                          });
                           [self creatOnlyBtnHeaderView];
+                          
                       }];
         }
 }
@@ -802,7 +828,6 @@
     [self getAdData];
     //获取列表数据
     [self getTableListData];
-    
     
     if ([mainTableView.mj_header isRefreshing]) {
         [mainTableView.mj_header endRefreshing];

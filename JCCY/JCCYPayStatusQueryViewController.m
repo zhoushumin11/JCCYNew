@@ -189,8 +189,6 @@
     
 }
 -(void)bangdingPhone{
-//    [self.navigationController popViewControllerAnimated:YES];
-    
     AppDelegate *appdel = (AppDelegate *)[UIApplication sharedApplication].delegate;
     if (appdel.jCCYMyListViewController == nil) {
         [self.navigationController popViewControllerAnimated:YES];

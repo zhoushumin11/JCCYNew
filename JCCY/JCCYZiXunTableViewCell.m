@@ -52,7 +52,7 @@
 {
     [super layoutSubviews];
     allcontentView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    h_titleLabel.frame = CGRectMake(8, 2, self.bounds.size.width-25,44);
+    h_titleLabel.frame = CGRectMake(15, 2, self.bounds.size.width-25,44);
     h_subtitleLabel.frame = CGRectMake(15,36,80,25);
     h_quanxianLabel.frame = CGRectMake(80, 36,80,25);
     

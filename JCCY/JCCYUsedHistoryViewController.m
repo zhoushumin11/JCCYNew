@@ -48,7 +48,7 @@
     cmheader.lastUpdatedTimeLabel.hidden = YES;
     
     mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(refreshMoreTableView)];
-    mainTableView.mj_footer.hidden = YES;
+    mainTableView.mj_footer.hidden = NO;
     
     mainTableView.mj_header = cmheader;
     mainTableView.delegate = self;
@@ -131,6 +131,8 @@
     }
     [self getdata:[pageNumsss integerValue]];
     
+    [mainTableView.mj_footer endRefreshingWithNoMoreData];
+
 }
 
 -(void)getdata:(NSInteger)nowPage{
@@ -141,7 +143,7 @@
         NSInteger updata_id = [[[NSUserDefaults standardUserDefaults] objectForKey:@"updata_id"] integerValue];
 
         
-        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%ld\"}",updata_id,token,nowPage];
+        dJson = [NSString stringWithFormat:@"{\"update_id\":\"%d\",\"token\":\"%@\",\"page\":\"%ld\"}",updata_id,token,nowPage+1];
         //获取类型接
         PPRDData *pprddata1 = [[PPRDData alloc] init];
         [pprddata1 startAFRequest:@"/index.php/Api/UserCost/list_cost_service/"

@@ -141,7 +141,13 @@
     
     [mainTableViewHeaderView addSubview:adBannerView];
     
-    _bulletinlistTableView.tableHeaderView = mainTableViewHeaderView;
+    if (list.count == 0) {
+        _bulletinlistTableView.tableHeaderView = nil;
+    }else{
+        _bulletinlistTableView.tableHeaderView = mainTableViewHeaderView;
+
+    }
+    
     
     
 //    __weak PPBulletinChirldViewController *weakSelf = self;
@@ -270,13 +276,13 @@
     waitLabel.hidden = YES;
     
     NSString *titleStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
-    NSString *aStr = @"【";
-    NSString *bStr = @"】";
-    NSString *columnStr = [[self.columnArray objectAtIndex:self.nowIndex] objectForKey:@"typename"];
-    
-    NSString *columnSSS = [[aStr stringByAppendingString:columnStr] stringByAppendingString:bStr];
-    
-    titleStr = [NSString stringWithFormat:@"%@%@",columnSSS,titleStr];
+//    NSString *aStr = @"【";
+//    NSString *bStr = @"】";
+//    NSString *columnStr = [[self.columnArray objectAtIndex:self.nowIndex] objectForKey:@"typename"];
+//    
+//    NSString *columnSSS = [[aStr stringByAppendingString:columnStr] stringByAppendingString:bStr];
+//    
+//    titleStr = [NSString stringWithFormat:@"%@%@",columnSSS,titleStr];
     cell.h_titleLabel.text = titleStr;
     
     NSString *dateStr = [[dataArray objectAtIndex:indexPath.row] objectForKey:@"pubdate"];
