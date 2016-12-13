@@ -17,6 +17,8 @@
 
 #import "NSString+WPAttributedMarkup.h"
 
+#import "PPToolsClass.h"
+
 
 @interface RedPacketViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -292,111 +294,109 @@
     //服务器当前时间
     double i0 = [present_time doubleValue];
     NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i0];
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
-    NSString *present_timeStr = [dateFormat stringFromDate:nd];
     
     //赞赏到期时间
     double i1 = [time_service_1 doubleValue];
     NSDate *nd1 = [NSDate dateWithTimeIntervalSince1970:i1];
-    NSString *time_service_1Str = [dateFormat stringFromDate:nd1];
     //钻石到期时间
     double i2 = [time_service_2 doubleValue];
     NSDate *nd2 = [NSDate dateWithTimeIntervalSince1970:i2];
-    NSString *time_service_2Str = [dateFormat stringFromDate:nd2];
     //黄金到期时间
     double i3 = [time_service_3 doubleValue];
     NSDate *nd3 = [NSDate dateWithTimeIntervalSince1970:i3];
-    NSString *time_service_3Str = [dateFormat stringFromDate:nd3];
+
+    
+    NSString *jiangeTime0 = [[PPToolsClass sharedTools] CalDateIntervalFromData2:nd endDate:nd1];
+    NSString *jiangeTime1 = [[PPToolsClass sharedTools] CalDateIntervalFromData2:nd endDate:nd2];
+    NSString *jiangeTime2 = [[PPToolsClass sharedTools] CalDateIntervalFromData2:nd endDate:nd3];
     
     NSDictionary* style1 = @{@"red": [UIColor redColor]};
     
     if (indexPath.row == 0) {
-        NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
-        fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-        NSDate *daoqiTime = [fomart dateFromString:time_service_1Str];
-        NSDate *dangqianTime = [fomart dateFromString:present_timeStr];
+        //赞赏到期时间处理
+        NSString *timeType = @"";
         
-        NSTimeInterval daoqiTimeI = [daoqiTime timeIntervalSince1970];
-        NSTimeInterval dangqianTimeI = [dangqianTime timeIntervalSince1970];
-        NSTimeInterval cha=daoqiTimeI-dangqianTimeI;
+        if (jiangeTime0 != nil || jiangeTime0.length >0 ) {
+            NSString *astring = [jiangeTime0 substringFromIndex:jiangeTime0.length-1];
+            if ([astring isEqualToString:@"时"]) {
+                jiangeTime0 = [jiangeTime0 substringToIndex:jiangeTime0.length - 2];
+                timeType = @"小时";
+            }else{
+                jiangeTime0 = [jiangeTime0 substringToIndex:jiangeTime0.length - 1];
+                timeType = @"天";
+            }
+        }else{
+            jiangeTime0 = @"0";
+            timeType = @"天";
+        }
+        NSInteger timeIntger = [jiangeTime0 integerValue];
         
-        div_t d = div(cha, 86400);
-        int days = d.quot;
-        NSString *daystr = @"";
-        if (days>=0) {
-            daystr = [NSString stringWithFormat:@"剩余%d天",days];
+        if (time_service_1>present_time) {
             [cell.r_enterInBtn setHidden:NO];
         }else{
-            daystr = @"剩余0天";
             [cell.r_enterInBtn setHidden:YES];
         }
         
-        NSString *ds = [NSString stringWithFormat:@"%@",time_service_1];
-        
-        if ([ds isEqualToString:@"0"] ) {
-            days = 0;
-        }
-        NSString *dasss = [NSString stringWithFormat:@"剩余<red>%d</red>天",days];
+        NSString *dasss = [NSString stringWithFormat:@"剩余<red>%ld</red>%@",timeIntger,timeType];
         cell.r_EndDaysLabel.attributedText = [dasss attributedStringWithStyleBook:style1];
 
 //        cell.r_EndDaysLabel.text = daystr;
     }else if (indexPath.row == 1){
-        NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
-        fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-        NSDate *daoqiTime = [fomart dateFromString:time_service_2Str];
-        NSDate *dangqianTime = [fomart dateFromString:present_timeStr];
+        //钻石到期时间处理
         
-        NSTimeInterval daoqiTimeI = [daoqiTime timeIntervalSince1970];
-        NSTimeInterval dangqianTimeI = [dangqianTime timeIntervalSince1970];
-        NSTimeInterval cha=daoqiTimeI-dangqianTimeI;
+        NSString *timeType = @"";
         
-        div_t d = div(cha, 86400);
-        int days = d.quot;
-        NSString *daystr = @"";
-        if (days>=0) {
-            daystr = [NSString stringWithFormat:@"剩余%d天",days];
+        if (jiangeTime1 != nil || jiangeTime1.length >0 ) {
+            NSString *astring = [jiangeTime1 substringFromIndex:jiangeTime1.length-1];
+            if ([astring isEqualToString:@"时"]) {
+                jiangeTime1 = [jiangeTime1 substringToIndex:jiangeTime1.length - 2];
+                timeType = @"小时";
+            }else{
+                jiangeTime1 = [jiangeTime1 substringToIndex:jiangeTime1.length - 1];
+                timeType = @"天";
+            }
+        }else{
+            jiangeTime1 = @"0";
+            timeType = @"天";
+        }
+        NSInteger timeIntger = [jiangeTime1 integerValue];
+        if (time_service_2>present_time) {
             [cell.r_enterInBtn setHidden:NO];
         }else{
-            daystr = @"剩余0天";
             [cell.r_enterInBtn setHidden:YES];
         }
-        NSString *ds = [NSString stringWithFormat:@"%@",time_service_2];
-        
-        if ([ds isEqualToString:@"0"] ) {
-            days = 0;
-        }
-        NSString *dasss = [NSString stringWithFormat:@"剩余<red>%d</red>天",days];
+        NSString *dasss = [NSString stringWithFormat:@"剩余<red>%ld</red>%@",timeIntger,timeType];
         cell.r_EndDaysLabel.attributedText = [dasss attributedStringWithStyleBook:style1];
     
     }else if (indexPath.row == 2){
-        NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
-        fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-        NSDate *daoqiTime = [fomart dateFromString:time_service_3Str];
-        NSDate *dangqianTime = [fomart dateFromString:present_timeStr];
+        //黄金到期时间处理
         
-        NSTimeInterval daoqiTimeI = [daoqiTime timeIntervalSince1970];
-        NSTimeInterval dangqianTimeI = [dangqianTime timeIntervalSince1970];
-        NSTimeInterval cha=daoqiTimeI-dangqianTimeI;
+        NSString *timeType = @"";
         
-        div_t d = div(cha, 86400);
-        int days = d.quot;
-        NSString *daystr = @"";
-        if (days>=0) {
-            daystr = [NSString stringWithFormat:@"剩余%d天",days];
+        if (jiangeTime2 != nil || jiangeTime2.length >0 ) {
+            NSString *astring = [jiangeTime2 substringFromIndex:jiangeTime2.length-1];
+            if ([astring isEqualToString:@"时"]) {
+                jiangeTime2 = [jiangeTime2 substringToIndex:jiangeTime2.length - 2];
+                timeType = @"小时";
+            }else{
+                jiangeTime2 = [jiangeTime2 substringToIndex:jiangeTime2.length - 1];
+                timeType = @"天";
+            }
+        }else{
+            jiangeTime2 = @"0";
+            timeType = @"天";
+        }
+        
+        NSInteger timeIntger = [jiangeTime2 integerValue];
+        if (time_service_3>present_time) {
             [cell.r_enterInBtn setHidden:NO];
         }else{
-            daystr = @"剩余0天";
             [cell.r_enterInBtn setHidden:YES];
         }
-        NSString *ds = [NSString stringWithFormat:@"%@",time_service_3];
-        
-        if ([ds isEqualToString:@"0"] ) {
-            days = 0;
-        }
-            NSString *dasss = [NSString stringWithFormat:@"剩余<red>%d</red>天",days];
-            cell.r_EndDaysLabel.attributedText = [dasss attributedStringWithStyleBook:style1];
-        }
+        NSString *dasss = [NSString stringWithFormat:@"剩余<red>%ld</red>%@",timeIntger,timeType];
+        cell.r_EndDaysLabel.attributedText = [dasss attributedStringWithStyleBook:style1];
+      
+    }
     
     
     cell.r_enterInBtn.backgroundColor = [UIColor colorFromHexRGB:[[dataArray objectAtIndex:indexPath.row] objectForKey:@"color"]];
@@ -428,108 +428,52 @@
     NSNumber *time_service_1 = [[NSUserDefaults standardUserDefaults] objectForKey:@"time_service_1"];
     NSNumber *time_service_2 = [[NSUserDefaults standardUserDefaults] objectForKey:@"time_service_2"];
     NSNumber *time_service_3 = [[NSUserDefaults standardUserDefaults] objectForKey:@"time_service_3"];
-    
-    //服务器当前时间
-    double i0 = [present_time doubleValue];
-    NSDate *nd = [NSDate dateWithTimeIntervalSince1970:i0];
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
-    NSString *present_timeStr = [dateFormat stringFromDate:nd];
-    
-    //赞赏到期时间
-    double i1 = [time_service_1 doubleValue];
-    NSDate *nd1 = [NSDate dateWithTimeIntervalSince1970:i1];
-    NSString *time_service_1Str = [dateFormat stringFromDate:nd1];
-    //钻石到期时间
-    double i2 = [time_service_2 doubleValue];
-    NSDate *nd2 = [NSDate dateWithTimeIntervalSince1970:i2];
-    NSString *time_service_2Str = [dateFormat stringFromDate:nd2];
-    //黄金到期时间
-    double i3 = [time_service_3 doubleValue];
-    NSDate *nd3 = [NSDate dateWithTimeIntervalSince1970:i3];
-    NSString *time_service_3Str = [dateFormat stringFromDate:nd3];
-    
+
     
     if (indexPath.row == 0) {
-        NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
-        fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-        NSDate *daoqiTime = [fomart dateFromString:time_service_1Str];
-        NSDate *dangqianTime = [fomart dateFromString:present_timeStr];
-        
-        NSTimeInterval daoqiTimeI = [daoqiTime timeIntervalSince1970];
-        NSTimeInterval dangqianTimeI = [dangqianTime timeIntervalSince1970];
-        NSTimeInterval cha=daoqiTimeI-dangqianTimeI;
-        
-        div_t d = div(cha, 86400);
-        int days = d.quot;
-        if (days>0) {
+
+        if (time_service_1 > present_time) {
             FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
             fiemShowByTypeViewController.typeString = @"1";
             fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
-        }
-        
-        NSString *ds = [NSString stringWithFormat:@"%@",time_service_1];
-        
-        if ([ds isEqualToString:@"0"] || days == 0) {
+        }else{
             JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
             jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
             jCCYBuyVipViewController.buyType = 0;
             [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];
         }
         
+        
     }else if (indexPath.row == 1){
-        NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
-        fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-        NSDate *daoqiTime = [fomart dateFromString:time_service_2Str];
-        NSDate *dangqianTime = [fomart dateFromString:present_timeStr];
+        //钻石到期时间处理
         
-        NSTimeInterval daoqiTimeI = [daoqiTime timeIntervalSince1970];
-        NSTimeInterval dangqianTimeI = [dangqianTime timeIntervalSince1970];
-        NSTimeInterval cha=daoqiTimeI-dangqianTimeI;
-        
-        div_t d = div(cha, 86400);
-        int days = d.quot;
-        if (days>0) {
+        if (time_service_2 > present_time) {
             FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
             fiemShowByTypeViewController.typeString = @"2";
             fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
-        }
-
-        NSString *ds = [NSString stringWithFormat:@"%@",time_service_2];
-        
-        if ([ds isEqualToString:@"0"] || days == 0) {
+        }else{
             JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
             jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
-            jCCYBuyVipViewController.buyType = 1;
-            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];        }
+            jCCYBuyVipViewController.buyType = 0;
+            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];
+        }
         
     }else if (indexPath.row == 2){
-        NSDateFormatter *fomart = [[NSDateFormatter alloc] init];
-        fomart.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-        NSDate *daoqiTime = [fomart dateFromString:time_service_3Str];
-        NSDate *dangqianTime = [fomart dateFromString:present_timeStr];
-        
-        NSTimeInterval daoqiTimeI = [daoqiTime timeIntervalSince1970];
-        NSTimeInterval dangqianTimeI = [dangqianTime timeIntervalSince1970];
-        NSTimeInterval cha=daoqiTimeI-dangqianTimeI;
-        
-        div_t d = div(cha, 86400);
-        int days = d.quot;
-        if (days>0) {
+        //黄金到期时间处理
+        if (time_service_3 > present_time) {
             FiemShowByTypeViewController *fiemShowByTypeViewController = [[FiemShowByTypeViewController alloc] init];
             fiemShowByTypeViewController.typeString = @"3";
             fiemShowByTypeViewController.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:fiemShowByTypeViewController animated:YES];
-        }
-        NSString *ds = [NSString stringWithFormat:@"%@",time_service_3];
-        
-        if ([ds isEqualToString:@"0"] || days == 0) {
+        }else{
             JCCYBuyVipViewController *jCCYBuyVipViewController = [[JCCYBuyVipViewController alloc] init];
             jCCYBuyVipViewController.hidesBottomBarWhenPushed = YES;
-            jCCYBuyVipViewController.buyType = 2;
-            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];        }
+            jCCYBuyVipViewController.buyType = 0;
+            [self.navigationController pushViewController:jCCYBuyVipViewController animated:YES];
+        }
+        
     }
 }
 

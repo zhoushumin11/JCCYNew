@@ -368,9 +368,20 @@
     [quedingBtn addTarget:self action:@selector(quedingPhone) forControlEvents:UIControlEventTouchUpInside];
     [mainScrollView addSubview:quedingBtn];
     
+    NSString *WX_CONTENT = [[NSUserDefaults standardUserDefaults] objectForKey:@"WX_CONTENT"];
+    NSString *ZHIFUBAO_CONTENT = [[NSUserDefaults standardUserDefaults] objectForKey:@"ZHIFUBAO_CONTENT"];
+    
+    if (WX_CONTENT == nil) {
+        WX_CONTENT = @"";
+    }
+    
+    if (ZHIFUBAO_CONTENT == nil) {
+        ZHIFUBAO_CONTENT = @"";
+    }
+    
     NSArray *imageArray = [NSArray arrayWithObjects:@"zhifubao_PayType",@"weixin_PayType", nil];
     NSArray *titleArray = [NSArray arrayWithObjects:@"支付宝钱包充值",@"微信充值", nil];
-    NSArray *subTitleArray = [NSArray arrayWithObjects:@"推荐支付宝用户使用",@"推荐有微信支付的账户的用户使用", nil];
+    NSArray *subTitleArray = [NSArray arrayWithObjects:ZHIFUBAO_CONTENT,WX_CONTENT, nil];
     
     
     if ([switchType isEqualToString:@"0"]) {

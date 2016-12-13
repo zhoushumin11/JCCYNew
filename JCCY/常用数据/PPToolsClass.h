@@ -21,6 +21,7 @@
 //Date 日期相关解决方案
 - (NSString *)calDateIntervalendDate:(NSDate *)paramEndDate;
 - (NSString *)CalDateIntervalFromData:(NSDate *)paramStartDate endDate:(NSDate *)paramEndDate;
+- (NSString *)CalDateIntervalFromData2:(NSDate *)paramStartDate endDate:(NSDate *)paramEndDate;
 - (NSString *)prettyDateWithReference:(NSDate *)reference;
 - (NSString *)getcurrentYMDHMSDate:(NSDate *)date;
 

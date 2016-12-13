@@ -8,6 +8,8 @@
 
 #import "AdvertiseView.h"
 
+#import "UIImageView+WebCache.h"
+
 @interface AdvertiseView()
 
 @property (nonatomic, strong) UIImageView *adView;
@@ -66,8 +68,16 @@ static int const showtime = 3;
 - (void)setFilePath:(NSString *)filePath
 {
     _filePath = filePath;
-//    _adView.image = [UIImage imageWithContentsOfFile:filePath];
-    _adView.image = [UIImage imageNamed:@"yingdaoye.jpg"];
+    if (_filePath == nil || _filePath.length == 0) {
+        _adView.image = [UIImage imageNamed:@"yingdaoye.jpg"];
+    }else{
+        [_adView sd_setImageWithURL:[NSURL URLWithString:_filePath] placeholderImage:[UIImage imageNamed:@"yingdaoye.jpg"] options:SDWebImageHandleCookies completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            if (image == nil) {
+                _adView.image = [UIImage imageNamed:@"yingdaoye.jpg"];
+            }
+        }];
+        
+    }
 
 }
 

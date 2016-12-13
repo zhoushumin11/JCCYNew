@@ -51,6 +51,29 @@
     return [pinyin uppercaseString];
 }
 
+// 计算到期时间的  最低单位小时  最高单位天
+- (NSString *)CalDateIntervalFromData2:(NSDate *)paramStartDate endDate:(NSDate *)paramEndDate{
+    
+    NSString *strResult=nil;
+    
+    NSUInteger unitFlags =  NSCalendarUnitHour  | NSCalendarUnitDay  ;
+    
+    NSDateComponents *DateComponent = [self.chineseClendar components:unitFlags fromDate:paramStartDate toDate:paramEndDate options:0];
+    
+    NSInteger diffHour = [DateComponent hour];
+    NSInteger diffDay   = [DateComponent day];
+    
+    
+    if(diffDay>0){
+        strResult=[NSString stringWithFormat:@"%ld天",(long)diffDay];
+    }else if(diffHour>0){
+        strResult=[NSString stringWithFormat:@"%ld小时",(long)diffHour];
+    }else{
+        strResult=[NSString stringWithFormat:@""];
+    }
+    return strResult;
+}
+
 
 //Date 日期相关解决方案
 - (NSString *)CalDateIntervalFromData:(NSDate *)paramStartDate endDate:(NSDate *)paramEndDate{

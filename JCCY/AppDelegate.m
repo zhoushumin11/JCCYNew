@@ -159,7 +159,8 @@
     //显示启动页
     
     AdvertiseView *advertiseView = [[AdvertiseView alloc] initWithFrame:self.window.bounds];
-    advertiseView.filePath = @"";
+    NSString *PIC_ADVERTISEMENT = [[NSUserDefaults standardUserDefaults] objectForKey:@"PIC_ADVERTISEMENT"];
+    advertiseView.filePath = PIC_ADVERTISEMENT;
     [advertiseView show];
     
     
@@ -623,7 +624,10 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"isBangding"];
     
     [[NSUserDefaults standardUserDefaults] synchronize];
+    //初始化登录
+    PPLoginViewController *ppLoginViewController = [[PPLoginViewController alloc] init];
     
+    ppLoginNavigationController = [[PPNavigationController alloc] initWithRootViewController:ppLoginViewController];
     self.viewController = ppLoginNavigationController;
     [self.window setRootViewController:self.viewController];
     [self.window makeKeyAndVisible];
@@ -640,6 +644,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 }
 - (void)loginNotifaction:(NSNotification *)object
 {
+    ppLoginNavigationController = nil;
     self.viewController = pptabBarController;
     pptabBarController.selectedIndex = 0;
     [self.window setRootViewController:self.viewController];
@@ -806,11 +811,16 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
     if (!isLoginsucc)
     {
+        //初始化登录
+        PPLoginViewController *ppLoginViewController = [[PPLoginViewController alloc] init];
+        
+        ppLoginNavigationController = [[PPNavigationController alloc] initWithRootViewController:ppLoginViewController];
         self.viewController = ppLoginNavigationController;
     }else{
-        self.viewController = pptabBarController;
         //刷新公共信息
         [self updataPublicInfo];
+        self.viewController = pptabBarController;
+        ppLoginNavigationController = nil;
     }
     
     [_window setRootViewController:self.viewController];
@@ -892,11 +902,16 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
                           NSString *ALIPAY_PUBLIC = [dataDic objectForKey:@"ALIPAY_PUBLIC"] ;
                           NSString *ALIPAY_SWITCH = [dataDic objectForKey:@"ALIPAY_SWITCH"];
                           
-                          
+                          //支付说明
+                          NSString *WX_CONTENT = [dataDic objectForKey:@"WX_CONTENT"];
+                          NSString *ZHIFUBAO_CONTENT = [dataDic objectForKey:@"ZHIFUBAO_CONTENT"];
+
                           //支付总开关
                           NSString *IPHONE_PAYMENT_SWITCH = [dataDic objectForKey:@"IPHONE_PAYMENT_SWITCH"];
 
-                          
+                          //广告位图片
+                          NSString *PIC_ADVERTISEMENT = [dataDic objectForKey:@"PIC_ADVERTISEMENT"];
+
                           //充值说明
                           NSString *CHONGZHI_CONTENT = [dataDic objectForKey:@"CHONGZHI_CONTENT"];
 
@@ -940,6 +955,12 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
                           [[NSUserDefaults standardUserDefaults] setObject:CHONGZHI_CONTENT forKey:@"CHONGZHI_CONTENT"];
 
                           [[NSUserDefaults standardUserDefaults] setObject:IPHONE_PAYMENT_SWITCH forKey:@"IPHONE_PAYMENT_SWITCH"];
+
+                          [[NSUserDefaults standardUserDefaults] setObject:PIC_ADVERTISEMENT forKey:@"PIC_ADVERTISEMENT"];
+
+                          //支付说明
+                          [[NSUserDefaults standardUserDefaults] setObject:WX_CONTENT forKey:@"WX_CONTENT"];
+                          [[NSUserDefaults standardUserDefaults] setObject:ZHIFUBAO_CONTENT forKey:@"ZHIFUBAO_CONTENT"];
 
 
                           [[NSUserDefaults standardUserDefaults] synchronize];
