@@ -40,5 +40,10 @@
 //更新用户信息
 -(void)get_info;
 
+//本地推送ios10
++(void)registerNotification:(NSInteger )alerTime;
+//本地推送old
++ (void)registerLocalNotificationInOldWay:(NSInteger)alertTime;
+
 @end
 

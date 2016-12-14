@@ -19,6 +19,7 @@
 
 #import "PPToolsClass.h"
 
+#import "AppDelegate.h"
 
 @interface RedPacketViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -35,7 +36,6 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
     [self get_info];
-//    [self initMyView];
 }
 #pragma mark --- 更新会员信息 ----
 -(void)get_info{
@@ -316,7 +316,7 @@
         //赞赏到期时间处理
         NSString *timeType = @"";
         
-        if (jiangeTime0 != nil || jiangeTime0.length >0 ) {
+        if (jiangeTime0 != nil && jiangeTime0.length >0 ) {
             NSString *astring = [jiangeTime0 substringFromIndex:jiangeTime0.length-1];
             if ([astring isEqualToString:@"时"]) {
                 jiangeTime0 = [jiangeTime0 substringToIndex:jiangeTime0.length - 2];
@@ -346,7 +346,7 @@
         
         NSString *timeType = @"";
         
-        if (jiangeTime1 != nil || jiangeTime1.length >0 ) {
+        if (jiangeTime1 != nil && jiangeTime1.length >0 ) {
             NSString *astring = [jiangeTime1 substringFromIndex:jiangeTime1.length-1];
             if ([astring isEqualToString:@"时"]) {
                 jiangeTime1 = [jiangeTime1 substringToIndex:jiangeTime1.length - 2];
@@ -373,7 +373,7 @@
         
         NSString *timeType = @"";
         
-        if (jiangeTime2 != nil || jiangeTime2.length >0 ) {
+        if (jiangeTime2 != nil && jiangeTime2.length >0 ) {
             NSString *astring = [jiangeTime2 substringFromIndex:jiangeTime2.length-1];
             if ([astring isEqualToString:@"时"]) {
                 jiangeTime2 = [jiangeTime2 substringToIndex:jiangeTime2.length - 2];

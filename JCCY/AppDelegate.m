@@ -46,7 +46,8 @@
 #import <sys/utsname.h>
 #import "AdvertiseView.h"
 
-@interface AppDelegate ()<CoreStatusProtocol,UITabBarControllerDelegate,JPUSHRegisterDelegate,UMSocialPlatformProvider,UIAlertViewDelegate,WXApiDelegate>
+
+@interface AppDelegate ()<CoreStatusProtocol,UITabBarControllerDelegate,JPUSHRegisterDelegate,UMSocialPlatformProvider,UIAlertViewDelegate,WXApiDelegate,UNUserNotificationCenterDelegate>
 {
     PPNavigationController *curNavController;
     NSDictionary *notifactionUserInfo;
@@ -68,8 +69,9 @@
 @synthesize currentDeviceToken;
 @synthesize tabbarbuttonArray;
 
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
     NSString *severurlstr = [[NSUserDefaults standardUserDefaults] objectForKey:SEVERURL];
     if (severurlstr == nil) {
         //设置服务器地址
